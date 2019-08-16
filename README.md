@@ -2,20 +2,9 @@
 
 #### Based on bryphe/reason-glfw. Reason / OCaml bindings for SDL2
 
-#### Cross-platform Reason / OCaml bindings for GLFW - supports Native (OpenGL) and Javascript (WebGL))
-
 ## Building
 
-`esy` is used for building, so if you don't have `esy`, install it:
-
-```
-npm install -g esy@0.4.9
-```
-
-- `esy install`
-- `esy build`
-
-> __NOTE:__ If you've never built with `esy` before, the first compile could take some time - it builds the `ocaml` compiler as well as `cmake`. Incremental builds, though, are extremely fast!
+TBD
 
 ## Running
 

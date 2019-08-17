@@ -24,7 +24,7 @@
     ]
   },
   "peerDependencies": {
-    "ocaml": "^4.6.0"
+    "ocaml": "~4.7.0"
   },
   "dependencies": {
     "@opam/dune": "1.7.3",
@@ -36,6 +36,7 @@
     "@opam/lwt": "^4.0.0",
     "@opam/lwt_ppx": "^1.1.0",
     "esy-glfw": "^3.2.1008",
+    "esy-sdl2": "^2.0.10001",
     "esy-cmake": "^0.3.4",
     "reason-gl-matrix": "^0.9.9304"
   },
@@ -43,6 +44,6 @@
     "@opam/cmdliner": "1.0.2"
   },
   "devDependencies": {
-    "ocaml": "^4.6.0"
+    "ocaml": "~4.7.0"
   }
 }

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 
 #include <caml/mlvalues.h>
 #include <caml/bigarray.h>
@@ -21,17 +22,20 @@ extern "C" {
         printf("hello, world\n");
 
         SDL_Window *window;
-        SDL_Init(SDL_INIT_VIDEO);
+        int init_ret = SDL_Init(SDL_INIT_VIDEO);
+        printf("SDL_Init returned %d\n", init_ret);
             // Create an application window with the following settings:
 
     window = SDL_CreateWindow(
         "An SDL2 window",                  // window title
-        SDL_WINDOWPOS_UNDEFINED,           // initial x position
-        SDL_WINDOWPOS_UNDEFINED,           // initial y position
+        20,           // initial x position
+        20,           // initial y position
         640,                               // width, in pixels
         480,                               // height, in pixels
         SDL_WINDOW_OPENGL                  // flags - see below
     );
+
+    printf("SDL_CreateWindow returned %p\n", window);
     // Check that the window was successfully created
     if (window == NULL) {
         // In the case that the window could not be made...
@@ -39,7 +43,12 @@ extern "C" {
         return 1;
     }
     // The window is open: could enter program loop here (see SDL_PollEvent())
-    SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
+    for( int i = 0; i < 50; SDL_Delay(2000), i++ )
+    {
+        SDL_Surface* window_surface = SDL_GetWindowSurface(window);
+        SDL_FillRect(window_surface, NULL, SDL_MapRGB(window_surface->format, (i*1234) % 255, (i*1256) % 255, (i*1356) % 255));
+        SDL_UpdateWindowSurface(window);
+    }
 
     // Close and destroy the window
     SDL_DestroyWindow(window);
@@ -48,6 +57,83 @@ extern "C" {
     SDL_Quit();
 
         return Val_unit;
+    }
+
+    CAMLprim value resdl_init(
+            value v_audio,
+            value v_video,
+            value v_events,
+            value v_haptic,
+            value v_timer,
+            value v_gamecontroller,
+            value v_joystick,
+            value v_everything
+        )
+    {
+        printf("doing sdl setup\n");
+
+        uint32_t flags = priv_bitfield_from_flags( 
+            value v_audio,
+            value v_video,
+            value v_events,
+            value v_haptic,
+            value v_timer,
+            value v_gamecontroller,
+            value v_joystick,
+            value v_everything
+        );
+
+        SDL_InitSubSystem(flags);
+    }
+
+    CAMLprim value resdl_quit(
+            value v_audio,
+            value v_video,
+            value v_events,
+            value v_haptic,
+            value v_timer,
+            value v_gamecontroller,
+            value v_joystick,
+            value v_everything
+        )
+    {
+        uint32_t flags = priv_bitfield_from_flags( 
+            value v_audio,
+            value v_video,
+            value v_events,
+            value v_haptic,
+            value v_timer,
+            value v_gamecontroller,
+            value v_joystick,
+            value v_everything
+        );
+
+        SDL_QuitSubSystem(flags);
+    }
+
+    static inline uint32_t priv_bitfield_from_flags(
+            value v_audio,
+            value v_video,
+            value v_events,
+            value v_haptic,
+            value v_timer,
+            value v_gamecontroller,
+            value v_joystick,
+            value v_everything
+        )
+    {
+        // every passed value should be a bool encoded as a long,
+        // so we can check for != 0 to reduce to a bool
+        uint32_t i_audio = (v_audio) ? SDL_INIT_AUDIO : 0;
+        uint32_t i_video = (v_video) ? SDL_INIT_VIDEO : 0;
+        uint32_t i_events = (v_events) ? SDL_INIT_EVENTS : 0;
+        uint32_t i_haptic = (v_haptic) ? SDL_INIT_HAPTIC : 0;
+        uint32_t i_timer = (v_timer) ? SDL_INIT_TIMER : 0;
+        uint32_t i_gamecontroller = (v_gamecontroller) ? SDL_INIT_GAMECONTROLLER : 0;
+        uint32_t i_joystick = (v_joystick) ? SDL_INIT_JOYSTICK : 0;
+        uint32_t i_everything = (i_everything) ? SDL_INIT_EVERYTHING : 0;
+
+        return i_audio | i_video | i_events | i_haptic | i_timer | i_gamecontroller | i_joystick | i_everything;
     }
 }
 

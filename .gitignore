@@ -1,0 +1,5 @@
+esy.lock/
+_esy/
+
+*.merlin
+*.install

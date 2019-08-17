@@ -31,13 +31,13 @@ let flags =
     match get_os with
     | Windows ->  []
         @ ccopt(libPath)
-        @ cclib("-lsdl2")
+        @ cclib("-lSDL2")
         @ cclib("-lgdi32")
     | Linux -> []
         @ ccopt(libPath)
         @ cclib("-lGL")
         @ cclib("-lGLU")
-        @ cclib("-lsdl2")
+        @ cclib("-lSDL2")
         @ cclib("-lX11")
         @ cclib("-lXxf86vm")
         @ cclib("-lXrandr")
@@ -47,7 +47,7 @@ let flags =
         @ cclib("-lXi")
     | _ -> []
         @ ccopt(libPath)
-        @ cclib("-lsdl2")
+        @ cclib("-lSDL2")
         @ ccopt("-framework OpenGL")
         @ ccopt("-framework Cocoa")
         @ ccopt("-framework IOKit")

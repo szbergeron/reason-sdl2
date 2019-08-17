@@ -20,9 +20,9 @@ let get_os =
         | _ -> Unknown
 
 let root = Sys.getenv "cur__root"
-let c_flags = ["-I"; (Sys.getenv "GLFW_INCLUDE_PATH"); "-I"; Filename.concat root "include"; "-I"; Filename.concat root "src"]
+let c_flags = ["-I"; (Sys.getenv "SDL2_INCLUDE_PATH"); "-I"; Filename.concat root "include"; "-I"; Filename.concat root "src"]
 
-let libPath = "-L" ^ (Sys.getenv "GLFW_LIB_PATH")
+let libPath = "-L" ^ (Sys.getenv "SDL2_LIB_PATH")
 
 let ccopt s = ["-ccopt"; s]
 let cclib s = ["-cclib"; s]
@@ -31,7 +31,7 @@ let flags =
     match get_os with
     | Windows ->  []
         @ ccopt(libPath)
-        @ cclib("-lglfw3")
+        @ cclib("-lsdl2")
         @ cclib("-lgdi32")
     | Linux -> []
         @ ccopt(libPath)
@@ -47,7 +47,7 @@ let flags =
         @ cclib("-lXi")
     | _ -> []
         @ ccopt(libPath)
-        @ cclib("-lglfw3")
+        @ cclib("-lsdl2")
         @ ccopt("-framework OpenGL")
         @ ccopt("-framework Cocoa")
         @ ccopt("-framework IOKit")

@@ -84,7 +84,7 @@ extern "C" {
         return Val_unit;
     }
 
-    CAMLprim value resdl_init(
+    CAMLprim value resdl_init_native(
             value v_audio,
             value v_video,
             value v_events,
@@ -112,6 +112,20 @@ extern "C" {
         int e_code = SDL_InitSubSystem(flags);
 
         return Val_int(e_code);
+    }
+
+    CAMLprim value resdl_init_bytecode(value* argv, int argc)
+    {
+        return resdl_init_native(
+            argv[0],
+            argv[1],
+            argv[2],
+            argv[3],
+            argv[4],
+            argv[5],
+            argv[6],
+            argv[7]
+        );
     }
 
     CAMLprim value resdl_quit() {

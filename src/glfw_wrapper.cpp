@@ -286,12 +286,34 @@ extern "C" {
             return Val_int(SDL_GL_SHARE_WITH_CURRENT_CONTEXT);
         }
 
+        // WARN: for this macro, we should inspect the behavior on intel cards
+        // from memory, although they advertize this the i915 driver on linux
+        // does not actually support this and what results is an uncorrected
+        // linear framebuffer is presented instead
         CAMLprim value resdl_m_SDL_GL_FRAMEBUFFER_SRGB_CAPABLE() {
             return Val_int(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE);
         }
 
         CAMLprim value resdl_m_SDL_GL_CONTEXT_RELEASE_BEHAVIOR() {
             return Val_int(SDL_GL_CONTEXT_RELEASE_BEHAVIOR);
+        }
+    }
+
+    namespace resdl_SDL_GLcontextFlag {
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_DEBUG_FLAG() {
+            return Val_int(SDL_GL_CONTEXT_DEBUG_FLAG);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG() {
+            return Val_int(SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG() {
+            return Val_int(SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_RESET_ISOLATION_FLAG() {
+            return Val_int(SDL_GL_CONTEXT_RESET_ISOLATION_FLAG);
         }
     }
 

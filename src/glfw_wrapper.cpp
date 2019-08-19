@@ -317,6 +317,21 @@ extern "C" {
         }
     }
 
+    namespace resdl_SDL_GLprofile {
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_PROFILE_CORE() {
+            return Val_int(SDL_GL_CONTEXT_PROFILE_CORE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_PROFILE_COMPATABILITY() {
+            return Val_int(SDL_GL_CONTEXT_PROFILE_COMPATABILITY);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_PROFILE_ES() {
+            return Val_int(SDL_GL_CONTEXT_PROFILE_ES);
+        }
+    }
+
     namespace resdl_SDL_Render {
 
         CAMLprim value resdl_SDL_RenderCopy(

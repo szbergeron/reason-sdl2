@@ -153,5 +153,56 @@ extern "C" {
 
         return Val_int(r_flags);
     }
+
+    //////////MACRO EXPOSURE FUNCTIONS//////////
+    namespace resdl_enum_SDL_BlendMode {
+        CAMLprim value resdl_m_SDL_BLENDMODE_NONE() {
+            return Val_int(SDL_BLENDMODE_NONE);
+        }
+
+        CAMLprim value resdl_m_SDL_BLENDMODE_BLEND() {
+            return Val_int(SDL_BLENDMODE_BLEND);
+        }
+
+        CAMLprim value resdl_m_SDL_BLENDMODE_ADD() {
+            return Val_int(SDL_BLENDMODE_ADD);
+        }
+
+        CAMLprim value resdl_m_SDL_BLENDMODE_MOD() {
+            return Val_int(SDL_BLENDMODE_MOD);
+        }
+
+        CAMLprim value resdl_SDL_GetRenderDrawBlendMode(value v_renderer, value v_blendmode) {
+            return Val_int(
+                    SDL_GetRenderDrawBlendMode(
+                        (SDL_Renderer*)v_renderer,
+                        (SDL_BlendMode*)v_blendmode
+                    )
+                );
+        }
+
+        CAMLprim value resdl_SDL_GetSurfaceBlendMode(value v_surface, value v_blendmode) {
+            return Val_int(
+                    SDL_GetSurfaceBlendMode(
+                        (SDL_Surface*)v_surface,
+                        (SDL_BlendMode*)v_blendmode
+                    )
+                );
+        }
+    }
+
+    namespace resdl_category_handling {
+        CAMLprim value resdl_SDL_GetError() {
+            return caml_copy_string(SDL_GetError());
+        }
+
+        CAMLprim value resdl_SDL_ClearError() {
+            SDL_ClearError();
+            return Val_unit;
+        }
+
+        // TODO: implement handling for [int SDL_SetError(const char* fmt, ...)]
+        //   Need to account for variadics in OCaml, is it possible? Or is an alternative solution necessary?
+    }
 }
 

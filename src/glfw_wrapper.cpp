@@ -323,8 +323,8 @@ extern "C" {
             return Val_int(SDL_GL_CONTEXT_PROFILE_CORE);
         }
 
-        CAMLprim value resdl_m_SDL_GL_CONTEXT_PROFILE_COMPATABILITY() {
-            return Val_int(SDL_GL_CONTEXT_PROFILE_COMPATABILITY);
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_PROFILE_COMPATIBILITY() {
+            return Val_int(SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
         }
 
         CAMLprim value resdl_m_SDL_GL_CONTEXT_PROFILE_ES() {

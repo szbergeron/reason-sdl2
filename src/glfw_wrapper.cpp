@@ -332,6 +332,49 @@ extern "C" {
         }
     }
 
+    namespace resdl_SDL_HitTestResult {
+        CAMLprim value resdl_m_SDL_HITTEST_NORMAL() {
+            return Val_int(SDL_HITTEST_NORMAL);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_DRAGGABLE() {
+            return Val_int(SDL_HITTEST_DRAGGABLE);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_TOPLEFT() {
+            return Val_int(SDL_HITTEST_RESIZE_TOPLEFT);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_TOP() {
+            return Val_int(SDL_HITTEST_RESIZE_TOP);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_TOPRIGHT() {
+            return Val_int(SDL_HITTEST_RESIZE_TOPRIGHT);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_RIGHT() {
+            return Val_int(SDL_HITTEST_RESIZE_RIGHT);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_BOTTOMRIGHT() {
+            return Val_int(SDL_HITTEST_RESIZE_BOTTOMRIGHT);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_BOTTOM() {
+            return Val_int(SDL_HITTEST_RESIZE_BOTTOM);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_BOTTOMLEFT() {
+            return Val_int(SDL_HITTEST_RESIZE_BOTTOMLEFT);
+        }
+
+        CAMLprim value resdl_m_SDL_HITTEST_RESIZE_LEFT() {
+            return Val_int(SDL_HITTEST_RESIZE_LEFT);
+        }
+
+    }
+
     namespace resdl_SDL_Render {
 
         CAMLprim value resdl_SDL_RenderCopy(

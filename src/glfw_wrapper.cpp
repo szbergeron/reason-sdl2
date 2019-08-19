@@ -424,6 +424,72 @@ extern "C" {
         }
     }
 
+    namespace resdl_SDL_WindowEventID {
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_SHOWN() {
+            return Val_int(SDL_WINDOWEVENT_SHOWN);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_HIDDEN() {
+            return Val_int(SDL_WINDOWEVENT_HIDDEN);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_EXPOSED() {
+            return Val_int(SDL_WINDOWEVENT_EXPOSED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_MOVED() {
+            return Val_int(SDL_WINDOWEVENT_MOVED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_RESIZED() {
+            return Val_int(SDL_WINDOWEVENT_RESIZED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_SIZE_CHANGED() {
+            return Val_int(SDL_WINDOWEVENT_SIZE_CHANGED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_MINIMIZED() {
+            return Val_int(SDL_WINDOWEVENT_MINIMIZED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_MAXIMIZED() {
+            return Val_int(SDL_WINDOWEVENT_MAXIMIZED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_RESTORED() {
+            return Val_int(SDL_WINDOWEVENT_RESTORED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_ENTER() {
+            return Val_int(SDL_WINDOWEVENT_ENTER);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_LEAVE() {
+            return Val_int(SDL_WINDOWEVENT_LEAVE);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_FOCUS_GAINED() {
+            return Val_int(SDL_WINDOWEVENT_FOCUS_GAINED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_FOCUS_LOST() {
+            return Val_int(SDL_WINDOWEVENT_FOCUS_LOST);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_CLOSE() {
+            return Val_int(SDL_WINDOWEVENT_CLOSE);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_TAKE_FOCUS() {
+            return Val_int(SDL_WINDOWEVENT_TAKE_FOCUS);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOWEVENT_HIT_TEST() {
+            return Val_int(SDL_WINDOWEVENT_HIT_TEST);
+        }
+    }
+
     namespace resdl_SDL_Render {
 
         CAMLprim value resdl_SDL_RenderCopy(

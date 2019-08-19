@@ -384,6 +384,32 @@ extern "C" {
         }
     }
 
+    namespace resdl_SDL_MessageBoxColorType {
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_COLOR_BACKGROUND() {
+            return Val_int(SDL_MESSAGEBOX_COLOR_BACKGROUND);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_COLOR_TEXT() {
+            return Val_int(SDL_MESSAGEBOX_COLOR_TEXT);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_COLOR_BUTTON_BORDER() {
+            return Val_int(SDL_MESSAGEBOX_COLOR_BUTTON_BORDER);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND() {
+            return Val_int(SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED() {
+            return Val_int(SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_COLOR_MAX() {
+            return Val_int(SDL_MESSAGEBOX_COLOR_MAX);
+        }
+    }
+
     namespace resdl_SDL_Render {
 
         CAMLprim value resdl_SDL_RenderCopy(

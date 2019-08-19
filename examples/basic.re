@@ -28,8 +28,13 @@ let resdl_init = (~audio: bool=false,
 
 external resdl_quit: unit => unit = "resdl_quit";
 
+external resdl_wasinit: int => int = "resdl_wasinit";
+
 let run = () => {
   /*let _ = hello_sdl();*/
   let _ = resdl_init(~audio=true, ~video=true, ());
+
+  let _ = resdl_wasinit(0);
+
   let _ = resdl_quit(());
 };

@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdio>
+#include <cstdint>
 
 #include <caml/mlvalues.h>
 #include <caml/bigarray.h>
@@ -31,14 +31,14 @@ extern "C" {
     {
         // every passed value should be a bool encoded as a long,
         // so we can check for != 0 to reduce to a bool
-        uint32_t i_audio = (v_audio) ? SDL_INIT_AUDIO : 0;
-        uint32_t i_video = (v_video) ? SDL_INIT_VIDEO : 0;
-        uint32_t i_events = (v_events) ? SDL_INIT_EVENTS : 0;
-        uint32_t i_haptic = (v_haptic) ? SDL_INIT_HAPTIC : 0;
-        uint32_t i_timer = (v_timer) ? SDL_INIT_TIMER : 0;
-        uint32_t i_gamecontroller = (v_gamecontroller) ? SDL_INIT_GAMECONTROLLER : 0;
-        uint32_t i_joystick = (v_joystick) ? SDL_INIT_JOYSTICK : 0;
-        uint32_t i_everything = (i_everything) ? SDL_INIT_EVERYTHING : 0;
+        uint32_t i_audio = (Val_bool(v_audio)) ? SDL_INIT_AUDIO : 0;
+        uint32_t i_video = (Val_bool(v_video)) ? SDL_INIT_VIDEO : 0;
+        uint32_t i_events = (Val_bool(v_events)) ? SDL_INIT_EVENTS : 0;
+        uint32_t i_haptic = (Val_bool(v_haptic)) ? SDL_INIT_HAPTIC : 0;
+        uint32_t i_timer = (Val_bool(v_timer)) ? SDL_INIT_TIMER : 0;
+        uint32_t i_gamecontroller = (Val_bool(v_gamecontroller)) ? SDL_INIT_GAMECONTROLLER : 0;
+        uint32_t i_joystick = (Val_bool(v_joystick)) ? SDL_INIT_JOYSTICK : 0;
+        uint32_t i_everything = (Val_bool(i_everything)) ? SDL_INIT_EVERYTHING : 0;
 
         return i_audio | i_video | i_events | i_haptic | i_timer | i_gamecontroller | i_joystick | i_everything;
     }
@@ -95,7 +95,10 @@ extern "C" {
             value v_everything
         )
     {
-        printf("doing sdl setup\n");
+        printf("Hello from SDL, "
+                "revision: %s\n",
+                SDL_GetRevision()
+                );
 
         uint32_t flags = priv_bitfield_from_flags( 
             v_audio,
@@ -110,6 +113,11 @@ extern "C" {
 
         // 0 on success, <0 on failure
         int e_code = SDL_InitSubSystem(flags);
+
+        printf("init returned %d\n", e_code);
+
+        printf("Hints:\n");
+        printf("End hints\n");
 
         return Val_int(e_code);
     }
@@ -132,6 +140,18 @@ extern "C" {
         SDL_Quit();
 
         return Val_unit;
+    }
+
+    CAMLprim value resdl_wasinit(value v_flags)
+    {
+        int i_flags = Int_val(v_flags);
+        printf("flags was 0x%X -- note: UB if negative here, WasInit expects an unsigned int\n", i_flags);
+
+        int r_flags = SDL_WasInit(i_flags);
+
+        printf("returning 0x%X\n", r_flags);
+
+        return Val_int(r_flags);
     }
 }
 

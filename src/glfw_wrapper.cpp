@@ -155,7 +155,7 @@ extern "C" {
     }
 
     //////////MACRO EXPOSURE FUNCTIONS//////////
-    namespace resdl_enum_SDL_BlendMode {
+    namespace resdl_SDL_BlendMode {
         CAMLprim value resdl_m_SDL_BLENDMODE_NONE() {
             return Val_int(SDL_BLENDMODE_NONE);
         }
@@ -186,6 +186,129 @@ extern "C" {
                     SDL_GetSurfaceBlendMode(
                         (SDL_Surface*)v_surface,
                         (SDL_BlendMode*)v_blendmode
+                    )
+                );
+        }
+
+        CAMLprim value resdl_SDL_GetTextureBlendMode(value v_texture, value v_blendmode){
+            return Val_int(
+                    SDL_GetTextureBlendMode(
+                        (SDL_Texture*)v_texture,
+                        (SDL_BlendMode*)v_blendmode
+                    )
+                );
+        }
+
+    }
+
+    namespace resdl_SDL_GLattr {
+        CAMLprim value resdl_m_SDL_GL_RED_SIZE() {
+            return Val_int(SDL_GL_RED_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_GREEN_SIZE() {
+            return Val_int(SDL_GL_GREEN_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_BLUE_SIZE() {
+            return Val_int(SDL_GL_BLUE_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_ALPHA_SIZE() {
+            return Val_int(SDL_GL_ALPHA_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_BUFFER_SIZE() {
+            return Val_int(SDL_GL_BUFFER_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_DOUBLEBUFFER() {
+            return Val_int(SDL_GL_DOUBLEBUFFER);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_DEPTH_SIZE() {
+            return Val_int(SDL_GL_DEPTH_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_STENCIL_SIZE() {
+            return Val_int(SDL_GL_STENCIL_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_ACCUM_RED_SIZE() {
+            return Val_int(SDL_GL_ACCUM_RED_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_ACCUM_GREEN_SIZE() {
+            return Val_int(SDL_GL_ACCUM_GREEN_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_ACCUM_BLUE_SIZE() {
+            return Val_int(SDL_GL_ACCUM_BLUE_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_ACCUM_ALPHA_SIZE() {
+            return Val_int(SDL_GL_ACCUM_ALPHA_SIZE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_STEREO() {
+            return Val_int(SDL_GL_STEREO);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_MULTISAMPLEBUFFERS() {
+            return Val_int(SDL_GL_MULTISAMPLEBUFFERS);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_MULTISAMPLESAMPLES() {
+            return Val_int(SDL_GL_MULTISAMPLESAMPLES);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_ACCELERATED_VISUAL() {
+            return Val_int(SDL_GL_ACCELERATED_VISUAL);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_MAJOR_VERSION() {
+            return Val_int(SDL_GL_CONTEXT_MAJOR_VERSION);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_MINOR_VERSION() {
+            return Val_int(SDL_GL_CONTEXT_MINOR_VERSION);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_FLAGS() {
+            return Val_int(SDL_GL_CONTEXT_FLAGS);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_PROFILE_MASK() {
+            return Val_int(SDL_GL_CONTEXT_PROFILE_MASK);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_SHARE_WITH_CURRENT_CONTEXT() {
+            return Val_int(SDL_GL_SHARE_WITH_CURRENT_CONTEXT);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_FRAMEBUFFER_SRGB_CAPABLE() {
+            return Val_int(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE);
+        }
+
+        CAMLprim value resdl_m_SDL_GL_CONTEXT_RELEASE_BEHAVIOR() {
+            return Val_int(SDL_GL_CONTEXT_RELEASE_BEHAVIOR);
+        }
+    }
+
+    namespace resdl_SDL_Render {
+
+        CAMLprim value resdl_SDL_RenderCopy(
+                value v_renderer,
+                value v_texture,
+                value v_srcrect,
+                value v_dstrect
+        ) {
+            return Val_int(
+                    SDL_RenderCopy(
+                        (SDL_Renderer*)v_renderer,
+                        (SDL_Texture*)v_texture,
+                        (SDL_Rect*)v_srcrect,
+                        (SDL_Rect*)v_dstrect
                     )
                 );
         }

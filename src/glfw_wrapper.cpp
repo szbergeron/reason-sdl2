@@ -410,6 +410,20 @@ extern "C" {
         }
     }
 
+    namespace resdl_SDL_MessageBoxFlags {
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_ERROR() {
+            return Val_int(SDL_MESSAGEBOX_ERROR);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_WARNING() {
+            return Val_int(SDL_MESSAGEBOX_WARNING);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_INFORMATION() {
+            return Val_int(SDL_MESSAGEBOX_INFORMATION);
+        }
+    }
+
     namespace resdl_SDL_Render {
 
         CAMLprim value resdl_SDL_RenderCopy(

@@ -372,7 +372,16 @@ extern "C" {
         CAMLprim value resdl_m_SDL_HITTEST_RESIZE_LEFT() {
             return Val_int(SDL_HITTEST_RESIZE_LEFT);
         }
+    }
 
+    namespace resdl_SDL_MessageBoxButtonFlags {
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT() {
+            return Val_int(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT);
+        }
+
+        CAMLprim value resdl_m_SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT() {
+            return Val_int(SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT);
+        }
     }
 
     namespace resdl_SDL_Render {

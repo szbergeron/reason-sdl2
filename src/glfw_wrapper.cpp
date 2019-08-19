@@ -490,6 +490,84 @@ extern "C" {
         }
     }
 
+    namespace resdl_SDL_WindowFlags {
+        CAMLprim value resdl_m_SDL_WINDOW_FULLSCREEN() {
+            return Val_int(SDL_WINDOW_FULLSCREEN);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_FULLSCREEN_DESKTOP() {
+            return Val_int(SDL_WINDOW_FULLSCREEN_DESKTOP);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_OPENGL() {
+            return Val_int(SDL_WINDOW_OPENGL);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_SHOWN() {
+            return Val_int(SDL_WINDOW_SHOWN);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_HIDDEN() {
+            return Val_int(SDL_WINDOW_HIDDEN);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_BORDERLESS() {
+            return Val_int(SDL_WINDOW_BORDERLESS);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_RESIZABLE() {
+            return Val_int(SDL_WINDOW_RESIZABLE);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_MINIMIZED() {
+            return Val_int(SDL_WINDOW_MINIMIZED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_MAXIMIZED() {
+            return Val_int(SDL_WINDOW_MAXIMIZED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_INPUT_GRABBED() {
+            return Val_int(SDL_WINDOW_INPUT_GRABBED);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_INPUT_FOCUS() {
+            return Val_int(SDL_WINDOW_INPUT_FOCUS);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_FOREIGN() {
+            return Val_int(SDL_WINDOW_FOREIGN);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_ALLOW_HIGHDPI() {
+            return Val_int(SDL_WINDOW_ALLOW_HIGHDPI);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_MOUSE_CAPTURE() {
+            return Val_int(SDL_WINDOW_MOUSE_CAPTURE);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_ALWAYS_ON_TOP() {
+            return Val_int(SDL_WINDOW_ALWAYS_ON_TOP);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_SKIP_TASKBAR() {
+            return Val_int(SDL_WINDOW_SKIP_TASKBAR);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_UTILITY() {
+            return Val_int(SDL_WINDOW_UTILITY);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_TOOLTIP() {
+            return Val_int(SDL_WINDOW_TOOLTIP);
+        }
+
+        CAMLprim value resdl_m_SDL_WINDOW_POPUP_MENU() {
+            return Val_int(SDL_WINDOW_POPUP_MENU);
+        }
+    }
+
     namespace resdl_SDL_Render {
 
         CAMLprim value resdl_SDL_RenderCopy(

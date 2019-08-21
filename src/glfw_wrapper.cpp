@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <cstdint>
 
-#include <map>
 #include <array>
+#include <algorithm>
 
 #include <caml/mlvalues.h>
 #include <caml/bigarray.h>
@@ -20,25 +20,13 @@
 
 #include <SDL2/SDL.h>
 
+namespace bind_tools {
+    
+}
+
 extern "C" {
     //////////MACRO EXPOSURE FUNCTIONS//////////
     namespace resdl_SDL_BlendMode {
-        CAMLprim value resdl_m_SDL_BLENDMODE_NONE() {
-            return Val_int(SDL_BLENDMODE_NONE);
-        }
-
-        CAMLprim value resdl_m_SDL_BLENDMODE_BLEND() {
-            return Val_int(SDL_BLENDMODE_BLEND);
-        }
-
-        CAMLprim value resdl_m_SDL_BLENDMODE_ADD() {
-            return Val_int(SDL_BLENDMODE_ADD);
-        }
-
-        CAMLprim value resdl_m_SDL_BLENDMODE_MOD() {
-            return Val_int(SDL_BLENDMODE_MOD);
-        }
-
         std::array<int,4> resdl_vtom = {
             SDL_BLENDMODE_NONE,
             SDL_BLENDMODE_BLEND,
@@ -46,12 +34,22 @@ extern "C" {
             SDL_BLENDMODE_MOD
         };
 
-        std::map<int, int> resdl_mtov; 
+        CAMLprim value resdl_SDL_BlendMode_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
 
-        void init_internal() {
-            for(int i = 0; i < resdl_vtom.size(); i++) {
-                resdl_mtov.insert(std::pair<int, int>(resdl_vtom[i], i));
-            }
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_BlendMode_mtov(value macro_val) {
+            // could use a prefetch instruction here, but likely unecessary
+            // std::find may also get vectorized, but it's so small it shouldn't matter either way
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
         }
 
         CAMLprim value resdl_SDL_GetRenderDrawBlendMode(value v_renderer, value v_blendmode) {
@@ -483,9 +481,6 @@ extern "C" {
         //   Need to account for variadics in OCaml, is it possible? Or is an alternative solution necessary?
     }
 
-    void resdl_internal_init_macros() {
-        resdl_SDL_BlendMode::init_internal();
-    }
     static inline uint32_t priv_bitfield_from_flags(
             value v_audio,
             value v_video,
@@ -563,8 +558,6 @@ extern "C" {
             value v_everything
         )
     {
-        resdl_internal_init_macros();
-
         printf("Hello from SDL, "
                 "revision: %s\n",
                 SDL_GetRevision()

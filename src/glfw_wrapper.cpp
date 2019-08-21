@@ -21,7 +21,7 @@
 #include <SDL2/SDL.h>
 
 namespace bind_tools {
-    
+
 }
 
 extern "C" {
@@ -125,6 +125,378 @@ extern "C" {
                 );
         }
     }
+
+    namespace resdl_m_SDL_GLcontextFlag {
+        std::array<int,4> resdl_vtom = {
+            SDL_GL_CONTEXT_DEBUG_FLAG,
+            SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG,
+            SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG,
+            SDL_GL_CONTEXT_RESET_ISOLATION_FLAG
+        }
+
+        CAMLprim value resdl_SDL_GLcontextFlag_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_GLcontextFlag_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_GLprofile {
+        std::array<int,3> resdl_vtom = {
+            SDL_GL_CONTEXT_PROFILE_CORE,
+            SDL_GL_CONTEXT_PROFILE_COMPATIBILITY,
+            SDL_GL_CONTEXT_PROFILE_ES
+        }
+
+        CAMLprim value resdl_SDL_GLprofile_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_GLprofile_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_HitTestResult {
+        std::array<int,10> resdl_vtom = {
+            SDL_HITTEST_NORMAL,
+            SDL_HITTEST_DRAGGABLE,
+            SDL_HITTEST_RESIZE_TOPLEFT,
+            SDL_HITTEST_RESIZE_TOP,
+            SDL_HITTEST_RESIZE_TOPRIGHT,
+            SDL_HITTEST_RESIZE_RIGHT,
+            SDL_HITTEST_RESIZE_BOTTOMRIGHT,
+            SDL_HITTEST_RESIZE_BOTTOM,
+            SDL_HITTEST_RESIZE_BOTTOMLEFT,
+            SDL_HITTEST_RESIZE_LEFT
+        }
+
+        CAMLprim value resdl_SDL_HitTestResult_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_HitTestResult_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_MessageBoxButtonFlags {
+        std::array<int,2> resdl_vtom = {
+            SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT,
+            SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT
+        }
+
+        CAMLprim value resdl_SDL_MessageBoxButtonFlags_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_MessageBoxButtonFlags_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_MessageBoxColorType {
+        std::array<int,6> resdl_vtom = {
+            SDL_MESSAGEBOX_COLOR_BACKGROUND,
+            SDL_MESSAGEBOX_COLOR_TEXT,
+            SDL_MESSAGEBOX_COLOR_BUTTON_BORDER,
+            SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND,
+            SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED,
+            SDL_MESSAGEBOX_COLOR_MAX
+        }
+
+        CAMLprim value resdl_SDL_MessageBoxColorType_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_MessageBoxColorType_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_MessageBoxFlags {
+        std::array<int,3> resdl_vtom = {
+            SDL_MESSAGEBOX_ERROR,
+            SDL_MESSAGEBOX_WARNING,
+            SDL_MESSAGEBOX_INFORMATION
+        }
+
+        CAMLprim value resdl_SDL_MessageBoxFlags_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_MessageBoxFlags_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_WindowEventID {
+        std::array<int,17> resdl_vtom = {
+            SDL_WINDOWEVENT_NONE,
+            SDL_WINDOWEVENT_SHOWN,
+            SDL_WINDOWEVENT_HIDDEN,
+            SDL_WINDOWEVENT_EXPOSED,
+            SDL_WINDOWEVENT_MOVED,
+            SDL_WINDOWEVENT_RESIZED,
+            SDL_WINDOWEVENT_SIZE_CHANGED,
+            SDL_WINDOWEVENT_MINIMIZED,
+            SDL_WINDOWEVENT_MAXIMIZED,
+            SDL_WINDOWEVENT_RESTORED,
+            SDL_WINDOWEVENT_ENTER,
+            SDL_WINDOWEVENT_LEAVE,
+            SDL_WINDOWEVENT_FOCUS_GAINED,
+            SDL_WINDOWEVENT_FOCUS_LOST,
+            SDL_WINDOWEVENT_CLOSE,
+            SDL_WINDOWEVENT_TAKE_FOCUS,
+            SDL_WINDOWEVENT_HIT_TEST
+        }
+
+        CAMLprim value resdl_SDL_WindowEventID_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_WindowEventID_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_WindowFlags {
+        std::array<int,21> resdl_vtom = {
+            SDL_WINDOW_FULLSCREEN
+            SDL_WINDOW_OPENGL
+            SDL_WINDOW_SHOWN
+            SDL_WINDOW_HIDDEN
+            SDL_WINDOW_BORDERLESS
+            SDL_WINDOW_RESIZABLE
+            SDL_WINDOW_MINIMIZED
+            SDL_WINDOW_MAXIMIZED
+            SDL_WINDOW_INPUT_GRABBED
+            SDL_WINDOW_INPUT_FOCUS
+            SDL_WINDOW_MOUSE_FOCUS
+            SDL_WINDOW_FULLSCREEN_DESKTOP
+            SDL_WINDOW_FOREIGN
+            SDL_WINDOW_ALLOW_HIGHDPI
+            SDL_WINDOW_MOUSE_CAPTURE
+            SDL_WINDOW_ALWAYS_ON_TOP
+            SDL_WINDOW_SKIP_TASKBAR
+            SDL_WINDOW_UTILITY
+            SDL_WINDOW_TOOLTIP
+            SDL_WINDOW_POPUP_MENU
+            SDL_WINDOW_VULKAN
+        }
+
+        CAMLprim value resdl_SDL_WindowFlags_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_WindowFlags_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_BlendFactor {
+        std::array<int,10> resdl_vtom = {
+            SDL_BLENDFACTOR_ZERO,
+            SDL_BLENDFACTOR_ONE,
+            SDL_BLENDFACTOR_SRC_COLOR,
+            SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR,
+            SDL_BLENDFACTOR_SRC_ALPHA,
+            SDL_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+            SDL_BLENDFACTOR_DST_COLOR,
+            SDL_BLENDFACTOR_ONE_MINUS_DST_COLOR,
+            SDL_BLENDFACTOR_DST_ALPHA,
+            SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA
+        }
+
+        CAMLprim value resdl_SDL_BlendFactor_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_BlendFactor_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_BlendOperation {
+        std::array<int,5> resdl_vtom = {
+            SDL_BLENDOPERATION_ADD,
+            SDL_BLENDOPERATION_SUBTRACT,
+            SDL_BLENDOPERATION_REV_SUBTRACT,
+            SDL_BLENDOPERATION_MINIMUM,
+            SDL_BLENDOPERATION_MAXIMUM
+        }
+
+        CAMLprim value resdl_SDL_BlendOperation_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_BlendOperation_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_RendererFlags {
+        std::array<int,4> resdl_vtom = {
+            SDL_RENDERER_SOFTWARE,
+            SDL_RENDERER_ACCELERATED,
+            SDL_RENDERER_PRESENTVSYNC,
+            SDL_RENDERER_TARGETTEXTURE
+        }
+
+        CAMLprim value resdl_SDL_RendererFlags_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_RendererFlags_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_m_SDL_RendererFlip {
+        std::array<int,3> resdl_vtom = {
+            SDL_FLIP_NONE,
+            SDL_FLIP_HORIZONTAL,
+            SDL_FLIP_VERTICAL
+        }
+
+        CAMLprim value resdl_SDL_RendererFlip_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_RendererFlip_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     namespace resdl_SDL_f_BlendMode {
 
@@ -616,7 +988,7 @@ extern "C" {
 
         // Close and destroy the window
         SDL_DestroyWindow(window);
-        
+
         // Clean up
         SDL_Quit();
 
@@ -639,7 +1011,7 @@ extern "C" {
                 SDL_GetRevision()
                 );
 
-        uint32_t flags = priv_bitfield_from_flags( 
+        uint32_t flags = priv_bitfield_from_flags(
             v_audio,
             v_video,
             v_events,

@@ -25,8 +25,33 @@ namespace bind_tools {
 }
 
 extern "C" {
+
+    // macro wrapper template
+    /*
+    namespace resdl_m_MACRONAME {
+        std::array<int,ENUM_SIZE> resdl_vtom = {
+            ENUM_CONTENTS
+        }
+
+        CAMLprim value resdl_MACRONAME_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_MACRONAME_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+    */
     //////////MACRO EXPOSURE FUNCTIONS//////////
-    namespace resdl_SDL_BlendMode {
+    namespace resdl_m_SDL_BlendMode {
         std::array<int,4> resdl_vtom = {
             SDL_BLENDMODE_NONE,
             SDL_BLENDMODE_BLEND,
@@ -51,6 +76,57 @@ extern "C" {
                     )
                 );
         }
+    }
+
+    namespace resdl_m_SDL_GLattr {
+        std::array<int,27> resdl_vtom = {
+            SDL_GL_RED_SIZE,
+            SDL_GL_GREEN_SIZE,
+            SDL_GL_BLUE_SIZE,
+            SDL_GL_ALPHA_SIZE,
+            SDL_GL_BUFFER_SIZE,
+            SDL_GL_DOUBLEBUFFER,
+            SDL_GL_DEPTH_SIZE,
+            SDL_GL_STENCIL_SIZE,
+            SDL_GL_ACCUM_RED_SIZE,
+            SDL_GL_ACCUM_GREEN_SIZE,
+            SDL_GL_ACCUM_BLUE_SIZE,
+            SDL_GL_ACCUM_ALPHA_SIZE,
+            SDL_GL_STEREO,
+            SDL_GL_MULTISAMPLEBUFFERS,
+            SDL_GL_MULTISAMPLESAMPLES,
+            SDL_GL_ACCELERATED_VISUAL,
+            SDL_GL_RETAINED_BACKING,
+            SDL_GL_CONTEXT_MAJOR_VERSION,
+            SDL_GL_CONTEXT_MINOR_VERSION,
+            SDL_GL_CONTEXT_EGL,
+            SDL_GL_CONTEXT_FLAGS,
+            SDL_GL_CONTEXT_PROFILE_MASK,
+            SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
+            SDL_GL_FRAMEBUFFER_SRGB_CAPABLE,
+            SDL_GL_CONTEXT_RELEASE_BEHAVIOR,
+            SDL_GL_CONTEXT_RESET_NOTIFICATION,
+            SDL_GL_CONTEXT_NO_ERROR
+        };
+
+        CAMLprim value resdl_SDL_GLattr_vtom(value variant_val) {
+            int variant_int = Int_val(variant_val);
+
+            return Val_int(resdl_vtom[variant_int]);
+        }
+
+        CAMLprim value resdl_SDL_GLattr_mtov(value macro_val) {
+            int macro_int = Int_val(macro_val);
+
+            return Val_int(
+                    std::distance(resdl_vtom.begin(),
+                        std::find(resdl_vtom.begin(), resdl_vtom.end(), macro_int)
+                    )
+                );
+        }
+    }
+
+    namespace resdl_SDL_f_BlendMode {
 
         CAMLprim value resdl_SDL_GetRenderDrawBlendMode(value v_renderer, value v_blendmode) {
             return Val_int(
@@ -78,8 +154,8 @@ extern "C" {
                     )
                 );
         }
-
     }
+
 
     namespace resdl_SDL_GLattr {
         CAMLprim value resdl_m_SDL_GL_RED_SIZE() {

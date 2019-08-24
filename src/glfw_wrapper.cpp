@@ -707,6 +707,12 @@ namespace bind_tools {
         );
     }
 
+    extern "C" CAMLprim value resdl_SDL_SetMainReady() {
+        SDL_SetMainReady();
+
+        return Val_unit;
+    }
+
     extern "C" CAMLprim value resdl_quit() {
         SDL_Quit();
 

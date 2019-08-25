@@ -1,11 +1,12 @@
-module Setup = Sdl_external_functions.Setup;
-module Status = Sdl_external_functions.Status;
-module Teardown = Sdl_external_functions.Teardown;
-
 module Window = {
     type t;
 }
 
-external createWindow: unit => Window.t = "resdl_SDL_createWindow";
-external init: unit => int = "resdl_SDL_init";
+module Gl = {
+    external setup: Window.t => unit = "resdl_SDL_GL_Setup";
+};
+
+external createWindow: unit => Window.t = "resdl_SDL_CreateWindow";
+external delay: int => unit = "resdl_SDL_Delay";
+external init: unit => int = "resdl_SDL_Init";
 

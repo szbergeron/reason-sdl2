@@ -6,7 +6,7 @@ let run = () => {
   /*let _ = hello_sdl();*/
   let _ = Setup.resdl_init(~audio=true, ~video=true, ());
 
-  let _ = Status.resdl_wasinit(0);
+  //let _ = Status.resdl_wasinit(0);
 
-  let _ = Teardown.resdl_quit(());
+  //let _ = Teardown.resdl_quit(());
 };

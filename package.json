@@ -16,7 +16,7 @@
         "build",
         "--root",
         ".",
-        "./bin_js/test_glfw.bc.js"
+        "./bin_js/test_sdl2.bc.js"
       ]
     ],
     "install": [

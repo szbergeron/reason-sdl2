@@ -27,7 +27,8 @@ extern "C" {
         return Val_unit;
     }
             CAMLprim value resdl_SDL_DestroyWindow(value win) {
-                    printf("needs implementation!");
+                SDL_DestroyWindow(reinterpret_cast<SDL_Window*>(win));
+                return Val_unit;
             }
             
             CAMLprim value resdl_SDL_CreateWindow(

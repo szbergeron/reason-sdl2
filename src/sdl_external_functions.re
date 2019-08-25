@@ -25,7 +25,7 @@ module setup = {
       ret
   }
 
-  external resdl_setMainReady: unit => unit = "resdl_SDL_SetMainReady();
+  external resdl_setMainReady: unit => unit = "resdl_SDL_SetMainReady()";
 }
 
 module teardown = {
@@ -43,7 +43,7 @@ module windowing = {
                     ~y_window_position: int,
                     ~window_width: int,
                     ~window_height: int,
-                    ~SDL_WindowFlags: int
+                    ~windowFlags: int
                     ) : SDL_Window
 }
 

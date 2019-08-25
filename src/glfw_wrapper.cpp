@@ -20,9 +20,58 @@
 
 #include <SDL2/SDL.h>
 
-namespace bind_tools {
+extern "C" {
+    CAMLprim value resdl_SDL_SetMainReady() {
+        SDL_SetMainReady();
 
-}
+        return Val_unit;
+    }
+            CAMLprim value resdl_SDL_DestroyWindow(value win) {
+                    printf("needs implementation!");
+            }
+            
+            CAMLprim value resdl_SDL_CreateWindow(
+                value title_v,
+                value x_position_v,
+                value y_position_v,
+                value width_v,
+                value height_v,
+                value flags_v
+            ) {
+              // need to design in a way of panicking on bad strings
+              if( !caml_string_is_c_safe(title_v) ) {
+                // panic somehow? Or just switch to returning an Option
+                // also consider returning Option as this call could fail at runtime and just return null
+              }
+              char * title_c = strdup(String_val(title_v));
+
+              // TODO: properly handle flags rather than hardcoding the sane defaults
+              flags_v = Val_int(
+                  SDL_WINDOW_OPENGL |
+                  SDL_WINDOW_RESIZABLE |
+                  SDL_WINDOW_ALLOW_HIGHDPI
+                  );
+
+              return (value)(SDL_CreateWindow(
+                  title_c,
+                  Int_val(x_position_v),
+                  Int_val(y_position_v),
+                  Int_val(width_v),
+                  Int_val(height_v),
+                  Int_val(flags_v)
+                  ));
+            }
+            CAMLprim value resdl_SDL_CreateWindow_bytecode(value* argv, int argc) {
+                return resdl_SDL_CreateWindow(
+                    argv[0],
+                    argv[1],
+                    argv[2],
+                    argv[3],
+                    argv[4],
+                    argv[5]
+                    );
+            }
+          }
 
 //extern "C" "C" {
 
@@ -748,12 +797,6 @@ namespace bind_tools {
             argv[6],
             argv[7]
         );
-    }
-
-    extern "C" CAMLprim value resdl_SDL_SetMainReady() {
-        SDL_SetMainReady();
-
-        return Val_unit;
     }
 
     extern "C" CAMLprim value resdl_quit() {

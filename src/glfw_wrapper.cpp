@@ -52,6 +52,49 @@ namespace bind_tools {
     */
     //////////MACRO EXPOSURE FUNCTIONS//////////
     namespace resdl_display_and_window_management {
+        namespace resdl_f_display_and_window_management {
+            CAMLprim value resdl_SDL_CreateWindow(
+                value title_v,
+                value x_position_v,
+                value y_position_v,
+                value width_v,
+                value height_v,
+                value flags_v
+            ) {
+              // need to design in a way of panicking on bad strings
+              if( !caml_string_is_c_safe(title_v) ) {
+                // panic somehow? Or just switch to returning an Option
+                // also consider returning Option as this call could fail at runtime and just return null
+              }
+              char * title_c = strdup(String_val(title_v));
+
+              // TODO: properly handle flags rather than hardcoding the sane defaults
+              flags_v = Val_int(
+                  SDL_WINDOW_OPENGL |
+                  SDL_WINDOW_RESIZABLE |
+                  SDL_WINDOW_ALLOW_HIGHDPI
+                  );
+
+              return reinterpret_cast<value>(SDL_CreateWindow(
+                  title_c,
+                  Int_val(x_position_v),
+                  Int_val(y_position_v),
+                  Int_val(width_v),
+                  Int_val(height_v),
+                  Int_val(flags_v)
+                  ));
+            }
+            CAMLprim value resdl_SDL_CreateWindow_bytecode(value* argv, int argc) {
+                return resdl_SDL_CreateWindow(
+                    argv[0],
+                    argv[1],
+                    argv[2],
+                    argv[3],
+                    argv[4],
+                    argv[5]
+                    );
+            }
+        }
         namespace resdl_m_SDL_BlendMode {
             std::array<int,4> resdl_vtom = {
                 SDL_BLENDMODE_NONE,

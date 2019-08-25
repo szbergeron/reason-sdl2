@@ -1,6 +1,10 @@
 open Reglm;
 
-/* GL */
+type enableOptions =
+  | GL_DEPTH_TEST
+  | GL_BLEND
+  | GL_SCISSOR_TEST;
+
 let glClearColor: (float, float, float, float) => unit;
 let glClearDepth: float => unit;
 let glViewport: (int, int, int, int) => unit;

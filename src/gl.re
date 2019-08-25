@@ -1,6 +1,10 @@
 open Reglm;
 
-/* GL */
+type enableOptions =
+  | GL_DEPTH_TEST
+  | GL_BLEND
+  | GL_SCISSOR_TEST;
+
 type shader;
 type shaderType =
   | GL_VERTEX_SHADER

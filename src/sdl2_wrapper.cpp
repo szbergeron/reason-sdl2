@@ -55,16 +55,9 @@ extern "C" {
          gladLoadGLES2Loader((GLADloadproc) SDL_GL_GetProcAddress);
     }
 
-    CAMLprim value resdl_test_gl_red(value w) {
+    CAMLprim value resdl_SDL_GL_SwapWindow(value w) {
         SDL_Window *win = (SDL_Window *)w;
-        printf("win? %d\n", win);
-        glClearColor ( 1.0, 0.0, 0.0, 1.0 );
-        printf("2");
-        glClear ( GL_COLOR_BUFFER_BIT );
-        printf("3");
-        /* Swap our back buffer to the front */
         SDL_GL_SwapWindow(win);
-        printf("4");
     }
 
     CAMLprim value resdl_test_gl_blue(value w) {

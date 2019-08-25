@@ -8,10 +8,6 @@
 
 #include <glad/glad.h>
 
-#define GLFW_INCLUDE_NONE
-
-#include <GLFW/glfw3.h>
-
 #include <reglfw_image.h>
 
 // From: https://stackoverflow.com/questions/23177229/how-to-cast-int-to-const-glvoid

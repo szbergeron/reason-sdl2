@@ -196,8 +196,6 @@ external glDrawArrays: (drawMode, int, int) => unit = "caml_glDrawArrays";
 external glDrawElements: (drawMode, int, glType, int) => unit =
   "caml_glDrawElements";
 
-external printFrameBufferSize: Window.t => unit = "caml_printFrameBufferSize";
-
 external glReadPixels:
   (
     int,

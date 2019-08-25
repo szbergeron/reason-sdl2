@@ -1,6 +1,3 @@
-external test_red : Sdl2.Window.t => unit = "resdl_test_gl_red";
-external test_green : Sdl2.Window.t => unit = "resdl_test_gl_green";
-external test_blue : Sdl2.Window.t => unit = "resdl_test_gl_blue";
 let run = () => {
 
   //let _ = Sdl2.init()
@@ -9,13 +6,17 @@ let run = () => {
 
   print_endline ("red")
 
-  test_red(w);
+  Sdl2.Gl.glClearColor(1.0, 0.0, 0.0, 1.0);
+  Sdl2.Gl.swapWindow(w);
 
   Sdl2.delay(2000);
-  test_green(w);
+  Sdl2.Gl.glClearColor(0.0, 1.0, 0.0, 1.0);
+  Sdl2.Gl.swapWindow(w);
 
   Sdl2.delay(2000);
-  test_blue(w);
+  
+  Sdl2.Gl.glClearColor(0.0, 0.0, 1.0, 1.0);
+  Sdl2.Gl.swapWindow(w);
   
   Sdl2.delay(2000);
 

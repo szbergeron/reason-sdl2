@@ -6,12 +6,14 @@
   "esy": {
     "build": [
       [
+        "refmterr",
         "dune",
         "build",
         "--root",
         "."
       ],
       [
+        "refmterr",
         "dune",
         "build",
         "--root",

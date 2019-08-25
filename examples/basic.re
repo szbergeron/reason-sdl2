@@ -1,3 +1,5 @@
+external pollEvent: unit => unit = "resdl_test_poll";
+
 let run = () => {
 
   //let _ = Sdl2.init()
@@ -6,17 +8,20 @@ let run = () => {
 
   print_endline ("red")
 
-  Sdl2.Gl.glClearColor(1.0, 0.0, 0.0, 1.0);
+ /* Sdl2.Gl.glClearColor(1.0, 0.0, 0.0, 1.0);
   Sdl2.Gl.swapWindow(w);
 
   Sdl2.delay(2000);
   Sdl2.Gl.glClearColor(0.0, 1.0, 0.0, 1.0);
   Sdl2.Gl.swapWindow(w);
 
-  Sdl2.delay(2000);
+  Sdl2.delay(2000);*/
   
   Sdl2.Gl.glClearColor(0.0, 0.0, 1.0, 1.0);
   Sdl2.Gl.swapWindow(w);
+
+  pollEvent();
+  
   
   Sdl2.delay(2000);
 

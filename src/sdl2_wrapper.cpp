@@ -535,4 +535,79 @@ CAMLprim value resdl_SDL_Init() {
 
   CAMLreturn(Val_int(ret));
 }
+
+CAMLprim value resdl_SDL_GetScancodeName(value vScancode) {
+  CAMLparam1(vScancode); 
+  CAMLlocal1(ret);
+
+  SDL_Scancode scancode = (SDL_Scancode)Int_val(vScancode);
+  ret = caml_copy_string(SDL_GetScancodeName(scancode));
+  CAMLreturn(ret);
 }
+
+CAMLprim value resdl_SDL_GetKeyName(value vKey) {
+  CAMLparam1(vKey); 
+  CAMLlocal1(ret);
+
+  SDL_Keycode key = (SDL_Keycode)Int_val(vKey);
+  ret = caml_copy_string(SDL_GetKeyName(key));
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_GetKeyFromScancode(value vScancode) {
+  SDL_Scancode scancode = (SDL_Scancode)Int_val(vScancode);
+  return Val_int(SDL_GetKeyFromScancode(scancode));
+}
+
+CAMLprim value resdl_SDL_GetScancodeFromKey(value vKey) {
+  SDL_Keycode key = (SDL_Keycode)Int_val(vKey);
+  return Val_int(SDL_GetScancodeFromKey(key));
+}
+
+CAMLprim value resdl_SDL_ModLeftShift(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_LSHIFT == KMOD_LSHIFT);
+};
+
+CAMLprim value resdl_SDL_ModRightShift(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_RSHIFT == KMOD_RSHIFT);
+};
+
+CAMLprim value resdl_SDL_ModLeftControl(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_LCTRL == KMOD_LCTRL);
+};
+
+CAMLprim value resdl_SDL_ModRightControl(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_RCTRL == KMOD_RCTRL);
+};
+
+CAMLprim value resdl_SDL_ModLeftAlt(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_LALT == KMOD_LALT);
+};
+
+CAMLprim value resdl_SDL_ModRightAlt(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_RALT == KMOD_RALT);
+};
+
+CAMLprim value resdl_SDL_ModLeftGui(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_LGUI == KMOD_LGUI);
+};
+
+CAMLprim value resdl_SDL_ModRightGui(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_RGUI == KMOD_RGUI);
+};
+
+CAMLprim value resdl_SDL_ModNumLockDown(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_NUM == KMOD_NUM);
+};
+
+CAMLprim value resdl_SDL_ModCapsLockDown(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_CAPS == KMOD_CAPS);
+};
+
+CAMLprim value resdl_SDL_ModAltGrDown(value vMod) {
+  return Val_bool(Val_int(vMod) & KMOD_MODE == KMOD_MODE);
+};
+
+}
+
+

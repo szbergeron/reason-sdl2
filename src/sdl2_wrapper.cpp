@@ -1,15 +1,15 @@
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 
-#include <array>
 #include <algorithm>
+#include <array>
 
-#include <caml/mlvalues.h>
-#include <caml/bigarray.h>
-#include <caml/memory.h>
 #include <caml/alloc.h>
+#include <caml/bigarray.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
+#include <caml/memory.h>
+#include <caml/mlvalues.h>
 #include <caml/threads.h>
 
 #include <glad/glad.h>
@@ -19,519 +19,520 @@
 #include <SDL2/SDL.h>
 
 #define Val_none Val_int(0)
-static value
-Val_some( value v )
-{   
-    CAMLparam1( v );
-    CAMLlocal1( some );
-    some = caml_alloc(1, 0);
-    Store_field( some, 0, v );
-    CAMLreturn( some );
+static value Val_some(value v) {
+  CAMLparam1(v);
+  CAMLlocal1(some);
+  some = caml_alloc(1, 0);
+  Store_field(some, 0, v);
+  CAMLreturn(some);
 }
 
-static value
-Val_ok( value v )
-{   
-    CAMLparam1( v );
-    CAMLlocal1( some );
-    some = caml_alloc(1, 0);
-    Store_field( some, 0, v );
-    CAMLreturn( some );
+static value Val_ok(value v) {
+  CAMLparam1(v);
+  CAMLlocal1(some);
+  some = caml_alloc(1, 0);
+  Store_field(some, 0, v);
+  CAMLreturn(some);
 }
 
-static value
-Val_error( value v )
-{   
-    CAMLparam1( v );
-    CAMLlocal1( some );
-    some = caml_alloc(1, 1);
-    Store_field( some, 0, v );
-    CAMLreturn( some );
+static value Val_error(value v) {
+  CAMLparam1(v);
+  CAMLlocal1(some);
+  some = caml_alloc(1, 1);
+  Store_field(some, 0, v);
+  CAMLreturn(some);
 }
 
 extern "C" {
-    CAMLprim value resdl_SDL_SetMainReady() {
-        SDL_SetMainReady();
+CAMLprim value resdl_SDL_SetMainReady() {
+  SDL_SetMainReady();
 
-        return Val_unit;
-    }
-    CAMLprim value resdl_SDL_DestroyWindow(value win) {
-            printf("needs implementation!");
-    }
+  return Val_unit;
+}
+CAMLprim value resdl_SDL_DestroyWindow(value win) {
+  printf("needs implementation!");
+}
 
-    CAMLprim value resdl_SDL_Delay(value delay) {
-        CAMLparam1(delay);
+CAMLprim value resdl_SDL_Delay(value delay) {
+  CAMLparam1(delay);
 
-        int d = Int_val(delay);
-        SDL_Delay(d);
-        CAMLreturn(Val_unit);
-    }
+  int d = Int_val(delay);
+  SDL_Delay(d);
+  CAMLreturn(Val_unit);
+}
 
-    CAMLprim value resdl_SDL_GL_Setup(value w) {
-        SDL_Window *win = (SDL_Window *)w;
-        SDL_GL_CreateContext(win);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+CAMLprim value resdl_SDL_GL_Setup(value w) {
+  SDL_Window *win = (SDL_Window *)w;
+  SDL_GL_CreateContext(win);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-        SDL_GL_SetSwapInterval(0);
+  SDL_GL_SetSwapInterval(0);
 
-        /* Turn on double buffering with a 24bit Z buffer.
-         * You may need to change this to 16 or 32 for your system */
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+  /* Turn on double buffering with a 24bit Z buffer.
+   * You may need to change this to 16 or 32 for your system */
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  // SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-        SDL_CreateRenderer(
-                win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+  SDL_CreateRenderer(win, -1,
+                     SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 
-         gladLoadGLES2Loader((GLADloadproc) SDL_GL_GetProcAddress);
-    }
+  gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress);
+}
 
-    CAMLprim value Val_SDL_Event(SDL_Event* event) {
-        CAMLparam0();
-        CAMLlocal3(ret, v, vInner);
+CAMLprim value Val_SDL_Event(SDL_Event *event) {
+  CAMLparam0();
+  CAMLlocal3(ret, v, vInner);
 
-        int tag, mouseButton;
+  int tag, mouseButton;
 
-        if (event == NULL) {
-            v = Val_none;
-            ret = Val_none;
-        } else {
-            switch (event->type) {
-            case SDL_QUIT:
-               v = Val_int(0);
-               ret = Val_some(v);
-               break;
-            case SDL_MOUSEMOTION:
-                //SDL_MouseMotionEvent *ev = (SDL_MouseMotionEvent *)event;
-                
-                vInner = caml_alloc(3, 0);
-                Store_field(vInner, 0, Val_int(event->motion.windowID));
-                Store_field(vInner, 1, Val_int(event->motion.x));
-                Store_field(vInner, 2, Val_int(event->motion.y));
-                
-                v = caml_alloc(1, 0);
-                Store_field(v, 0, vInner);
-                ret = Val_some(v);
-                break;
-            case SDL_MOUSEWHEEL:
-                v = caml_alloc(1, 1);
-                
-                vInner = caml_alloc(4, 0);
-                Store_field(vInner, 0, Val_int(event->wheel.windowID));
-                Store_field(vInner, 1, Val_int(event->wheel.x));
-                Store_field(vInner, 2, Val_int(event->wheel.y));
-                Store_field(vInner, 3, Val_bool(event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED));
-                
-                Store_field(v, 0, vInner);
-                ret = Val_some(v);
-                break;
-            case SDL_MOUSEBUTTONUP:
-            case SDL_MOUSEBUTTONDOWN:
-                if (event->type == SDL_MOUSEBUTTONDOWN)
-                v = caml_alloc(1, 2);
-                else
-                v = caml_alloc(1, 3);
+  if (event == NULL) {
+    v = Val_none;
+    ret = Val_none;
+  } else {
+    switch (event->type) {
+    case SDL_QUIT:
+      v = Val_int(0);
+      ret = Val_some(v);
+      break;
+    case SDL_MOUSEMOTION:
+      // SDL_MouseMotionEvent *ev = (SDL_MouseMotionEvent *)event;
 
-                mouseButton = 0;
-                switch (event->button.button) {
-                    case SDL_BUTTON_LEFT:
-                        mouseButton = 0;
-                        break;
-                    case SDL_BUTTON_MIDDLE:
-                        mouseButton = 1;
-                        break;
-                    case SDL_BUTTON_RIGHT:
-                        mouseButton = 2;
-                        break;
-                    case SDL_BUTTON_X1:
-                        mouseButton = 3;
-                        break;
-                    case SDL_BUTTON_X2:
-                        mouseButton = 4;
-                        break;
-                    default:
-                        mouseButton = 0;
-                        break;
-                }
-                
-                vInner = caml_alloc(5, 0);
-                Store_field(vInner, 0, Val_int(event->button.windowID));
-                Store_field(vInner, 1, Val_int(mouseButton));
-                Store_field(vInner, 2, Val_int(event->button.clicks));
-                Store_field(vInner, 3, Val_int(event->button.x));
-                Store_field(vInner, 4, Val_int(event->button.y));
-                
-                Store_field(v, 0, vInner);
-                ret = Val_some(v);
-                break;
-            default:
-               ret = Val_none;
-            }
-        }
+      vInner = caml_alloc(3, 0);
+      Store_field(vInner, 0, Val_int(event->motion.windowID));
+      Store_field(vInner, 1, Val_int(event->motion.x));
+      Store_field(vInner, 2, Val_int(event->motion.y));
 
-        CAMLreturn(ret);
-    };
+      v = caml_alloc(1, 0);
+      Store_field(v, 0, vInner);
+      ret = Val_some(v);
+      break;
+    case SDL_MOUSEWHEEL:
+      v = caml_alloc(1, 1);
 
-    CAMLprim value resdl_SDL_pollEvent() {
-        CAMLparam0();
-        CAMLlocal1(ret);
-        SDL_Event e;
+      vInner = caml_alloc(4, 0);
+      Store_field(vInner, 0, Val_int(event->wheel.windowID));
+      Store_field(vInner, 1, Val_int(event->wheel.x));
+      Store_field(vInner, 2, Val_int(event->wheel.y));
+      Store_field(vInner, 3,
+                  Val_bool(event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED));
 
-        caml_release_runtime_system();
-        SDL_PollEvent(&e); 
-        caml_acquire_runtime_system();
-        ret = Val_SDL_Event(&e); 
-        CAMLreturn(ret);
-    }
-    
-    CAMLprim value resdl_SDL_GetWindowSize(value vWindow) {
-        CAMLparam1(vWindow);
-        CAMLlocal1(ret);
-        SDL_Window *win = (SDL_Window *)vWindow;
-        int width, height = 0;
-        SDL_GetWindowSize(win, &width, &height);
-        ret = caml_alloc(2, 0);
-        Store_field(ret, 0, Val_int(width));
-        Store_field(ret, 1, Val_int(height));
-        printf("SDL_GetWindowSize - width: %d height: %d\n", width, height);
-        CAMLreturn(ret);
-    }
-    
-    CAMLprim value resdl_SDL_GL_GetDrawableSize(value vWindow) {
-        CAMLparam1(vWindow);
-        CAMLlocal1(ret);
-        SDL_Window *win = (SDL_Window *)vWindow;
-        int width, height = 0;
-        SDL_GL_GetDrawableSize(win, &width, &height);
-        ret = caml_alloc(2, 0);
-        Store_field(ret, 0, Val_int(width));
-        Store_field(ret, 1, Val_int(height));
-        printf("SDL_GL_GetDrawableSize - width: %d height: %d\n", width, height);
-        CAMLreturn(ret);
-    }
-    
-    CAMLprim value resdl_SDL_SetWindowIcon(value vWindow, value vIcon) {
-        CAMLparam2(vWindow, vIcon);    
+      Store_field(v, 0, vInner);
+      ret = Val_some(v);
+      break;
+    case SDL_MOUSEBUTTONUP:
+    case SDL_MOUSEBUTTONDOWN:
+      if (event->type == SDL_MOUSEBUTTONDOWN)
+        v = caml_alloc(1, 2);
+      else
+        v = caml_alloc(1, 3);
 
-        SDL_Window *win = (SDL_Window *)vWindow;
-        SDL_Surface *surface = (SDL_Surface *)vIcon;
-        SDL_SetWindowIcon(win, surface);
+      mouseButton = 0;
+      switch (event->button.button) {
+      case SDL_BUTTON_LEFT:
+        mouseButton = 0;
+        break;
+      case SDL_BUTTON_MIDDLE:
+        mouseButton = 1;
+        break;
+      case SDL_BUTTON_RIGHT:
+        mouseButton = 2;
+        break;
+      case SDL_BUTTON_X1:
+        mouseButton = 3;
+        break;
+      case SDL_BUTTON_X2:
+        mouseButton = 4;
+        break;
+      default:
+        mouseButton = 0;
+        break;
+      }
 
-        CAMLreturn(Val_unit);
-    };
+      vInner = caml_alloc(5, 0);
+      Store_field(vInner, 0, Val_int(event->button.windowID));
+      Store_field(vInner, 1, Val_int(mouseButton));
+      Store_field(vInner, 2, Val_int(event->button.clicks));
+      Store_field(vInner, 3, Val_int(event->button.x));
+      Store_field(vInner, 4, Val_int(event->button.y));
 
-    CAMLprim value resdl_SDL_CreateSystemCursor(value vCursor) {
-        CAMLparam1(vCursor);
-
-        SDL_Cursor* cursor = NULL;
-
-        SDL_SystemCursor id = SDL_SYSTEM_CURSOR_ARROW;
-        switch(Int_val(vCursor)) {
-            case 1:
-                id = SDL_SYSTEM_CURSOR_IBEAM;
-                break;
-            case 2:
-                id = SDL_SYSTEM_CURSOR_WAIT;
-                break;
-            case 3:
-                id = SDL_SYSTEM_CURSOR_CROSSHAIR;
-                break;
-            case 4:
-                id = SDL_SYSTEM_CURSOR_WAITARROW;
-                break;
-            case 5:
-                id = SDL_SYSTEM_CURSOR_SIZENWSE;
-                break;
-            case 6:
-                id = SDL_SYSTEM_CURSOR_SIZENESW;
-                break;
-            case 7:
-                id = SDL_SYSTEM_CURSOR_SIZEWE;
-                break;
-            case 8:
-                id = SDL_SYSTEM_CURSOR_SIZENS;
-                break;
-            case 9:
-                id = SDL_SYSTEM_CURSOR_SIZEALL;
-                break;
-            case 10:
-                id = SDL_SYSTEM_CURSOR_NO;
-                break;
-            case 11:
-                id = SDL_SYSTEM_CURSOR_HAND;
-                break;
-            default:
-                id = SDL_SYSTEM_CURSOR_ARROW;
-                break;
-        }
-
-        cursor = SDL_CreateSystemCursor(id);
-        CAMLreturn((value)cursor);
-    }
-
-    CAMLprim value resdl_SDL_SetCursor(value vCursor) {
-        CAMLparam1(vCursor);
-        SDL_Cursor* cursor = (SDL_Cursor *)vCursor;
-        SDL_SetCursor(cursor);
-        CAMLreturn(Val_unit);
-    }
-
-    CAMLprim value resdl_SDL_CreateRGBSurfaceFromImage(value vPath) {
-        CAMLparam1(vPath);
-        CAMLlocal1(ret);
-        // FROM: 
-        // https://wiki.libsdl.org/SDL_CreateRGBSurfaceFrom
-
-        int req_format = STBI_rgb_alpha;
-        int width, height, orig_format;
-        unsigned char* data = stbi_load(String_val(vPath), &width, &height, &orig_format, req_format);
-        if(data == NULL) {
-        
-          ret = Val_error(caml_copy_string(stbi_failure_reason()));
-        } else {
-
-        // Set up the pixel format color masks for RGB(A) byte arrays.
-        // Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
-        Uint32 rmask, gmask, bmask, amask;
-        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-          int shift = (req_format == STBI_rgb) ? 8 : 0;
-          rmask = 0xff000000 >> shift;
-          gmask = 0x00ff0000 >> shift;
-          bmask = 0x0000ff00 >> shift;
-          amask = 0x000000ff >> shift;
-        #else // little endian, like x86
-          rmask = 0x000000ff;
-          gmask = 0x0000ff00;
-          bmask = 0x00ff0000;
-          amask = (req_format == STBI_rgb) ? 0 : 0xff000000;
-        #endif
-
-        int depth, pitch;
-        if (req_format == STBI_rgb) {
-          depth = 24;
-          pitch = 3*width; // 3 bytes per pixel * pixels per row
-        } else { // STBI_rgb_alpha (RGBA)
-          depth = 32;
-          pitch = 4*width;
-        }
-
-        SDL_Surface* surf = SDL_CreateRGBSurfaceFrom((void*)data, width, height, depth, pitch,
-                                                     rmask, gmask, bmask, amask);
-        if (surf == NULL) {
-            ret = Val_error(caml_copy_string(SDL_GetError()));
-            stbi_image_free(data);
-        } else {
-            ret = Val_ok((value)surf);
-        }
-        }
-
-        CAMLreturn(ret);
-    };
-
-    CAMLprim value resdl_test_poll() {
-
-    char *text;
-    char *composition;
-    Sint32 cursor;
-    Sint32 selection_len;
-int hasStarted = 0;
-
-        while (1) {
-            SDL_Event event;
-            while (SDL_PollEvent(&event)) {
-                switch (event.type) {
-                case SDL_QUIT:
-                    /* Quit */
-                    SDL_Quit();
-                    printf("QUIT!");
-                    break;
-                case SDL_TEXTINPUT:
-                    /* Add new text onto the end of our text */
-                    printf("text input: %s\n", event.text.text);
-    if (hasStarted == 0) {
-    SDL_Rect rect1; 
-    rect1.x = 50; 
-    rect1.y = 50; 
-    rect1.w = 200; 
-    rect1.h = 32; 
-        /*SDL_StartTextInput();
-        SDL_SetTextInputRect(&rect1);*/
-        hasStarted = 1;
-        }
-                    break;
-                case SDL_TEXTEDITING:
-                    /*
-                    Update the composition text.
-                    Update the cursor position.
-                    Update the selection length (if any).
-                    */
-                    
-                    composition = event.edit.text;
-                    cursor = event.edit.start;
-                    selection_len = event.edit.length;
-                    printf("composition! %s|%d|%d", composition, cursor, selection_len);
-                    break;
-                }
-                printf("got an event!\n");
-            }
-        }
-    }
-
-    CAMLprim value resdl_SDL_GL_SwapWindow(value w) {
-        SDL_Window *win = (SDL_Window *)w;
-        SDL_GL_SwapWindow(win);
-    }
-    SDL_HitTestResult hittest(SDL_Window* win, const SDL_Point* area, void *data) {
-        return SDL_HITTEST_DRAGGABLE;
-    }
-
-    CAMLprim value resdl_SDL_SetWindowPosition(value vWin, value vX, value vY) {
-        CAMLparam3(vWin, vX, vY);
-
-        SDL_Window *win = (SDL_Window *)vWin;
-        int x = Int_val(vX);
-        int y = Int_val(vY);
-        SDL_SetWindowPosition(win, x, y);
-
-        CAMLreturn(Val_unit);
-    }
-    
-    CAMLprim value resdl_SDL_CreateWindow(value vWidth, value vHeight, value vName) {
-        CAMLparam3(vWidth, vHeight, vName);
-
-        int width = Int_val(vWidth);
-        int height = Int_val(vHeight);
-
-        SDL_Window *win = (SDL_CreateWindow(String_val(vName), 
-        SDL_WINDOWPOS_CENTERED, 
-        SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE));
-
-        //SDL_SetWindowHitTest(win, hittest, NULL);
-
-        value vWindow = (value)win; 
-
-        CAMLreturn(vWindow);
-    }
-    
-    CAMLprim value resdl_SDL_HideWindow(value vWin) {
-        CAMLparam1(vWin);
-
-        SDL_Window* win = (SDL_Window*)vWin;
-        SDL_HideWindow(win);
-
-        CAMLreturn(Val_unit);
-    }
-    
-    CAMLprim value resdl_SDL_MaximizeWindow(value vWin) {
-        CAMLparam1(vWin);
-
-        SDL_Window* win = (SDL_Window*)vWin;
-        SDL_MaximizeWindow(win);
-
-        CAMLreturn(Val_unit);
-    }
-    
-    CAMLprim value resdl_SDL_MinimizeWindow(value vWin) {
-        CAMLparam1(vWin);
-
-        SDL_Window* win = (SDL_Window*)vWin;
-        SDL_MinimizeWindow(win);
-
-        CAMLreturn(Val_unit);
-    }
-    
-    CAMLprim value resdl_SDL_RaiseWindow(value vWin) {
-        CAMLparam1(vWin);
-
-        SDL_Window* win = (SDL_Window*)vWin;
-        SDL_RaiseWindow(win);
-
-        CAMLreturn(Val_unit);
-    }
-    
-    CAMLprim value resdl_SDL_RestoreWindow(value vWin) {
-        CAMLparam1(vWin);
-
-        SDL_Window* win = (SDL_Window*)vWin;
-        SDL_RestoreWindow(win);
-
-        CAMLreturn(Val_unit);
-    }
-    
-    CAMLprim value resdl_SDL_ShowWindow(value vWin) {
-        CAMLparam1(vWin);
-
-        SDL_Window* win = (SDL_Window*)vWin;
-        SDL_ShowWindow(win);
-
-        CAMLreturn(Val_unit);
-    }
-
-    CAMLprim value resdl_SDL_GetWindowId(value vWindow) {
-        CAMLparam1(vWindow);
-        SDL_Window *win = (SDL_Window *)vWindow;
-        int id = SDL_GetWindowID(win);
-        CAMLreturn(Val_int(id));
-    }
-        
-        typedef enum PROCESS_DPI_AWARENESS {
-            PROCESS_DPI_UNAWARE = 0,
-            PROCESS_SYSTEM_DPI_AWARE = 1,
-            PROCESS_PER_MONITOR_DPI_AWARE = 2
-        } PROCESS_DPI_AWARENESS;
-
-    CAMLprim value resdl_SDL_Init() {
-        CAMLparam0();
-        int ret = SDL_Init(SDL_INIT_VIDEO);
-
-        /*printf("SDL_INIT");
-        
-        void* userDLL;
-        BOOL(WINAPI *SetProcessDPIAware)(void); // Vista and later
-        void* shcoreDLL;
-        HRESULT(WINAPI *SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS dpiAwareness); // Windows 8.1 and later
-        INT(WINAPI *GetScaleFactorForDevice)(int deviceType);
-        HRESULT(WINAPI *GetScaleFactorForMonitor)(HMONITOR hmon, int *pScale);
-
-        userDLL = SDL_LoadObject("USER32.DLL");
-        if (userDLL) {
-            printf("Found user DLL!\n");
-            SetProcessDPIAware = (BOOL(WINAPI *)(void)) SDL_LoadFunction(userDLL, "SetProcessDPIAware");
-        }
-
-        shcoreDLL = SDL_LoadObject("SHCORE.DLL");
-        if (shcoreDLL) {
-            printf("Found SHCOREd.ll!\n");
-            SetProcessDpiAwareness = (HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS)) SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
-            
-            GetScaleFactorForDevice = (INT(WINAPI *)(INT)) SDL_LoadFunction(shcoreDLL, "GetScaleFactorForDevice");
-            GetScaleFactorForMonitor = (HRESULT(WINAPI *)(HMONITOR, int*)) SDL_LoadFunction(shcoreDLL, "GetScaleFactorForMonitor");
-        }
-
-        if (GetScaleFactorForDevice) {
-            printf("Found getScaleFactorForDevice!\n");
-
-            int result = GetScaleFactorForDevice(0);
-            printf("--RESULT: %d\n", result);
-        }
-
-        if (GetScaleFactorForMonitor) {
-            printf("Found getScaleFactorForMonitor!!!\n");
-        }
-
-        if (SetProcessDpiAwareness) {
-            // Try Windows 8.1+ version
-            HRESULT result = SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
-            SDL_Log("called SetProcessDpiAwareness: %d", (result == S_OK) ? 1 : 0);
-        }
-        else if (SetProcessDPIAware) {
-            // Try Vista - Windows 8 version.
-            // This has a constant scale factor for all monitors.
-            BOOL success = SetProcessDPIAware();
-            SDL_Log("called SetProcessDPIAware: %d", (int)success);
-        }*/
-        
-        CAMLreturn(Val_int(ret));
+      Store_field(v, 0, vInner);
+      ret = Val_some(v);
+      break;
+    default:
+      ret = Val_none;
     }
   }
 
+  CAMLreturn(ret);
+};
+
+CAMLprim value resdl_SDL_pollEvent() {
+  CAMLparam0();
+  CAMLlocal1(ret);
+  SDL_Event e;
+
+  caml_release_runtime_system();
+  SDL_PollEvent(&e);
+  caml_acquire_runtime_system();
+  ret = Val_SDL_Event(&e);
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_GetWindowSize(value vWindow) {
+  CAMLparam1(vWindow);
+  CAMLlocal1(ret);
+  SDL_Window *win = (SDL_Window *)vWindow;
+  int width, height = 0;
+  SDL_GetWindowSize(win, &width, &height);
+  ret = caml_alloc(2, 0);
+  Store_field(ret, 0, Val_int(width));
+  Store_field(ret, 1, Val_int(height));
+  printf("SDL_GetWindowSize - width: %d height: %d\n", width, height);
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_GL_GetDrawableSize(value vWindow) {
+  CAMLparam1(vWindow);
+  CAMLlocal1(ret);
+  SDL_Window *win = (SDL_Window *)vWindow;
+  int width, height = 0;
+  SDL_GL_GetDrawableSize(win, &width, &height);
+  ret = caml_alloc(2, 0);
+  Store_field(ret, 0, Val_int(width));
+  Store_field(ret, 1, Val_int(height));
+  printf("SDL_GL_GetDrawableSize - width: %d height: %d\n", width, height);
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_SetWindowIcon(value vWindow, value vIcon) {
+  CAMLparam2(vWindow, vIcon);
+
+  SDL_Window *win = (SDL_Window *)vWindow;
+  SDL_Surface *surface = (SDL_Surface *)vIcon;
+  SDL_SetWindowIcon(win, surface);
+
+  CAMLreturn(Val_unit);
+};
+
+CAMLprim value resdl_SDL_CreateSystemCursor(value vCursor) {
+  CAMLparam1(vCursor);
+
+  SDL_Cursor *cursor = NULL;
+
+  SDL_SystemCursor id = SDL_SYSTEM_CURSOR_ARROW;
+  switch (Int_val(vCursor)) {
+  case 1:
+    id = SDL_SYSTEM_CURSOR_IBEAM;
+    break;
+  case 2:
+    id = SDL_SYSTEM_CURSOR_WAIT;
+    break;
+  case 3:
+    id = SDL_SYSTEM_CURSOR_CROSSHAIR;
+    break;
+  case 4:
+    id = SDL_SYSTEM_CURSOR_WAITARROW;
+    break;
+  case 5:
+    id = SDL_SYSTEM_CURSOR_SIZENWSE;
+    break;
+  case 6:
+    id = SDL_SYSTEM_CURSOR_SIZENESW;
+    break;
+  case 7:
+    id = SDL_SYSTEM_CURSOR_SIZEWE;
+    break;
+  case 8:
+    id = SDL_SYSTEM_CURSOR_SIZENS;
+    break;
+  case 9:
+    id = SDL_SYSTEM_CURSOR_SIZEALL;
+    break;
+  case 10:
+    id = SDL_SYSTEM_CURSOR_NO;
+    break;
+  case 11:
+    id = SDL_SYSTEM_CURSOR_HAND;
+    break;
+  default:
+    id = SDL_SYSTEM_CURSOR_ARROW;
+    break;
+  }
+
+  cursor = SDL_CreateSystemCursor(id);
+  CAMLreturn((value)cursor);
+}
+
+CAMLprim value resdl_SDL_SetCursor(value vCursor) {
+  CAMLparam1(vCursor);
+  SDL_Cursor *cursor = (SDL_Cursor *)vCursor;
+  SDL_SetCursor(cursor);
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_CreateRGBSurfaceFromImage(value vPath) {
+  CAMLparam1(vPath);
+  CAMLlocal1(ret);
+  // FROM:
+  // https://wiki.libsdl.org/SDL_CreateRGBSurfaceFrom
+
+  int req_format = STBI_rgb_alpha;
+  int width, height, orig_format;
+  unsigned char *data =
+      stbi_load(String_val(vPath), &width, &height, &orig_format, req_format);
+  if (data == NULL) {
+
+    ret = Val_error(caml_copy_string(stbi_failure_reason()));
+  } else {
+
+    // Set up the pixel format color masks for RGB(A) byte arrays.
+    // Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
+    Uint32 rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    int shift = (req_format == STBI_rgb) ? 8 : 0;
+    rmask = 0xff000000 >> shift;
+    gmask = 0x00ff0000 >> shift;
+    bmask = 0x0000ff00 >> shift;
+    amask = 0x000000ff >> shift;
+#else // little endian, like x86
+    rmask = 0x000000ff;
+    gmask = 0x0000ff00;
+    bmask = 0x00ff0000;
+    amask = (req_format == STBI_rgb) ? 0 : 0xff000000;
+#endif
+
+    int depth, pitch;
+    if (req_format == STBI_rgb) {
+      depth = 24;
+      pitch = 3 * width; // 3 bytes per pixel * pixels per row
+    } else {             // STBI_rgb_alpha (RGBA)
+      depth = 32;
+      pitch = 4 * width;
+    }
+
+    SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
+        (void *)data, width, height, depth, pitch, rmask, gmask, bmask, amask);
+    if (surf == NULL) {
+      ret = Val_error(caml_copy_string(SDL_GetError()));
+      stbi_image_free(data);
+    } else {
+      ret = Val_ok((value)surf);
+    }
+  }
+
+  CAMLreturn(ret);
+};
+
+CAMLprim value resdl_test_poll() {
+
+  char *text;
+  char *composition;
+  Sint32 cursor;
+  Sint32 selection_len;
+  int hasStarted = 0;
+
+  while (1) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+      switch (event.type) {
+      case SDL_QUIT:
+        /* Quit */
+        SDL_Quit();
+        printf("QUIT!");
+        break;
+      case SDL_TEXTINPUT:
+        /* Add new text onto the end of our text */
+        printf("text input: %s\n", event.text.text);
+        if (hasStarted == 0) {
+          SDL_Rect rect1;
+          rect1.x = 50;
+          rect1.y = 50;
+          rect1.w = 200;
+          rect1.h = 32;
+          /*SDL_StartTextInput();
+          SDL_SetTextInputRect(&rect1);*/
+          hasStarted = 1;
+        }
+        break;
+      case SDL_TEXTEDITING:
+        /*
+        Update the composition text.
+        Update the cursor position.
+        Update the selection length (if any).
+        */
+
+        composition = event.edit.text;
+        cursor = event.edit.start;
+        selection_len = event.edit.length;
+        printf("composition! %s|%d|%d", composition, cursor, selection_len);
+        break;
+      }
+      printf("got an event!\n");
+    }
+  }
+}
+
+CAMLprim value resdl_SDL_GL_SwapWindow(value w) {
+  SDL_Window *win = (SDL_Window *)w;
+  SDL_GL_SwapWindow(win);
+}
+SDL_HitTestResult hittest(SDL_Window *win, const SDL_Point *area, void *data) {
+  return SDL_HITTEST_DRAGGABLE;
+}
+
+CAMLprim value resdl_SDL_SetWindowPosition(value vWin, value vX, value vY) {
+  CAMLparam3(vWin, vX, vY);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  int x = Int_val(vX);
+  int y = Int_val(vY);
+  SDL_SetWindowPosition(win, x, y);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_CreateWindow(value vWidth, value vHeight,
+                                      value vName) {
+  CAMLparam3(vWidth, vHeight, vName);
+
+  int width = Int_val(vWidth);
+  int height = Int_val(vHeight);
+
+  SDL_Window *win =
+      (SDL_CreateWindow(String_val(vName), SDL_WINDOWPOS_CENTERED,
+                        SDL_WINDOWPOS_CENTERED, width, height,
+                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN |
+                            SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE));
+
+  // SDL_SetWindowHitTest(win, hittest, NULL);
+
+  value vWindow = (value)win;
+
+  CAMLreturn(vWindow);
+}
+
+CAMLprim value resdl_SDL_HideWindow(value vWin) {
+  CAMLparam1(vWin);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_HideWindow(win);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_MaximizeWindow(value vWin) {
+  CAMLparam1(vWin);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_MaximizeWindow(win);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_MinimizeWindow(value vWin) {
+  CAMLparam1(vWin);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_MinimizeWindow(win);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_RaiseWindow(value vWin) {
+  CAMLparam1(vWin);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_RaiseWindow(win);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_RestoreWindow(value vWin) {
+  CAMLparam1(vWin);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_RestoreWindow(win);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_ShowWindow(value vWin) {
+  CAMLparam1(vWin);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_ShowWindow(win);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_GetWindowId(value vWindow) {
+  CAMLparam1(vWindow);
+  SDL_Window *win = (SDL_Window *)vWindow;
+  int id = SDL_GetWindowID(win);
+  CAMLreturn(Val_int(id));
+}
+
+typedef enum PROCESS_DPI_AWARENESS {
+  PROCESS_DPI_UNAWARE = 0,
+  PROCESS_SYSTEM_DPI_AWARE = 1,
+  PROCESS_PER_MONITOR_DPI_AWARE = 2
+} PROCESS_DPI_AWARENESS;
+
+CAMLprim value resdl_SDL_Init() {
+  CAMLparam0();
+  int ret = SDL_Init(SDL_INIT_VIDEO);
+
+  /*printf("SDL_INIT");
+  
+  void* userDLL;
+  BOOL(WINAPI *SetProcessDPIAware)(void); // Vista and later
+  void* shcoreDLL;
+  HRESULT(WINAPI *SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS dpiAwareness);
+  // Windows 8.1 and later INT(WINAPI *GetScaleFactorForDevice)(int deviceType);
+  HRESULT(WINAPI *GetScaleFactorForMonitor)(HMONITOR hmon, int *pScale);
+
+  userDLL = SDL_LoadObject("USER32.DLL");
+  if (userDLL) {
+      printf("Found user DLL!\n");
+      SetProcessDPIAware = (BOOL(WINAPI *)(void)) SDL_LoadFunction(userDLL,
+  "SetProcessDPIAware");
+  }
+
+  shcoreDLL = SDL_LoadObject("SHCORE.DLL");
+  if (shcoreDLL) {
+      printf("Found SHCOREd.ll!\n");
+      SetProcessDpiAwareness = (HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS))
+  SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
+      
+      GetScaleFactorForDevice = (INT(WINAPI *)(INT)) SDL_LoadFunction(shcoreDLL,
+  "GetScaleFactorForDevice"); GetScaleFactorForMonitor = (HRESULT(WINAPI
+  *)(HMONITOR, int*)) SDL_LoadFunction(shcoreDLL, "GetScaleFactorForMonitor");
+  }
+
+  if (GetScaleFactorForDevice) {
+      printf("Found getScaleFactorForDevice!\n");
+
+      int result = GetScaleFactorForDevice(0);
+      printf("--RESULT: %d\n", result);
+  }
+
+  if (GetScaleFactorForMonitor) {
+      printf("Found getScaleFactorForMonitor!!!\n");
+  }
+
+  if (SetProcessDpiAwareness) {
+      // Try Windows 8.1+ version
+      HRESULT result = SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+      SDL_Log("called SetProcessDpiAwareness: %d", (result == S_OK) ? 1 : 0);
+  }
+  else if (SetProcessDPIAware) {
+      // Try Vista - Windows 8 version.
+      // This has a constant scale factor for all monitors.
+      BOOL success = SetProcessDPIAware();
+      SDL_Log("called SetProcessDPIAware: %d", (int)success);
+  }*/
+
+  CAMLreturn(Val_int(ret));
+}
+}

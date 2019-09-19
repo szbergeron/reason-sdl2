@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "SDL2 bindings for OCaml",
   "license": "MIT",
+  "scripts": {
+    "format": "esy dune build @fmt --auto-promote"
+  },
   "esy": {
     "build": [
       [

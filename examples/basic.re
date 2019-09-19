@@ -2,9 +2,15 @@ external pollEvent: unit => unit = "resdl_test_poll";
 
 let run = () => {
 
-  //let _ = Sdl2.init()
-  let w = Sdl2.createWindow();
+  let _ = Sdl2.init()
+  let w = Sdl2.Window.create(640, 480, "example");
   let _ = Sdl2.Gl.setup(w);
+
+  let { width, height }: Sdl2.Size.t = Sdl2.Window.getSize(w);
+  Printf.printf("Width: %d height: %d\n", width, height);
+  
+  let { width, height }: Sdl2.Size.t = Sdl2.Gl.getDrawableSize(w);
+  Printf.printf("Width: %d height: %d\n", width, height);
 
   print_endline ("red")
 

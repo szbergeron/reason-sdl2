@@ -1,7 +1,7 @@
 {
-  "name": "reason-glfw",
-  "version": "3.2.1027",
-  "description": "GLFW bindings for OCaml",
+  "name": "reason-sdl2",
+  "version": "1.0.0",
+  "description": "SDL2 bindings for OCaml",
   "license": "MIT",
   "esy": {
     "build": [

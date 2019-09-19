@@ -60,53 +60,95 @@ module MouseButton = {
 };
 
 module Scancode = {
-  type t;
+  type t = int;
 
   external getName: t => string = "resdl_SDL_GetScancodeName";
-}
+
+  [@noalloc] external ofInt: int => t = "resdl_PassThrough";
+  [@noalloc] external toInt: t => int = "resdl_PassThrough";
+
+  // Incrementally add these as needed from:
+  // https://wiki.libsdl.org/SDLScancodeLookup
+  let unknown = 0;
+};
 
 module Keycode = {
-  type t;
+  type t = int;
 
   external getName: t => string = "resdl_SDL_GetKeyName";
 
-  [@noalloc] external ofScancode: Scancode.t => t = "resdl_SDL_GetKeyFromScancode";
-  [@noalloc] external toScancode: t => Scancode.t = "resdl_SDL_GetScancodeFromKey";
+  [@noalloc]
+  external ofScancode: Scancode.t => t = "resdl_SDL_GetKeyFromScancode";
+  [@noalloc]
+  external toScancode: t => Scancode.t = "resdl_SDL_GetScancodeFromKey";
+
+  // Incrementally add these as needed from:
+  // https://wiki.libsdl.org/SDLKeycodeLookup
+  let unknown = 0;
+  let backspace = 8;
+
+  let escape = 27;
+
+  let minus = 45;
+  let period = 46;
+  let slash = 47;
+
+  let equals = 61;
+
+  let digit0 = 48;
+  let digit1 = 49;
+  let digit2 = 50;
+  let digit3 = 51;
+  let digit4 = 52;
+  let digit5 = 53;
+  let digit6 = 54;
+  let digit7 = 55;
+  let digit8 = 56;
+  let digit9 = 57;
+
+  let c = 99;
+
+  let delete = 127;
+
+  let right = 1073741903;
+  let left = 1073741904;
 };
 
 module Keymod = {
-  type t;
+  type t = int;
 
   [@noalloc] external isLeftShiftDown: t => bool = "resdl_SDL_ModLeftShift";
   [@noalloc] external isRightShiftDown: t => bool = "resdl_SDL_ModRightShift";
-  
-  let isShiftDown = (v) => isLeftShiftDown(v) || isRightShiftDown(v);
 
-  [@noalloc] external isLeftControlDown: t => bool = "resdl_SDL_ModLeftControl";
-  [@noalloc] external isRightControlDown: t => bool = "resdl_SDL_ModRightControl";
+  let isShiftDown = v => isLeftShiftDown(v) || isRightShiftDown(v);
 
-  let isControlDown = (v) => isLeftControlDown(v) || isRightControlDown(v);
+  [@noalloc]
+  external isLeftControlDown: t => bool = "resdl_SDL_ModLeftControl";
+  [@noalloc]
+  external isRightControlDown: t => bool = "resdl_SDL_ModRightControl";
+
+  let isControlDown = v => isLeftControlDown(v) || isRightControlDown(v);
 
   [@noalloc] external isLeftAltDown: t => bool = "resdl_SDL_ModLeftAlt";
   [@noalloc] external isRightAltDown: t => bool = "resdl_SDL_ModRightAlt";
 
-  let isAltDown = (v) => isLeftAltDown(v) || isRightAltDown(v);
+  let isAltDown = v => isLeftAltDown(v) || isRightAltDown(v);
 
   [@noalloc] external isLeftGuiDown: t => bool = "resdl_SDL_ModLeftGui";
   [@noalloc] external isRightGuiDown: t => bool = "resdl_SDL_ModRightGui";
 
-  let isGuiDown = (v) => isLeftGuiDown(v) || isRightGuiDown(v);
+  let isGuiDown = v => isLeftGuiDown(v) || isRightGuiDown(v);
 
   [@noalloc] external isNumLockDown: t => bool = "resdl_SDL_ModNumLockDown";
   [@noalloc] external isCapsLockDown: t => bool = "resdl_SDL_ModCapsLockDown";
 
-  [@noalloc] external isAltGrKeyDown: t =>  bool = "resdl_SDL_ModAltGrDown";
+  [@noalloc] external isAltGrKeyDown: t => bool = "resdl_SDL_ModAltGrDown";
 
   let show = (v: t) => {
+    let int_of_bool = b => b ? 1 : 0;
 
-    let int_of_bool = (b) => b ? 1 : 0;
-
-    Printf.sprintf("Keymods - LSHIFT: %d RSHIFT: %d LCTRL: %d RCTRL: %d LALT: %d RALT: %d LGUI: %d RGUI: %d NUM: %d CAPS: %d ALTGR: %d",
+    Printf.sprintf(
+      "Keymods - LSHIFT: %d RSHIFT: %d LCTRL: %d RCTRL: %d LALT: %d RALT: %d LGUI: %d RGUI: %d NUM: %d CAPS: %d ALTGR: %d",
       int_of_bool(isLeftShiftDown(v)),
       int_of_bool(isRightShiftDown(v)),
       int_of_bool(isLeftControlDown(v)),
@@ -117,7 +159,8 @@ module Keymod = {
       int_of_bool(isRightGuiDown(v)),
       int_of_bool(isNumLockDown(v)),
       int_of_bool(isCapsLockDown(v)),
-      int_of_bool(isAltGrKeyDown(v)));
+      int_of_bool(isAltGrKeyDown(v)),
+    );
   };
 };
 
@@ -186,18 +229,22 @@ module Event = {
         MouseButton.show(button),
       )
     | KeyDown({repeat, keymod, scancode, keycode, _}) =>
-      Printf.sprintf("KeyDown repeat %d:\n -- %s\n -- Scancode: %s\n -- Keycode: %s\n", 
-          repeat ? 1 : 0,
-          Keymod.show(keymod),
-          Scancode.getName(scancode),
-          Keycode.getName(keycode));
+      Printf.sprintf(
+        "KeyDown repeat %d:\n -- %s\n -- Scancode: %s\n -- Keycode: %s\n",
+        repeat ? 1 : 0,
+        Keymod.show(keymod),
+        Scancode.getName(scancode),
+        Keycode.getName(keycode),
+      )
     | KeyUp({repeat, keymod, scancode, keycode, _}) =>
-      Printf.sprintf("KeyUp repeat %d:\n -- %s\n -- Scancode: %s\n -- Keycode: %s\n", 
-          repeat ? 1 : 0,
-          Keymod.show(keymod),
-          Scancode.getName(scancode),
-          Keycode.getName(keycode));
-  };
+      Printf.sprintf(
+        "KeyUp repeat %d:\n -- %s\n -- Scancode: %s\n -- Keycode: %s\n",
+        repeat ? 1 : 0,
+        Keymod.show(keymod),
+        Scancode.getName(scancode),
+        Keycode.getName(keycode),
+      )
+    };
   };
 
   external poll: unit => option(t) = "resdl_SDL_pollEvent";

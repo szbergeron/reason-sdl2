@@ -484,7 +484,7 @@ CAMLprim value resdl_SDL_Init() {
   int ret = SDL_Init(SDL_INIT_VIDEO);
 
   /*printf("SDL_INIT");
-  
+  
   void* userDLL;
   BOOL(WINAPI *SetProcessDPIAware)(void); // Vista and later
   void* shcoreDLL;
@@ -504,7 +504,7 @@ CAMLprim value resdl_SDL_Init() {
       printf("Found SHCOREd.ll!\n");
       SetProcessDpiAwareness = (HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS))
   SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
-      
+      
       GetScaleFactorForDevice = (INT(WINAPI *)(INT)) SDL_LoadFunction(shcoreDLL,
   "GetScaleFactorForDevice"); GetScaleFactorForMonitor = (HRESULT(WINAPI
   *)(HMONITOR, int*)) SDL_LoadFunction(shcoreDLL, "GetScaleFactorForMonitor");
@@ -537,7 +537,7 @@ CAMLprim value resdl_SDL_Init() {
 }
 
 CAMLprim value resdl_SDL_GetScancodeName(value vScancode) {
-  CAMLparam1(vScancode); 
+  CAMLparam1(vScancode);
   CAMLlocal1(ret);
 
   SDL_Scancode scancode = (SDL_Scancode)Int_val(vScancode);
@@ -546,7 +546,7 @@ CAMLprim value resdl_SDL_GetScancodeName(value vScancode) {
 }
 
 CAMLprim value resdl_SDL_GetKeyName(value vKey) {
-  CAMLparam1(vKey); 
+  CAMLparam1(vKey);
   CAMLlocal1(ret);
 
   SDL_Keycode key = (SDL_Keycode)Int_val(vKey);
@@ -608,6 +608,5 @@ CAMLprim value resdl_SDL_ModAltGrDown(value vMod) {
   return Val_bool(Val_int(vMod) & KMOD_MODE == KMOD_MODE);
 };
 
+CAMLprim value resdl_PassThrough(value v) { return v; };
 }
-
-

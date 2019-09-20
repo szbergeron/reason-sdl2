@@ -19,6 +19,7 @@ module Window = {
   external getSize: t => Size.t = "resdl_SDL_GetWindowSize";
   external setIcon: (t, Surface.t) => unit = "resdl_SDL_SetWindowIcon";
   external setPosition: (t, int, int) => unit = "resdl_SDL_SetWindowPosition";
+  external setResizable: (t, bool) => unit = "resdl_SDL_SetWindowResizable";
 
   external hide: t => unit = "resdl_SDL_HideWindow";
   external raise: t => unit = "resdl_SDL_RaiseWindow";

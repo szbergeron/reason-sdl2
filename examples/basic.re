@@ -54,6 +54,10 @@ let run = () => {
   Sdl2.Window.setSize(primaryWindow, 800, 600);
   Sdl2.Window.setTitle(primaryWindow, "reason-sdl2 example");
 
+  // Start text input, to experiment with IME + events
+  Sdl2.TextInput.setInputRect(25, 50, 100, 25);
+  Sdl2.TextInput.start();
+
 /*   let secondaryWindow = */
 /*     glfwCreateWindow(100, 50, ~sharedContext=primaryWindow, "secondWindow"); */
 /*   glfwSetWindowPos(secondaryWindow, vidMode.width / 2, vidMode.height / 2); */

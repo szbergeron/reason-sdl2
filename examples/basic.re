@@ -52,7 +52,7 @@ let run = () => {
     (vidMode.height - 600) / 2,
   );*/
   Sdl2.Window.setSize(primaryWindow, 800, 600);
-  Sdl2.Window.setTitle(primaryWindow, "reason-glfw example");
+  Sdl2.Window.setTitle(primaryWindow, "reason-sdl2 example");
 
 /*   let secondaryWindow = */
 /*     glfwCreateWindow(100, 50, ~sharedContext=primaryWindow, "secondWindow"); */

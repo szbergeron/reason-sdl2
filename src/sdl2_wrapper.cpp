@@ -407,7 +407,7 @@ CAMLprim value resdl_SDL_SetWindowSize(value vWin, value vW, value vH) {
   SDL_Window *win = (SDL_Window *)vWin;
   int w = Int_val(vW);
   int h = Int_val(vH);
-  SDL_SetWindowPosition(win, w, h);
+  SDL_SetWindowSize(win, w, h);
 
   CAMLreturn(Val_unit);
 }

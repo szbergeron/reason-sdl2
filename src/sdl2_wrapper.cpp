@@ -159,6 +159,40 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       Store_field(v, 0, vInner);
       ret = Val_some(v);
       break;
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+      v = caml_alloc(1, event->type == SDL_KEYDOWN ? 4 : 5);
+
+      vInner = caml_alloc(5, 0);
+      Store_field(vInner, 0, Val_int(event->key.windowID));
+      Store_field(vInner, 1, Val_bool(event->key.repeat));
+      Store_field(vInner, 2, Val_int(event->key.keysym.mod));
+      Store_field(vInner, 3, Val_int(event->key.keysym.scancode));
+      Store_field(vInner, 4, Val_int(event->key.keysym.sym));
+
+      Store_field(v, 0, vInner);
+      ret = Val_some(v);
+    case SDL_TEXTINPUT:
+      v = caml_alloc(1, 6);
+
+      vInner = caml_alloc(2, 0);
+      Store_field(vInner, 0, Val_int(event->text.windowID));
+      Store_field(vInner, 1, caml_copy_string(event->text.text));
+      
+      Store_field(v, 0, vInner);
+      ret = Val_some(v);
+    case SDL_TEXTEDITING:
+      v = caml_alloc(1, 6);
+
+      vInner = caml_alloc(4, 0);
+      Store_field(vInner, 0, Val_int(event->text.windowID));
+      Store_field(vInner, 1, caml_copy_string(event->text.text));
+      Store_field(vInner, 2, Val_int(event->text.start));
+      Store_field(vInner, 3, Val_int(event->text.length));
+      
+      Store_field(v, 0, vInner);
+      ret = Val_some(v);
+    break;
     default:
       ret = Val_none;
     }
@@ -262,6 +296,33 @@ CAMLprim value resdl_SDL_CreateSystemCursor(value vCursor) {
 
   cursor = SDL_CreateSystemCursor(id);
   CAMLreturn((value)cursor);
+}
+
+CAMLprim value resdl_SDL_StartTextInput() {
+  SDL_StartTextInput();
+}
+
+CAMLprim value resdl_SDL_StopTextInput() {
+  SDL_StopTextInput();
+}
+
+CAMLprim value resdl_SDL_SetTextInputRect(value vX, value vY, value vWidth, value vHeight) {
+  int x = Int_val(vX);
+  int y = Int_val(vY);
+  int width = Int_val(vWidth);
+  int height = Int_val(vHeight);
+
+  SDL_Rect rect;
+  rect.x = x;
+  rect.y = y;
+  rect.w = width;
+  rect.h = height;
+
+  SDL_SetTextInputRect(&rect);
+}
+
+CAMLprim value resdl_SDL_IsTextInputActive() {
+  return Val_bool(SDL_IsTextInputActive());
 }
 
 CAMLprim value resdl_SDL_SetCursor(value vCursor) {
@@ -565,47 +626,47 @@ CAMLprim value resdl_SDL_GetScancodeFromKey(value vKey) {
 }
 
 CAMLprim value resdl_SDL_ModLeftShift(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_LSHIFT == KMOD_LSHIFT);
+  return Val_bool((Int_val(vMod) & KMOD_LSHIFT) == KMOD_LSHIFT);
 };
 
 CAMLprim value resdl_SDL_ModRightShift(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_RSHIFT == KMOD_RSHIFT);
+  return Val_bool((Int_val(vMod) & KMOD_RSHIFT) == KMOD_RSHIFT);
 };
 
 CAMLprim value resdl_SDL_ModLeftControl(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_LCTRL == KMOD_LCTRL);
+  return Val_bool((Int_val(vMod) & KMOD_LCTRL) == KMOD_LCTRL);
 };
 
 CAMLprim value resdl_SDL_ModRightControl(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_RCTRL == KMOD_RCTRL);
+  return Val_bool((Int_val(vMod) & KMOD_RCTRL) == KMOD_RCTRL);
 };
 
 CAMLprim value resdl_SDL_ModLeftAlt(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_LALT == KMOD_LALT);
+  return Val_bool((Int_val(vMod) & KMOD_LALT) == KMOD_LALT);
 };
 
 CAMLprim value resdl_SDL_ModRightAlt(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_RALT == KMOD_RALT);
+  return Val_bool((Int_val(vMod) & KMOD_RALT) == KMOD_RALT);
 };
 
 CAMLprim value resdl_SDL_ModLeftGui(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_LGUI == KMOD_LGUI);
+  return Val_bool((Int_val(vMod) & KMOD_LGUI) == KMOD_LGUI);
 };
 
 CAMLprim value resdl_SDL_ModRightGui(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_RGUI == KMOD_RGUI);
+  return Val_bool((Int_val(vMod) & KMOD_RGUI) == KMOD_RGUI);
 };
 
 CAMLprim value resdl_SDL_ModNumLockDown(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_NUM == KMOD_NUM);
+  return Val_bool((Int_val(vMod) & KMOD_NUM) == KMOD_NUM);
 };
 
 CAMLprim value resdl_SDL_ModCapsLockDown(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_CAPS == KMOD_CAPS);
+  return Val_bool((Int_val(vMod) & KMOD_CAPS) == KMOD_CAPS);
 };
 
 CAMLprim value resdl_SDL_ModAltGrDown(value vMod) {
-  return Val_bool(Val_int(vMod) & KMOD_MODE == KMOD_MODE);
+  return Val_bool((Int_val(vMod) & KMOD_MODE) == KMOD_MODE);
 };
 
 CAMLprim value resdl_PassThrough(value v) { return v; };

@@ -15,6 +15,12 @@ module Surface = {
     "resdl_SDL_CreateRGBSurfaceFromImage";
 };
 
+module Clipboard = {
+  external getText: unit => option(string) = "resdl_SDL_GetClipboardText";
+  external setText: string => unit = "resdl_SDL_SetClipboardText";
+  external hasText: unit => bool = "resdl_SDL_HasClipboardText";
+};
+
 module Window = {
   type t;
   external create: (int, int, string) => t = "resdl_SDL_CreateWindow";

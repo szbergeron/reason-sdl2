@@ -83,6 +83,32 @@ CAMLprim value resdl_SDL_GL_Setup(value w) {
   return Val_unit;
 }
 
+CAMLprim value resdl_SDL_GetClipboardText(value vUnit) {
+  CAMLparam0();
+  CAMLlocal1(ret);
+
+  char* clip = SDL_GetClipboardText();
+  if (clip == NULL) {
+    ret = Val_none;
+  } else {
+    ret = Val_some(caml_copy_string(clip));
+  }
+
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_HasClipboardText(value vUnit) {
+  CAMLparam0();
+  SDL_bool res = SDL_HasClipboardText();
+  CAMLreturn(res == SDL_TRUE ? Val_bool(1) : Val_bool(0));
+}
+
+CAMLprim value resdl_SDL_SetClipboardText(value vText) {
+  CAMLparam1(vText);
+  SDL_SetClipboardText(String_val(vText));
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value Val_SDL_Event(SDL_Event *event) {
   CAMLparam0();
   CAMLlocal3(ret, v, vInner);

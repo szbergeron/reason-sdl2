@@ -1,5 +1,3 @@
-external pollEvent: unit => unit = "resdl_test_poll";
-
 let run = () => {
   let _ = Sdl2.init();
   let w = Sdl2.Window.create(640, 480, "example");

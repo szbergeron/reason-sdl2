@@ -49,8 +49,8 @@ CAMLprim value resdl_SDL_SetMainReady() {
 
   return Val_unit;
 }
-CAMLprim value resdl_SDL_DestroyWindow(value win) {
-  SDL_Window* win = (SDL_Window*)win;
+CAMLprim value resdl_SDL_DestroyWindow(value vWin) {
+  SDL_Window* win = (SDL_Window*)vWin;
   SDL_DestroyWindow(win);
 }
 
@@ -415,7 +415,7 @@ CAMLprim value resdl_SDL_CreateWindow(value vWidth, value vHeight,
   SDL_Window *win =
       (SDL_CreateWindow(String_val(vName), SDL_WINDOWPOS_CENTERED,
                         SDL_WINDOWPOS_CENTERED, width, height,
-                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_GRABBED
+                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_GRABBED |
                         SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE));
 
   value vWindow = (value)win;
@@ -426,7 +426,7 @@ CAMLprim value resdl_SDL_SetWindowResizable(value vWin, value vResizable) {
   CAMLparam2(vWin, vResizable);
 
   SDL_Window *win = (SDL_Window *)vWin;
-  SDL_bool resize = Int_val(vResizable) == 1 ? SDL_TRUE : SDL_FALSE
+  SDL_bool resize = Int_val(vResizable) == 1 ? SDL_TRUE : SDL_FALSE;
 
   SDL_SetWindowResizable(win, resize);
   CAMLreturn(Val_unit);

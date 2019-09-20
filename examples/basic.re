@@ -25,7 +25,7 @@ let run = () => {
   Sdl2.Gl.glClearColor(0.0, 0.0, 1.0, 1.0);
   Sdl2.Gl.swapWindow(w);
 
-  pollEvent();
+//  pollEvent();
 
   Sdl2.delay(2000);
 

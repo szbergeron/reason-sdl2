@@ -50,7 +50,8 @@ CAMLprim value resdl_SDL_SetMainReady() {
   return Val_unit;
 }
 CAMLprim value resdl_SDL_DestroyWindow(value win) {
-  printf("needs implementation!");
+  SDL_Window* win = (SDL_Window*)win;
+  SDL_DestroyWindow(win);
 }
 
 CAMLprim value resdl_SDL_Delay(value delay) {
@@ -172,6 +173,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
 
       Store_field(v, 0, vInner);
       ret = Val_some(v);
+      break;
     case SDL_TEXTINPUT:
       v = caml_alloc(1, 6);
 
@@ -181,8 +183,9 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       
       Store_field(v, 0, vInner);
       ret = Val_some(v);
+      break;
     case SDL_TEXTEDITING:
-      v = caml_alloc(1, 6);
+      v = caml_alloc(1, 7);
 
       vInner = caml_alloc(4, 0);
       Store_field(vInner, 0, Val_int(event->edit.windowID));
@@ -222,7 +225,6 @@ CAMLprim value resdl_SDL_GetWindowSize(value vWindow) {
   ret = caml_alloc(2, 0);
   Store_field(ret, 0, Val_int(width));
   Store_field(ret, 1, Val_int(height));
-  printf("SDL_GetWindowSize - width: %d height: %d\n", width, height);
   CAMLreturn(ret);
 }
 
@@ -235,7 +237,6 @@ CAMLprim value resdl_SDL_GL_GetDrawableSize(value vWindow) {
   ret = caml_alloc(2, 0);
   Store_field(ret, 0, Val_int(width));
   Store_field(ret, 1, Val_int(height));
-  printf("SDL_GL_GetDrawableSize - width: %d height: %d\n", width, height);
   CAMLreturn(ret);
 }
 
@@ -384,55 +385,6 @@ CAMLprim value resdl_SDL_CreateRGBSurfaceFromImage(value vPath) {
 
   CAMLreturn(ret);
 };
-
-CAMLprim value resdl_test_poll() {
-
-  char *text;
-  char *composition;
-  Sint32 cursor;
-  Sint32 selection_len;
-  int hasStarted = 0;
-
-  while (1) {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-      switch (event.type) {
-      case SDL_QUIT:
-        /* Quit */
-        SDL_Quit();
-        printf("QUIT!");
-        break;
-      case SDL_TEXTINPUT:
-        /* Add new text onto the end of our text */
-        printf("text input: %s\n", event.text.text);
-        if (hasStarted == 0) {
-          SDL_Rect rect1;
-          rect1.x = 50;
-          rect1.y = 50;
-          rect1.w = 200;
-          rect1.h = 32;
-          /*SDL_StartTextInput();
-          SDL_SetTextInputRect(&rect1);*/
-          hasStarted = 1;
-        }
-        break;
-      case SDL_TEXTEDITING:
-        /*
-        Update the composition text.
-        Update the cursor position.
-        Update the selection length (if any).
-        */
-
-        composition = event.edit.text;
-        cursor = event.edit.start;
-        selection_len = event.edit.length;
-        printf("composition! %s|%d|%d", composition, cursor, selection_len);
-        break;
-      }
-      printf("got an event!\n");
-    }
-  }
-}
 
 CAMLprim value resdl_SDL_GL_SwapWindow(value w) {
   SDL_Window *win = (SDL_Window *)w;

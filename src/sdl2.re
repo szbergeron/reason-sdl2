@@ -203,16 +203,16 @@ module Event = {
     keycode: Keycode.t,
   };
 
+  type textInputEvent = {
+    windowID: int,
+    text: string,
+  };
+  
   type textEditingEvent = {
     windowID: int,
     text: string,
     start: int,
     length: int,
-  };
-
-  type textInputEvent = {
-    windowID: int,
-    text: string,
   };
 
   type t =
@@ -269,13 +269,13 @@ module Event = {
       )
     | TextEditing({text, start, length, _}) =>
       Printf.sprintf(
-        "TextInput:\n -- start: %d length: %d text: %s\n",
+        "TextEditing:\n -- start: %d length: %d text: %s\n",
         start,
         length,
         text,
       )
     | TextInput({text, _}) =>
-      Printf.sprintf("TextEditing:\n -- text: %s\n", text)
+      Printf.sprintf("TextInput:\n -- text: %s\n", text)
     };
   };
 

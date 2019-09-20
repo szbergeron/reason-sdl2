@@ -1,4 +1,7 @@
 module Image = Image;
+module Float32Array = Float32Array;
+module Uint16Array = Uint16Array;
+
 module Size = {
   type t = {
     width: int,
@@ -20,6 +23,8 @@ module Window = {
   external setIcon: (t, Surface.t) => unit = "resdl_SDL_SetWindowIcon";
   external setPosition: (t, int, int) => unit = "resdl_SDL_SetWindowPosition";
   external setResizable: (t, bool) => unit = "resdl_SDL_SetWindowResizable";
+  external setSize: (t, int, int) => unit = "resdl_SDL_SetWindowSize";
+  external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";
 
   external hide: t => unit = "resdl_SDL_HideWindow";
   external raise: t => unit = "resdl_SDL_RaiseWindow";

@@ -399,6 +399,27 @@ SDL_HitTestResult hittest(SDL_Window *win, const SDL_Point *area, void *data) {
   return SDL_HITTEST_DRAGGABLE;
 }
 
+CAMLprim value resdl_SDL_SetWindowSize(value vWin, value vW, value vH) {
+  CAMLparam3(vWin, vW, vH);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  int w = Int_val(vW);
+  int h = Int_val(vH);
+  SDL_SetWindowPosition(win, w, h);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_SetWindowTitle(value vWin, value vTitle) {
+  CAMLparam2(vWin, vTitle);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  const char *title = (const char*)String_val(vTitle);
+  SDL_SetWindowTitle(win, title);
+
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value resdl_SDL_SetWindowPosition(value vWin, value vX, value vY) {
   CAMLparam3(vWin, vX, vY);
 

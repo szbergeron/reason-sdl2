@@ -185,10 +185,10 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       v = caml_alloc(1, 6);
 
       vInner = caml_alloc(4, 0);
-      Store_field(vInner, 0, Val_int(event->text.windowID));
-      Store_field(vInner, 1, caml_copy_string(event->text.text));
-      Store_field(vInner, 2, Val_int(event->text.start));
-      Store_field(vInner, 3, Val_int(event->text.length));
+      Store_field(vInner, 0, Val_int(event->edit.windowID));
+      Store_field(vInner, 1, caml_copy_string(event->edit.text));
+      Store_field(vInner, 2, Val_int(event->edit.start));
+      Store_field(vInner, 3, Val_int(event->edit.length));
       
       Store_field(v, 0, vInner);
       ret = Val_some(v);

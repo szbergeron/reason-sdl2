@@ -44,7 +44,9 @@ external init: unit => int = "resdl_SDL_Init";
 module TextInput = {
   [@noalloc] external start: unit => unit = "resdl_SDL_StartTextInput";
   [@noalloc] external stop: unit => unit = "resdl_SDL_StopTextInput";
-  [@noalloc] external setInputRect: (int, int, int, int) => unit = "resdl_SDL_SetTextInputRect";
+  [@noalloc]
+  external setInputRect: (int, int, int, int) => unit =
+    "resdl_SDL_SetTextInputRect";
   [@noalloc] external isActive: unit => bool = "resdl_SDL_IsTextInputActive";
 };
 
@@ -266,10 +268,15 @@ module Event = {
         Keycode.getName(keycode),
       )
     | TextEditing({text, start, length, _}) =>
-      Printf.sprintf("TextInput:\n -- start: %d length: %d text: %s\n", start, length, text);
+      Printf.sprintf(
+        "TextInput:\n -- start: %d length: %d text: %s\n",
+        start,
+        length,
+        text,
+      )
     | TextInput({text, _}) =>
-      Printf.sprintf("TextEditing:\n -- text: %s\n", text);
-    }
+      Printf.sprintf("TextEditing:\n -- text: %s\n", text)
+    };
   };
 
   external poll: unit => option(t) = "resdl_SDL_pollEvent";

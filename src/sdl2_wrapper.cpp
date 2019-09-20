@@ -476,6 +476,16 @@ CAMLprim value resdl_SDL_CreateWindow(value vWidth, value vHeight,
   CAMLreturn(vWindow);
 }
 
+CAMLprim value resdl_SDL_SetWindowBordered(value vWin, value vBordered) {
+  CAMLparam2(vWin, vBordered);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_bool bordered = Int_val(vBordered) == 1 ? SDL_TRUE : SDL_FALSE;
+
+  SDL_SetWindowBordered(win, bordered);
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value resdl_SDL_SetWindowResizable(value vWin, value vResizable) {
   CAMLparam2(vWin, vResizable);
 

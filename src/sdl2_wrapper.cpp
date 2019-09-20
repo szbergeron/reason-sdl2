@@ -303,10 +303,12 @@ CAMLprim value resdl_SDL_CreateSystemCursor(value vCursor) {
 
 CAMLprim value resdl_SDL_StartTextInput() {
   SDL_StartTextInput();
+  return Val_unit;
 }
 
 CAMLprim value resdl_SDL_StopTextInput() {
   SDL_StopTextInput();
+  return Val_unit;
 }
 
 CAMLprim value resdl_SDL_SetTextInputRect(value vX, value vY, value vWidth, value vHeight) {

@@ -52,6 +52,7 @@ CAMLprim value resdl_SDL_SetMainReady() {
 CAMLprim value resdl_SDL_DestroyWindow(value vWin) {
   SDL_Window* win = (SDL_Window*)vWin;
   SDL_DestroyWindow(win);
+  return Val_unit;
 }
 
 CAMLprim value resdl_SDL_Delay(value delay) {
@@ -79,6 +80,7 @@ CAMLprim value resdl_SDL_GL_Setup(value w) {
                      SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 
   gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress);
+  return Val_unit;
 }
 
 CAMLprim value Val_SDL_Event(SDL_Event *event) {
@@ -320,6 +322,7 @@ CAMLprim value resdl_SDL_SetTextInputRect(value vX, value vY, value vWidth, valu
   rect.h = height;
 
   SDL_SetTextInputRect(&rect);
+  return Val_unit;
 }
 
 CAMLprim value resdl_SDL_IsTextInputActive() {

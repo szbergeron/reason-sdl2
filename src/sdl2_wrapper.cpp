@@ -394,7 +394,9 @@ CAMLprim value resdl_SDL_CreateRGBSurfaceFromImage(value vPath) {
 CAMLprim value resdl_SDL_GL_SwapWindow(value w) {
   SDL_Window *win = (SDL_Window *)w;
   SDL_GL_SwapWindow(win);
+  return Val_unit;
 }
+
 SDL_HitTestResult hittest(SDL_Window *win, const SDL_Point *area, void *data) {
   return SDL_HITTEST_DRAGGABLE;
 }

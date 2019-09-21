@@ -58,6 +58,8 @@ let run = () => {
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);
   Sdl2.TextInput.start();
 
+  Sdl2.Window.maximize(primaryWindow);
+
 /*   let secondaryWindow = */
 /*     glfwCreateWindow(100, 50, ~sharedContext=primaryWindow, "secondWindow"); */
 /*   glfwSetWindowPos(secondaryWindow, vidMode.width / 2, vidMode.height / 2); */

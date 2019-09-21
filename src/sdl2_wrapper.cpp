@@ -232,7 +232,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
   CAMLreturn(ret);
 };
 
-CAMLprim value resdl_SDL_pollEvent() {
+CAMLprim value resdl_SDL_PollEvent() {
   CAMLparam0();
   CAMLlocal1(ret);
   SDL_Event e;
@@ -240,6 +240,34 @@ CAMLprim value resdl_SDL_pollEvent() {
   caml_release_runtime_system();
   SDL_PollEvent(&e);
   caml_acquire_runtime_system();
+  
+  ret = Val_SDL_Event(&e);
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_WaitEvent() {
+  CAMLparam0();
+  CAMLlocal1(ret);
+  SDL_Event e;
+
+  caml_release_runtime_system();
+  SDL_WaitEvent(&e);
+  caml_acquire_runtime_system();
+  
+  ret = Val_SDL_Event(&e);
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_WaitTimeoutEvent(vTimeout) {
+  CAMLparam1(vTimeout);
+  CAMLlocal1(ret);
+  int timeout = Int_val(vTimeout);
+  SDL_Event e;
+
+  caml_release_runtime_system();
+  SDL_WaitEventTimeout(&e, timeout);
+  caml_acquire_runtime_system();
+  
   ret = Val_SDL_Event(&e);
   CAMLreturn(ret);
 }

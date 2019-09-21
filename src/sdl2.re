@@ -292,11 +292,9 @@ module Event = {
     };
   };
 
-  external poll: unit => option(t) = "resdl_SDL_pollEvent";
-  /*
-   external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
-   external waitTimeout: int => result(t, string) = "resdl_SDL_WaitTimeoutEvent";
-   */
+  external poll: unit => option(t) = "resdl_SDL_PollEvent";
+  external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
+  external waitTimeout: int => result(t, string) = "resdl_SDL_WaitTimeoutEvent";
 };
 
 module Cursor = {

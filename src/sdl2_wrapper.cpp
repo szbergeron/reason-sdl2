@@ -109,6 +109,34 @@ CAMLprim value resdl_SDL_SetClipboardText(value vText) {
   CAMLreturn(Val_unit);
 }
 
+CAMLprim value Val_SDL_WindowEvent(int type, int windowID) {
+  CAMLparam0();
+  CAMLlocal2(ret, v);
+
+  v = caml_alloc(1, 0);
+  Store_field(v, 0, Val_int(windowID));
+
+  ret = caml_alloc(1, type);
+  Store_field(ret, 0, v);
+
+  CAMLreturn(ret);
+}
+
+CAMLprim value Val_SDL_WindowEventWithData(int type, int windowID, int data1, int data2) {
+  CAMLparam0();
+  CAMLlocal2(ret, v);
+
+  v = caml_alloc(3, 0);
+  Store_field(v, 0, Val_int(windowID));
+  Store_field(v, 1, Val_int(data1));
+  Store_field(v, 2, Val_int(data2));
+
+  ret = caml_alloc(1, type);
+  Store_field(ret, 0, v);
+
+  CAMLreturn(ret);
+}
+
 CAMLprim value Val_SDL_Event(SDL_Event *event) {
   CAMLparam0();
   CAMLlocal3(ret, v, vInner);
@@ -224,6 +252,77 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       Store_field(v, 0, vInner);
       ret = Val_some(v);
     break;
+    case SDL_WINDOWEVENT:
+      switch (event->window.event) {
+      case SDL_WINDOWEVENT_SHOWN:
+        v = Val_SDL_WindowEvent(8, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_HIDDEN:
+        v = Val_SDL_WindowEvent(9, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_EXPOSED:
+        v = Val_SDL_WindowEvent(10, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_MOVED:
+        v = Val_SDL_WindowEventWithData(11, event->window.windowID, event->window.data1, event->window.data2);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_RESIZED:
+        v = Val_SDL_WindowEventWithData(12, event->window.windowID, event->window.data1, event->window.data2);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_SIZE_CHANGED:
+        v = Val_SDL_WindowEventWithData(13, event->window.windowID, event->window.data1, event->window.data2);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_MINIMIZED:
+        v = Val_SDL_WindowEvent(14, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_MAXIMIZED:
+        v = Val_SDL_WindowEvent(15, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_RESTORED:
+        v = Val_SDL_WindowEvent(16, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_ENTER:
+        v = Val_SDL_WindowEvent(17, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_LEAVE:
+        v = Val_SDL_WindowEvent(18, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_FOCUS_GAINED:
+        v = Val_SDL_WindowEvent(19, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_FOCUS_LOST:
+        v = Val_SDL_WindowEvent(20, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_CLOSE:
+        v = Val_SDL_WindowEvent(21, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_TAKE_FOCUS:
+        v = Val_SDL_WindowEvent(22, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      case SDL_WINDOWEVENT_HIT_TEST:
+        v = Val_SDL_WindowEvent(23, event->window.windowID);
+        ret = Val_some(v);
+        break;
+      default:
+        ret = Val_none;
+      };
+    
+    break;
     default:
       ret = Val_none;
     }
@@ -258,7 +357,7 @@ CAMLprim value resdl_SDL_WaitEvent() {
   CAMLreturn(ret);
 }
 
-CAMLprim value resdl_SDL_WaitTimeoutEvent(vTimeout) {
+CAMLprim value resdl_SDL_WaitTimeoutEvent(value vTimeout) {
   CAMLparam1(vTimeout);
   CAMLlocal1(ret);
   int timeout = Int_val(vTimeout);

@@ -228,6 +228,22 @@ module Event = {
     length: int,
   };
 
+  type windowEvent = {
+    windowID: int,
+  };
+
+  type windowMoveEvent = {
+    windowID: int,
+    x: int,
+    y: int,
+  };
+
+  type windowSizeEvent = {
+    windowID: int,
+    width: int,
+    height: int,
+  };
+
   type t =
     | Quit
     | MouseMotion(mouseMotion)
@@ -237,7 +253,23 @@ module Event = {
     | KeyDown(keyboardEvent)
     | KeyUp(keyboardEvent)
     | TextInput(textInputEvent)
-    | TextEditing(textEditingEvent);
+    | TextEditing(textEditingEvent)
+    | WindowShown(windowEvent)
+    | WindowHidden(windowEvent)
+    | WindowExposed(windowEvent)
+    | WindowMoved(windowMoveEvent)
+    | WindowResized(windowSizeEvent)
+    | WindowSizeChanged(windowSizeEvent)
+    | WindowMinimized(windowEvent)
+    | WindowMaximized(windowEvent)
+    | WindowRestored(windowEvent)
+    | WindowEnter(windowEvent)
+    | WindowLeave(windowEvent)
+    | WindowFocusGained(windowEvent)
+    | WindowFocusLost(windowEvent)
+    | WindowClosed(windowEvent)
+    | WindowTakeFocus(windowEvent)
+    | WindowHitTest(windowEvent);
 
   let show = (v: t) => {
     switch (v) {
@@ -289,6 +321,38 @@ module Event = {
       )
     | TextInput({text, _}) =>
       Printf.sprintf("TextInput:\n -- text: %s\n", text)
+    | WindowShown({ windowID }) =>
+      Printf.sprintf("WindowShown: %d\n", windowID);
+    | WindowHidden({ windowID }) =>
+      Printf.sprintf("WindowHidden: %d\n", windowID);
+    | WindowExposed({ windowID }) =>
+      Printf.sprintf("WindowExposed: %d\n", windowID);
+    | WindowMoved({ windowID, x, y }) =>
+      Printf.sprintf("WindowMoved - windowID: %d x: %d y: %d\n", windowID, x, y);
+    | WindowResized({ windowID, width, height }) =>
+      Printf.sprintf("WindowResized - windowID: %d x: %d y: %d\n", windowID, width, height);
+    | WindowSizeChanged({ windowID, width, height }) =>
+      Printf.sprintf("WindowSizeChanged - windowID: %d x: %d y: %d\n", windowID, width, height);
+    | WindowMinimized({ windowID }) =>
+      Printf.sprintf("WindowMinimized: %d\n", windowID);
+    | WindowMaximized({ windowID }) =>
+      Printf.sprintf("WindowMaximized: %d\n", windowID);
+    | WindowRestored({ windowID }) =>
+      Printf.sprintf("WindowRestored: %d\n", windowID);
+    | WindowEnter({ windowID }) =>
+      Printf.sprintf("WindowEnter: %d\n", windowID);
+    | WindowLeave({ windowID }) =>
+      Printf.sprintf("WindowLeave: %d\n", windowID);
+    | WindowFocusGained({ windowID }) =>
+      Printf.sprintf("WindowFocusGained: %d\n", windowID);
+    | WindowFocusLost({ windowID }) =>
+      Printf.sprintf("WindowFocusLost: %d\n", windowID);
+    | WindowClosed({ windowID }) =>
+      Printf.sprintf("WindowClosed: %d\n", windowID);
+    | WindowTakeFocus({ windowID }) =>
+      Printf.sprintf("WindowTakeFocus: %d\n", windowID);
+    | WindowHitTest({ windowID }) =>
+      Printf.sprintf("WindowHitTest: %d\n", windowID);
     };
   };
 

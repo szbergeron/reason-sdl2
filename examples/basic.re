@@ -44,13 +44,13 @@ let run = () => {
   //glfwMakeContextCurrent(primaryWindow);
 
   /*let monitor = glfwGetPrimaryMonitor();
-  let vidMode = glfwGetVideoMode(monitor);*/
+    let vidMode = glfwGetVideoMode(monitor);*/
 
   /*Sdl2.(
-    primaryWindow,
-    (vidMode.width - 800) / 2,
-    (vidMode.height - 600) / 2,
-  );*/
+      primaryWindow,
+      (vidMode.width - 800) / 2,
+      (vidMode.height - 600) / 2,
+    );*/
   Sdl2.Window.setSize(primaryWindow, 800, 600);
   Sdl2.Window.setTitle(primaryWindow, "reason-sdl2 example");
 
@@ -60,29 +60,32 @@ let run = () => {
 
   Sdl2.Window.maximize(primaryWindow);
 
-/*   let secondaryWindow = */
-/*     glfwCreateWindow(100, 50, ~sharedContext=primaryWindow, "secondWindow"); */
-/*   glfwSetWindowPos(secondaryWindow, vidMode.width / 2, vidMode.height / 2); */
-/*   glfwSetWindowSize(secondaryWindow, 800, 600); */
-/*   glfwSetWindowTitle(secondaryWindow, "second window"); */
+  /*   let secondaryWindow = */
+  /*     glfwCreateWindow(100, 50, ~sharedContext=primaryWindow, "secondWindow"); */
+  /*   glfwSetWindowPos(secondaryWindow, vidMode.width / 2, vidMode.height / 2); */
+  /*   glfwSetWindowSize(secondaryWindow, 800, 600); */
+  /*   glfwSetWindowTitle(secondaryWindow, "second window"); */
 
   /*let cursors = [|
-    glfwCreateStandardCursor(GLFW_ARROW_CURSOR),
-    glfwCreateStandardCursor(GLFW_IBEAM_CURSOR),
-    glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR),
-    glfwCreateStandardCursor(GLFW_HAND_CURSOR),
-    glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR),
-    glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR),
-  |];
-  Random.self_init();
-  let cursor = Random.int(Array.length(cursors));
-  glfwSetCursor(primaryWindow, cursors[cursor]);*/
+      glfwCreateStandardCursor(GLFW_ARROW_CURSOR),
+      glfwCreateStandardCursor(GLFW_IBEAM_CURSOR),
+      glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR),
+      glfwCreateStandardCursor(GLFW_HAND_CURSOR),
+      glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR),
+      glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR),
+    |];
+    Random.self_init();
+    let cursor = Random.int(Array.length(cursors));
+    glfwSetCursor(primaryWindow, cursors[cursor]);*/
 
-  let iconSurface = Sdl2.Surface.createFromImagePath(getExecutingDirectory() ++ "favicon01.png");
+  let iconSurface =
+    Sdl2.Surface.createFromImagePath(
+      getExecutingDirectory() ++ "favicon01.png",
+    );
   switch (iconSurface) {
-  | Ok(v) => Sdl2.Window.setIcon(primaryWindow, v);
-  | Error(msg) => prerr_endline ("Error: " ++ msg);
-  }
+  | Ok(v) => Sdl2.Window.setIcon(primaryWindow, v)
+  | Error(msg) => prerr_endline("Error: " ++ msg)
+  };
 
   glViewport(0, 0, 800, 600);
 
@@ -203,7 +206,7 @@ let run = () => {
 
   let delta = ref(0.);
   let render = window => {
-  //  glfwMakeContextCurrent(window);
+    //  glfwMakeContextCurrent(window);
     let time = Unix.gettimeofday();
     delta := delta^ +. time -. prevTime^;
     prevTime := time;
@@ -276,130 +279,130 @@ let run = () => {
   };
 
   /*
-  glfwSetScrollCallback(primaryWindow, (_w, deltaX, deltaY) =>
-    print_endline(
-      "SCROLL: "
-      ++ string_of_float(deltaX)
-      ++ ", "
-      ++ string_of_float(deltaY),
-    )
-  );
+   glfwSetScrollCallback(primaryWindow, (_w, deltaX, deltaY) =>
+     print_endline(
+       "SCROLL: "
+       ++ string_of_float(deltaX)
+       ++ ", "
+       ++ string_of_float(deltaY),
+     )
+   );
 
-  glfwSetCursorPosCallback(primaryWindow, (_w, x, y) =>
-    print_endline(
-      "CURSOR: " ++ string_of_float(x) ++ ", " ++ string_of_float(y),
-    )
-  );
+   glfwSetCursorPosCallback(primaryWindow, (_w, x, y) =>
+     print_endline(
+       "CURSOR: " ++ string_of_float(x) ++ ", " ++ string_of_float(y),
+     )
+   );
 
-  glfwSetKeyCallback(
-    primaryWindow,
-    (_w, _key, _scancode, buttonState, m) => {
-      print_endline(
-        "KEY: "
-        ++ string_of_int(Obj.magic(_key))
-        ++ "| " ++ Modifier.show(m)
-        ++ "| state: "
-        ++ ButtonState.show(buttonState),
-      );
+   glfwSetKeyCallback(
+     primaryWindow,
+     (_w, _key, _scancode, buttonState, m) => {
+       print_endline(
+         "KEY: "
+         ++ string_of_int(Obj.magic(_key))
+         ++ "| " ++ Modifier.show(m)
+         ++ "| state: "
+         ++ ButtonState.show(buttonState),
+       );
 
-      if (_key == GLFW_KEY_X) {
-        glfwDestroyWindow(_w);
-      };
-    },
-  );
+       if (_key == GLFW_KEY_X) {
+         glfwDestroyWindow(_w);
+       };
+     },
+   );
 
-  glfwSetCharCallback(primaryWindow, (_w, codepoint) =>
-    print_endline(
-      "CHAR: "
-      ++ string_of_int(codepoint)
-      ++ " | "
-      ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint))),
-    )
-  );
+   glfwSetCharCallback(primaryWindow, (_w, codepoint) =>
+     print_endline(
+       "CHAR: "
+       ++ string_of_int(codepoint)
+       ++ " | "
+       ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint))),
+     )
+   );
 
-  glfwSetCharModsCallback(
-    primaryWindow,
-    (_w, codepoint, m) => {
-      print_endline(
-      "CHAR MODS: "
-      ++ string_of_int(codepoint)
-      ++ " | "
-      ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint)))
-      ++ " | " 
-      ++ Modifier.show(m)
-      );
-    }
-  );
+   glfwSetCharModsCallback(
+     primaryWindow,
+     (_w, codepoint, m) => {
+       print_endline(
+       "CHAR MODS: "
+       ++ string_of_int(codepoint)
+       ++ " | "
+       ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint)))
+       ++ " | "
+       ++ Modifier.show(m)
+       );
+     }
+   );
 
-  glfwSetCharCallback(primaryWindow, (_w, codepoint) =>
-    print_endline(
-      "CHAR: "
-      ++ string_of_int(codepoint)
-      ++ " | "
-      ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint))),
-    )
-  );
+   glfwSetCharCallback(primaryWindow, (_w, codepoint) =>
+     print_endline(
+       "CHAR: "
+       ++ string_of_int(codepoint)
+       ++ " | "
+       ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint))),
+     )
+   );
 
-  glfwSetMouseButtonCallback(
-    primaryWindow,
-    (_w, button, buttonState, m) => {
-      let controlPressed = string_of_bool(Modifier.isControlPressed(m));
-      let shiftPressed = string_of_bool(Modifier.isShiftPressed(m));
-      print_endline(
-        "Mouse button: "
-        ++ MouseButton.show(button)
-        ++ "| ctrl: "
-        ++ controlPressed
-        ++ " | shift: "
-        ++ shiftPressed
-        ++ "| state: "
-        ++ ButtonState.show(buttonState),
-      );
-    },
-  );
+   glfwSetMouseButtonCallback(
+     primaryWindow,
+     (_w, button, buttonState, m) => {
+       let controlPressed = string_of_bool(Modifier.isControlPressed(m));
+       let shiftPressed = string_of_bool(Modifier.isShiftPressed(m));
+       print_endline(
+         "Mouse button: "
+         ++ MouseButton.show(button)
+         ++ "| ctrl: "
+         ++ controlPressed
+         ++ " | shift: "
+         ++ shiftPressed
+         ++ "| state: "
+         ++ ButtonState.show(buttonState),
+       );
+     },
+   );
 
-  glfwSetFramebufferSizeCallback(
-    primaryWindow,
-    (window, w, h) => {
-      glViewport(0, 0, w, h);
-      print_endline(
-        "Framebuffer size changed: "
-        ++ string_of_int(w)
-        ++ ", "
-        ++ string_of_int(h),
-      );
-      width := w;
-      height := h;
-      render(window);
-    },
-  );
+   glfwSetFramebufferSizeCallback(
+     primaryWindow,
+     (window, w, h) => {
+       glViewport(0, 0, w, h);
+       print_endline(
+         "Framebuffer size changed: "
+         ++ string_of_int(w)
+         ++ ", "
+         ++ string_of_int(h),
+       );
+       width := w;
+       height := h;
+       render(window);
+     },
+   );
 
-  glfwSetWindowSizeCallback(
-    primaryWindow,
-    (window, w, h) => {
-      print_endline(
-        "Window size changed: "
-        ++ string_of_int(w)
-        ++ ", "
-        ++ string_of_int(h),
-      );
-      width := w;
-      height := h;
-      render(window);
-    },
-  );
-  
-  glfwSetWindowPosCallback(
-    primaryWindow,
-    (_w, x, y) => {
-      print_endline(
-        "Window position changed: "
-        ++ string_of_int(x)
-        ++ ", "
-        ++ string_of_int(y),
-      );
-    },
-  );*/
+   glfwSetWindowSizeCallback(
+     primaryWindow,
+     (window, w, h) => {
+       print_endline(
+         "Window size changed: "
+         ++ string_of_int(w)
+         ++ ", "
+         ++ string_of_int(h),
+       );
+       width := w;
+       height := h;
+       render(window);
+     },
+   );
+
+   glfwSetWindowPosCallback(
+     primaryWindow,
+     (_w, x, y) => {
+       print_endline(
+         "Window position changed: "
+         ++ string_of_int(x)
+         ++ ", "
+         ++ string_of_int(y),
+       );
+     },
+   );*/
 
   /* glfwMaximizeWindow(w); */
 
@@ -419,23 +422,23 @@ let run = () => {
   };
 
   /*
-  let nativeWindow = glfwGetNativeWindow(primaryWindow);
-  print_endline ("Native window handle/pointer: " ++ string_of_int(Obj.magic(nativeWindow)));
-  */
+   let nativeWindow = glfwGetNativeWindow(primaryWindow);
+   print_endline ("Native window handle/pointer: " ++ string_of_int(Obj.magic(nativeWindow)));
+   */
 
   let frame = ref(0);
   while (true) {
-  //glfwRenderLoop(_t => {
+    //glfwRenderLoop(_t => {
 
     switch (Sdl2.Event.poll()) {
     | None => ()
-    | Some(evt) => 
-      print_endline (Sdl2.Event.show(evt));
-      switch(evt) {
+    | Some(evt) =>
+      print_endline(Sdl2.Event.show(evt));
+      switch (evt) {
       | Sdl2.Event.Quit => exit(0)
       | _ => ()
-      }
-    }
+      };
+    };
 
     render(primaryWindow);
     /* render(secondaryWindow); */
@@ -453,7 +456,7 @@ let run = () => {
     //print_endline ("Clipboard string before: " ++ v);
 
     //Glfw.glfwSetClipboardString(primaryWindow, "test clipboard: " ++ string_of_int(frame^));
-    
+
     //let s = Glfw.glfwGetClipboardString(primaryWindow);
     //let v = switch(s) {
     //| Some(v) => "Some(" ++ v ++ ")"
@@ -461,13 +464,11 @@ let run = () => {
     //}
     //print_endline ("Clipboard string after: " ++ v);
 
-
     /* Run the GC so we can catch any GC-related crashes early! */
     Gc.full_major();
-
     //glfwPollEvents();
     //glfwWindowShouldClose(primaryWindow);
-  //});
+    //});
   };
 
   print_endline("Done!");

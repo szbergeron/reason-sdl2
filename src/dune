@@ -1,7 +1,7 @@
 (library
     (name sdl2)
     (public_name sdl2)
-    (js_of_ocaml (javascript_files glfw_stubs.js gl_stubs.js stb_image_stubs.js image_stubs.js))
+    (js_of_ocaml (javascript_files sdl2_stubs.js gl_stubs.js stb_image_stubs.js image_stubs.js))
     (libraries
         lwt
         reglm)

@@ -346,26 +346,39 @@ CAMLprim value resdl_SDL_PollEvent() {
 
 CAMLprim value resdl_SDL_WaitEvent() {
   CAMLparam0();
-  CAMLlocal1(ret);
+  CAMLlocal2(ret, evt);
   SDL_Event e;
 
   caml_release_runtime_system();
-  SDL_WaitEvent(&e);
+  int result = SDL_WaitEvent(&e);
   caml_acquire_runtime_system();
+
+  if (result == 1) {
+    evt = Val_SDL_Event(&e);
+    ret = Val_ok(evt);
+  } else {
+    ret = Val_error(caml_copy_string(SDL_GetError()));
+  }
   
-  ret = Val_SDL_Event(&e);
   CAMLreturn(ret);
 }
 
 CAMLprim value resdl_SDL_WaitTimeoutEvent(value vTimeout) {
   CAMLparam1(vTimeout);
-  CAMLlocal1(ret);
+  CAMLlocal2(ret, evt);
   int timeout = Int_val(vTimeout);
   SDL_Event e;
 
   caml_release_runtime_system();
-  SDL_WaitEventTimeout(&e, timeout);
+  int result = SDL_WaitEventTimeout(&e, timeout);
   caml_acquire_runtime_system();
+  
+  if (result == 1) {
+    evt = Val_SDL_Event(&e);
+    ret = Val_ok(evt);
+  } else {
+    ret = Val_error(caml_copy_string(SDL_GetError()));
+  }
   
   ret = Val_SDL_Event(&e);
   CAMLreturn(ret);
@@ -820,4 +833,8 @@ CAMLprim value resdl_SDL_ModAltGrDown(value vMod) {
 };
 
 CAMLprim value resdl_PassThrough(value v) { return v; };
+
+CAMLprim value resdl__javascript__renderloop() {
+  return Val_unit;
 }
+};

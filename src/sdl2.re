@@ -246,20 +246,20 @@ module Event = {
 
   type t =
     | Quit
-    | MouseMotion(mouseMotion)
-    | MouseWheel(mouseWheel)
-    | MouseButtonDown(mouseButtonEvent)
-    | MouseButtonUp(mouseButtonEvent)
-    | KeyDown(keyboardEvent)
-    | KeyUp(keyboardEvent)
-    | TextInput(textInputEvent)
-    | TextEditing(textEditingEvent)
-    | WindowShown(windowEvent)
-    | WindowHidden(windowEvent)
-    | WindowExposed(windowEvent)
-    | WindowMoved(windowMoveEvent)
-    | WindowResized(windowSizeEvent)
-    | WindowSizeChanged(windowSizeEvent)
+    | MouseMotion(mouseMotion) // 0
+    | MouseWheel(mouseWheel) // 1
+    | MouseButtonDown(mouseButtonEvent) // 2
+    | MouseButtonUp(mouseButtonEvent) // 3
+    | KeyDown(keyboardEvent) // 4
+    | KeyUp(keyboardEvent) // 5
+    | TextInput(textInputEvent) // 6
+    | TextEditing(textEditingEvent) // 7
+    | WindowShown(windowEvent) // 8
+    | WindowHidden(windowEvent) // 9
+    | WindowExposed(windowEvent) // 10
+    | WindowMoved(windowMoveEvent) // 11
+    | WindowResized(windowSizeEvent) // 12
+    | WindowSizeChanged(windowSizeEvent) //12
     | WindowMinimized(windowEvent)
     | WindowMaximized(windowEvent)
     | WindowRestored(windowEvent)
@@ -357,8 +357,8 @@ module Event = {
   };
 
   external poll: unit => option(t) = "resdl_SDL_PollEvent";
-  external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
-  external waitTimeout: int => result(t, string) = "resdl_SDL_WaitTimeoutEvent";
+  external wait: unit => result(option(t), string) = "resdl_SDL_WaitEvent";
+  external waitTimeout: int => result(option(t), string) = "resdl_SDL_WaitTimeoutEvent";
 };
 
 module Cursor = {
@@ -380,4 +380,23 @@ module Cursor = {
 
   external createSystem: systemCursor => t = "resdl_SDL_CreateSystemCursor";
   external setCursor: t => unit = "resdl_SDL_SetCursor";
+};
+
+type renderFunction = unit => bool;
+external _javaScriptRenderLoop: renderFunction => unit = "resdl__javascript__renderloop";
+
+let _nativeLoop = renderFn => {
+  while (!renderFn()) {
+    /*Thread.yield();*/
+    ();
+  };
+  ();
+};
+
+let renderLoop = (renderFunction: renderFunction) => {
+  switch (Sys.backend_type){
+  | Native => _nativeLoop(renderFunction)
+  | Bytecode => _nativeLoop(renderFunction)
+  | _ => _javaScriptRenderLoop(renderFunction);
+  };
 };

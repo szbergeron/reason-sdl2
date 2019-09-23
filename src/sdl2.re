@@ -34,11 +34,12 @@ module Window = {
   external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";
 
   // Other platforms: no-op
-  external setWin32ProcessDPIAware: (t) => unit = "resdl_SDL_SetWin32ProcessDPIAware";
+  external setWin32ProcessDPIAware: t => unit =
+    "resdl_SDL_SetWin32ProcessDPIAware";
 
   // WINDOWS-ONLY: Get the monitor scale factor for the window
   // Other platforms: Always returns 1.0
-  external getWin32ScaleFactor: (t) => float = "resdl_SDL_GetWin32ScaleFactor";
+  external getWin32ScaleFactor: t => float = "resdl_SDL_GetWin32ScaleFactor";
 
   external hide: t => unit = "resdl_SDL_HideWindow";
   external raise: t => unit = "resdl_SDL_RaiseWindow";
@@ -54,7 +55,8 @@ module Gl = {
   type context;
 
   external setup: Window.t => context = "resdl_SDL_GL_Setup";
-  external makeCurrent: (Window.t, context) => unit = "resdl_SDL_GL_MakeCurrent";
+  external makeCurrent: (Window.t, context) => unit =
+    "resdl_SDL_GL_MakeCurrent";
   external swapWindow: Window.t => unit = "resdl_SDL_GL_SwapWindow";
   external getDrawableSize: Window.t => Size.t =
     "resdl_SDL_GL_GetDrawableSize";
@@ -384,8 +386,7 @@ module Event = {
 
   external poll: unit => option(t) = "resdl_SDL_PollEvent";
   external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
-  external waitTimeout: int => option(t)  =
-    "resdl_SDL_WaitTimeoutEvent";
+  external waitTimeout: int => option(t) = "resdl_SDL_WaitTimeoutEvent";
 };
 
 module Cursor = {

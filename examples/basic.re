@@ -56,7 +56,7 @@ let run = () => {
   Sdl2.Window.setWin32ProcessDPIAware(primaryWindow);
 
   let scale = Sdl2.Window.getWin32ScaleFactor(primaryWindow);
-  print_endline ("Win32 scale factor: " ++ string_of_float(scale));
+  print_endline("Win32 scale factor: " ++ string_of_float(scale));
 
   // Start text input, to experiment with IME + events
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);

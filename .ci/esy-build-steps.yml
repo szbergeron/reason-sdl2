@@ -10,3 +10,8 @@ steps:
     displayName: 'esy install'
   - script: esy build
     displayName: 'esy build'
+  - script: esy @js install
+    displayName: 'esy @js install'
+  - script: esy @js build
+    displayName: 'esy @js build'
+

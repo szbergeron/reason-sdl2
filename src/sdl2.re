@@ -36,7 +36,23 @@ module Display = {
     };
   };
 
+  module Mode = {
+    type t = {
+      width: int,
+      height: int,
+      refreshRate: int,
+    };
+
+    let show = (v: t) => {
+      Printf.sprintf("width: %d height: %d refreshRate: %d", v.width, v.height, v.refreshRate);
+    };
+  };
+
   external getDPI: t => Dpi.t = "resdl_SDL_GetDisplayDPI";
+
+  external getCurrentMode: t => Mode.t = "resdl_SDL_GetCurrentDisplayMode";
+
+  external getDesktopMode: t => Mode.t = "resdl_SDL_GetDesktopDisplayMode";
 };
 
 module Window = {
@@ -47,6 +63,7 @@ module Window = {
   external setBordered: (t, bool) => unit = "resdl_SDL_SetWindowBordered";
   external setIcon: (t, Surface.t) => unit = "resdl_SDL_SetWindowIcon";
   external setPosition: (t, int, int) => unit = "resdl_SDL_SetWindowPosition";
+  external center: (t) => unit = "resdl_SDL_WindowCenter";
   external setResizable: (t, bool) => unit = "resdl_SDL_SetWindowResizable";
   external setSize: (t, int, int) => unit = "resdl_SDL_SetWindowSize";
   external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";

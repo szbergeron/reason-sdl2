@@ -39,7 +39,7 @@ let initShaderProgram = (vsSource, fsSource) => {
 
 let run = () => {
   let _ = Sdl2.init();
-  let primaryWindow = Sdl2.Window.create(800, 600, "test");
+  let primaryWindow = Sdl2.Window.create(100, 100, "test");
   let context = Sdl2.Gl.setup(primaryWindow);
   //glfwMakeContextCurrent(primaryWindow);
 
@@ -51,7 +51,6 @@ let run = () => {
       (vidMode.width - 800) / 2,
       (vidMode.height - 600) / 2,
     );*/
-  //Sdl2.Window.setSize(primaryWindow, 800, 600);
   Sdl2.Window.setTitle(primaryWindow, "reason-sdl2 example");
   Sdl2.Window.setWin32ProcessDPIAware(primaryWindow);
 
@@ -61,6 +60,12 @@ let run = () => {
   let display = Sdl2.Window.getDisplay(primaryWindow);
   let dpi = Sdl2.Display.getDPI(display);
   print_endline("Display DPI: " ++ Sdl2.Display.Dpi.show(dpi));
+
+  let mode = Sdl2.Display.getDesktopMode(display);
+  print_endline("Display mode: " ++ Sdl2.Display.Mode.show(mode));
+  
+  Sdl2.Window.setSize(primaryWindow, 800, 600);
+  Sdl2.Window.center(primaryWindow);
 
   // Start text input, to experiment with IME + events
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);

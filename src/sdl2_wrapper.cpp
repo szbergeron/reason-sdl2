@@ -162,6 +162,38 @@ CAMLprim value resdl_SDL_GetDisplayDPI(value vDisplay) {
   CAMLreturn(ret); 
 };
 
+CAMLprim value resdl_SDL_GetCurrentDisplayMode(value vDisplay) {
+  CAMLparam1(vDisplay);
+  CAMLlocal1(ret);
+
+  int displayIndex = Int_val(vDisplay);
+  SDL_DisplayMode current;
+  
+  SDL_GetCurrentDisplayMode(displayIndex, &current);
+
+  ret = caml_alloc(3, 0);
+  Store_field(ret, 0, current.w);
+  Store_field(ret, 1, current.h);
+  Store_field(ret, 2, current.refresh_rate);
+  CAMLreturn(ret);
+};
+
+CAMLprim value resdl_SDL_GetDesktopDisplayMode(value vDisplay) {
+  CAMLparam1(vDisplay);
+  CAMLlocal1(ret);
+
+  int displayIndex = Int_val(vDisplay);
+  SDL_DisplayMode current;
+  
+  SDL_GetDesktopDisplayMode(displayIndex, &current);
+
+  ret = caml_alloc(3, 0);
+  Store_field(ret, 0, current.w);
+  Store_field(ret, 1, current.h);
+  Store_field(ret, 2, current.refresh_rate);
+  CAMLreturn(ret);
+};
+
 CAMLprim value resdl_SDL_GetWindowDisplayIndex(value w) {
   CAMLparam1(w);
   SDL_Window *win = (SDL_Window *)w;
@@ -685,6 +717,15 @@ CAMLprim value resdl_SDL_SetWindowPosition(value vWin, value vX, value vY) {
   int x = Int_val(vX);
   int y = Int_val(vY);
   SDL_SetWindowPosition(win, x, y);
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_WindowCenter(value vWin) {
+  CAMLparam1(vWin);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_SetWindowPosition(win, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
   CAMLreturn(Val_unit);
 }

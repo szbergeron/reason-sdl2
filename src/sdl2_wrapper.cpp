@@ -123,7 +123,30 @@ CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
 CAMLprim value resdl_SDL_GetWin32ScaleFactor(value vWin) {
   CAMLparam1(vWin);
 
+#ifdef WIN32
+  SDL_Window *win = (SDL_Window *)vWin;
+  HWND hwnd = getHWNDFromSDLWindow(win);
+  HMONITOR hmon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY);
+  
+  void* shcoreDLL;
+  HRESULT(WINAPI *GetScaleFactorForMonitor)(HMONITOR hmon, int *pScale);
+
+  shcoreDLL = SDL_LoadObject("SHCORE.DLL");
+  if (shcoreDLL) {
+    GetScaleFactorForMonitor = (HRESULT(WINAPI *)(HMONITOR, int*)) SDL_LoadFunction(shcoreDLL, "GetScaleFactorForMonitor");
+  }
+
+  if (GetScaleFactorForMonitor) {
+    int pScale;
+    GetScaleFactorForMonitor(hmon, &pScale);
+    printf("\n ** SCALE FACTOR: %d ** \n ", pScale);
+    
+    CAMLreturn(caml_copy_double(1.0));
+  };
+
+#else
   CAMLreturn(caml_copy_double(1.0));
+#endif
 };
 
 CAMLprim value resdl_SDL_GL_Setup(value w) {
@@ -771,7 +794,8 @@ CAMLprim value resdl_SDL_Init() {
   SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
       
       GetScaleFactorForDevice = (INT(WINAPI *)(INT)) SDL_LoadFunction(shcoreDLL,
-  "GetScaleFactorForDevice"); GetScaleFactorForMonitor = (HRESULT(WINAPI
+  "GetScaleFactorForDevice"); 
+  GetScaleFactorForMonitor = (HRESULT(WINAPI
   *)(HMONITOR, int*)) SDL_LoadFunction(shcoreDLL, "GetScaleFactorForMonitor");
   }
 

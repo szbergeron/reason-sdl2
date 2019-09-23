@@ -33,8 +33,11 @@ module Window = {
   external setSize: (t, int, int) => unit = "resdl_SDL_SetWindowSize";
   external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";
 
-  // WINDOWS-ONLY: Set the ProcessDPIAware flag
+  // Other platforms: no-op
   external setWin32ProcessDPIAware: (t) => unit = "resdl_SDL_SetWin32ProcessDPIAware";
+
+  // WINDOWS-ONLY: Get the monitor scale factor for the window
+  // Other platforms: Always returns 1.0
   external getWin32ScaleFactor: (t) => float = "resdl_SDL_GetWin32ScaleFactor";
 
   external hide: t => unit = "resdl_SDL_HideWindow";

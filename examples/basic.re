@@ -55,6 +55,8 @@ let run = () => {
   Sdl2.Window.setTitle(primaryWindow, "reason-sdl2 example");
   Sdl2.Window.setWin32ProcessDPIAware(primaryWindow);
 
+  let _ = Sdl2.Window.getWin32ScaleFactor(primaryWindow);
+
   // Start text input, to experiment with IME + events
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);
   Sdl2.TextInput.start();

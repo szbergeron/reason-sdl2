@@ -147,6 +147,28 @@ CAMLprim value resdl_SDL_GetWin32ScaleFactor(value vWin) {
 #endif
 };
 
+CAMLprim value resdl_SDL_GetDisplayDPI(value vDisplay) {
+  CAMLparam1(vDisplay);
+  CAMLlocal1(ret);
+  int displayIndex = Int_val(vDisplay);
+  
+  float ddpi, hdpi, vdpi;
+  SDL_GetDisplayDPI(displayIndex, &ddpi, &hdpi, &vdpi);
+
+  ret = caml_alloc(3, 0);
+  Store_double_field(ret, 0, ddpi);
+  Store_double_field(ret, 1, hdpi);
+  Store_double_field(ret, 2, vdpi);
+  CAMLreturn(ret); 
+};
+
+CAMLprim value resdl_SDL_GetWindowDisplayIndex(value w) {
+  CAMLparam1(w);
+  SDL_Window *win = (SDL_Window *)w;
+  int idx = SDL_GetWindowDisplayIndex(win);
+  CAMLreturn(Val_int(idx));
+};
+
 CAMLprim value resdl_SDL_GL_Setup(value w) {
   SDL_Window *win = (SDL_Window *)w;
   SDL_GLContext ctx= SDL_GL_CreateContext(win);

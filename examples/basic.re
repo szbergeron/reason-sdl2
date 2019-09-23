@@ -58,6 +58,10 @@ let run = () => {
   let scale = Sdl2.Window.getWin32ScaleFactor(primaryWindow);
   print_endline("Win32 scale factor: " ++ string_of_float(scale));
 
+  let display = Sdl2.Window.getDisplay(primaryWindow);
+  let dpi = Sdl2.Display.getDPI(display);
+  print_endline ("Display DPI: " ++ Sdl2.Display.Dpi.show(dpi));
+
   // Start text input, to experiment with IME + events
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);
   Sdl2.TextInput.start();

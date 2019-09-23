@@ -21,6 +21,24 @@ module Clipboard = {
   external hasText: unit => bool = "resdl_SDL_HasClipboardText";
 };
 
+module Display = {
+  type t;
+
+  module Dpi = {
+    type t = {
+      ddpi: float,
+      hdpi: float,
+      vdpi: float,
+    };
+
+    let show = (v: t) => {
+      Printf.sprintf("ddpi: %f hdpi: %f vdpi: %f", v.ddpi, v.hdpi, v.vdpi);
+    };
+  };
+
+  external getDPI: t => Dpi.t = "resdl_SDL_GetDisplayDPI";
+};
+
 module Window = {
   type t;
   external create: (int, int, string) => t = "resdl_SDL_CreateWindow";
@@ -33,14 +51,6 @@ module Window = {
   external setSize: (t, int, int) => unit = "resdl_SDL_SetWindowSize";
   external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";
 
-  // Other platforms: no-op
-  external setWin32ProcessDPIAware: t => unit =
-    "resdl_SDL_SetWin32ProcessDPIAware";
-
-  // WINDOWS-ONLY: Get the monitor scale factor for the window
-  // Other platforms: Always returns 1.0
-  external getWin32ScaleFactor: t => float = "resdl_SDL_GetWin32ScaleFactor";
-
   external hide: t => unit = "resdl_SDL_HideWindow";
   external raise: t => unit = "resdl_SDL_RaiseWindow";
   external show: t => unit = "resdl_SDL_ShowWindow";
@@ -48,6 +58,18 @@ module Window = {
   external minimize: t => unit = "resdl_SDL_MinimizeWindow";
   external restore: t => unit = "resdl_SDL_RestoreWindow";
   external maximize: t => unit = "resdl_SDL_MaximizeWindow";
+
+
+  external getDisplay: t => Display.t = "resdl_SDL_GetWindowDisplayIndex";
+
+  // Windows-Only: Set DPI Aware process flag
+  // Other platforms: no-op
+  external setWin32ProcessDPIAware: t => unit =
+    "resdl_SDL_SetWin32ProcessDPIAware";
+
+  // WINDOWS-ONLY: Get the monitor scale factor for the window
+  // Other platforms: Always returns 1.0
+  external getWin32ScaleFactor: t => float = "resdl_SDL_GetWin32ScaleFactor";
 };
 
 module OldGl = Gl;

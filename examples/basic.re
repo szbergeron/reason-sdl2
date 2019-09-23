@@ -63,7 +63,7 @@ let run = () => {
 
   let mode = Sdl2.Display.getDesktopMode(display);
   print_endline("Display mode: " ++ Sdl2.Display.Mode.show(mode));
-  
+
   Sdl2.Window.setSize(primaryWindow, 800, 600);
   Sdl2.Window.center(primaryWindow);
 

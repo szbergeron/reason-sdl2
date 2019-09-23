@@ -16,14 +16,12 @@ CAMLprim value caml_stb_image_load(value vPath, value vSuccess,
   int width, height;
 
   char *path = String_val(vPath);
-  printf("Loading image %s\n", path);
 
   unsigned char *data = stbi_load(path, &width, &height, NULL, 4);
 
   if (!data) {
     caml_callback(vFailure, caml_copy_string("Unable to load image."));
   } else {
-    printf("Load result - width: %d height: %d\n", width, height);
     struct ReglfwImageInfo *pImageInfo =
         (ReglfwImageInfo *)malloc(sizeof(ReglfwImageInfo));
     pImageInfo->width = width;
@@ -72,7 +70,6 @@ CAMLprim value caml_stb_image_from_color(value vR, value vG, value vB,
 CAMLprim value caml_stb_image_debug_print(value vImage) {
   ReglfwImageInfo *pImage = (ReglfwImageInfo *)vImage;
 
-  printf("Debug - width: %d height: %d\n", pImage->width, pImage->height);
   return Val_unit;
 }
 }

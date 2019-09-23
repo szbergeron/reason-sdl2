@@ -60,7 +60,7 @@ let run = () => {
 
   let display = Sdl2.Window.getDisplay(primaryWindow);
   let dpi = Sdl2.Display.getDPI(display);
-  print_endline ("Display DPI: " ++ Sdl2.Display.Dpi.show(dpi));
+  print_endline("Display DPI: " ++ Sdl2.Display.Dpi.show(dpi));
 
   // Start text input, to experiment with IME + events
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);

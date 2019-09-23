@@ -59,7 +59,6 @@ module Window = {
   external restore: t => unit = "resdl_SDL_RestoreWindow";
   external maximize: t => unit = "resdl_SDL_MaximizeWindow";
 
-
   external getDisplay: t => Display.t = "resdl_SDL_GetWindowDisplayIndex";
 
   // Windows-Only: Set DPI Aware process flag

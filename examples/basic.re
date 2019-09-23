@@ -121,7 +121,7 @@ let run = () => {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-  print_endline ("Getting framebuffer size...");
+  print_endline("Getting framebuffer size...");
 
   let frameBufferSize = Sdl2.Gl.getDrawableSize(primaryWindow);
   print_endline(
@@ -409,19 +409,19 @@ let run = () => {
   /* glfwMaximizeWindow(w); */
 
   /*let captureWindow = (w, filename) => {
-    let size = Sdl2.Gl.getDrawableSize(w);
-    let pixels =
-      Bigarray.Array2.create(
-        Bigarray.int8_unsigned,
-        Bigarray.c_layout,
-        size.height,
-        size.width * 4 /* RGBA */
-      );
-    glReadPixels(0, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    let image = Image.create(pixels);
-    Image.save(image, filename);
-    Image.destroy(image);
-  };*/
+      let size = Sdl2.Gl.getDrawableSize(w);
+      let pixels =
+        Bigarray.Array2.create(
+          Bigarray.int8_unsigned,
+          Bigarray.c_layout,
+          size.height,
+          size.width * 4 /* RGBA */
+        );
+      glReadPixels(0, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+      let image = Image.create(pixels);
+      Image.save(image, filename);
+      Image.destroy(image);
+    };*/
 
   /*
    let nativeWindow = glfwGetNativeWindow(primaryWindow);
@@ -430,46 +430,45 @@ let run = () => {
 
   //let frame = ref(0);
   Sdl2.renderLoop(() => {
-
-  switch (Sdl2.Event.poll()) {
-  | None => ()
-  | Some(evt) =>
-    print_endline(Sdl2.Event.show(evt));
-    switch (evt) {
-    | Sdl2.Event.Quit => exit(0)
-    | _ => ()
+    switch (Sdl2.Event.poll()) {
+    | None => ()
+    | Some(evt) =>
+      print_endline(Sdl2.Event.show(evt));
+      switch (evt) {
+      | Sdl2.Event.Quit => exit(0)
+      | _ => ()
+      };
     };
-  };
 
-  render(primaryWindow);
-  /* render(secondaryWindow); */
-/*  if (frame^ == 60) {
-    captureWindow(primaryWindow, Printf.sprintf("scrot%d.tga", frame^));
-  };
-  frame := frame^ + 1;*/
+    render(primaryWindow);
+    /* render(secondaryWindow); */
+    /*  if (frame^ == 60) {
+          captureWindow(primaryWindow, Printf.sprintf("scrot%d.tga", frame^));
+        };
+        frame := frame^ + 1;*/
 
-  //let s = Glfw.glfwGetClipboardString(primaryWindow);
+    //let s = Glfw.glfwGetClipboardString(primaryWindow);
 
-  //let v = switch(s) {
-  //| Some(v) => "Some(" ++ v ++ ")"
-  //| None => "None"
-  //}
-  //print_endline ("Clipboard string before: " ++ v);
+    //let v = switch(s) {
+    //| Some(v) => "Some(" ++ v ++ ")"
+    //| None => "None"
+    //}
+    //print_endline ("Clipboard string before: " ++ v);
 
-  //Glfw.glfwSetClipboardString(primaryWindow, "test clipboard: " ++ string_of_int(frame^));
+    //Glfw.glfwSetClipboardString(primaryWindow, "test clipboard: " ++ string_of_int(frame^));
 
-  //let s = Glfw.glfwGetClipboardString(primaryWindow);
-  //let v = switch(s) {
-  //| Some(v) => "Some(" ++ v ++ ")"
-  //| None => "None"
-  //}
-  //print_endline ("Clipboard string after: " ++ v);
+    //let s = Glfw.glfwGetClipboardString(primaryWindow);
+    //let v = switch(s) {
+    //| Some(v) => "Some(" ++ v ++ ")"
+    //| None => "None"
+    //}
+    //print_endline ("Clipboard string after: " ++ v);
 
-  /* Run the GC so we can catch any GC-related crashes early! */
-  // Gc.full_major();
-  //glfwPollEvents();
-  //glfwWindowShouldClose(primaryWindow);
-  false;
+    /* Run the GC so we can catch any GC-related crashes early! */
+    // Gc.full_major();
+    //glfwPollEvents();
+    //glfwWindowShouldClose(primaryWindow);
+    false;
   });
 
   print_endline("Done!");

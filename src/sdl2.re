@@ -228,9 +228,7 @@ module Event = {
     length: int,
   };
 
-  type windowEvent = {
-    windowID: int,
-  };
+  type windowEvent = {windowID: int};
 
   type windowMoveEvent = {
     windowID: int,
@@ -323,45 +321,61 @@ module Event = {
       )
     | TextInput({text, _}) =>
       Printf.sprintf("TextInput:\n -- text: %s\n", text)
-    | WindowShown({ windowID }) =>
-      Printf.sprintf("WindowShown: %d\n", windowID);
-    | WindowHidden({ windowID }) =>
-      Printf.sprintf("WindowHidden: %d\n", windowID);
-    | WindowExposed({ windowID }) =>
-      Printf.sprintf("WindowExposed: %d\n", windowID);
-    | WindowMoved({ windowID, x, y }) =>
-      Printf.sprintf("WindowMoved - windowID: %d x: %d y: %d\n", windowID, x, y);
-    | WindowResized({ windowID, width, height }) =>
-      Printf.sprintf("WindowResized - windowID: %d x: %d y: %d\n", windowID, width, height);
-    | WindowSizeChanged({ windowID, width, height }) =>
-      Printf.sprintf("WindowSizeChanged - windowID: %d x: %d y: %d\n", windowID, width, height);
-    | WindowMinimized({ windowID }) =>
-      Printf.sprintf("WindowMinimized: %d\n", windowID);
-    | WindowMaximized({ windowID }) =>
-      Printf.sprintf("WindowMaximized: %d\n", windowID);
-    | WindowRestored({ windowID }) =>
-      Printf.sprintf("WindowRestored: %d\n", windowID);
-    | WindowEnter({ windowID }) =>
-      Printf.sprintf("WindowEnter: %d\n", windowID);
-    | WindowLeave({ windowID }) =>
-      Printf.sprintf("WindowLeave: %d\n", windowID);
-    | WindowFocusGained({ windowID }) =>
-      Printf.sprintf("WindowFocusGained: %d\n", windowID);
-    | WindowFocusLost({ windowID }) =>
-      Printf.sprintf("WindowFocusLost: %d\n", windowID);
-    | WindowClosed({ windowID }) =>
-      Printf.sprintf("WindowClosed: %d\n", windowID);
-    | WindowTakeFocus({ windowID }) =>
-      Printf.sprintf("WindowTakeFocus: %d\n", windowID);
-    | WindowHitTest({ windowID }) =>
-      Printf.sprintf("WindowHitTest: %d\n", windowID);
+    | WindowShown({windowID}) =>
+      Printf.sprintf("WindowShown: %d\n", windowID)
+    | WindowHidden({windowID}) =>
+      Printf.sprintf("WindowHidden: %d\n", windowID)
+    | WindowExposed({windowID}) =>
+      Printf.sprintf("WindowExposed: %d\n", windowID)
+    | WindowMoved({windowID, x, y}) =>
+      Printf.sprintf(
+        "WindowMoved - windowID: %d x: %d y: %d\n",
+        windowID,
+        x,
+        y,
+      )
+    | WindowResized({windowID, width, height}) =>
+      Printf.sprintf(
+        "WindowResized - windowID: %d x: %d y: %d\n",
+        windowID,
+        width,
+        height,
+      )
+    | WindowSizeChanged({windowID, width, height}) =>
+      Printf.sprintf(
+        "WindowSizeChanged - windowID: %d x: %d y: %d\n",
+        windowID,
+        width,
+        height,
+      )
+    | WindowMinimized({windowID}) =>
+      Printf.sprintf("WindowMinimized: %d\n", windowID)
+    | WindowMaximized({windowID}) =>
+      Printf.sprintf("WindowMaximized: %d\n", windowID)
+    | WindowRestored({windowID}) =>
+      Printf.sprintf("WindowRestored: %d\n", windowID)
+    | WindowEnter({windowID}) =>
+      Printf.sprintf("WindowEnter: %d\n", windowID)
+    | WindowLeave({windowID}) =>
+      Printf.sprintf("WindowLeave: %d\n", windowID)
+    | WindowFocusGained({windowID}) =>
+      Printf.sprintf("WindowFocusGained: %d\n", windowID)
+    | WindowFocusLost({windowID}) =>
+      Printf.sprintf("WindowFocusLost: %d\n", windowID)
+    | WindowClosed({windowID}) =>
+      Printf.sprintf("WindowClosed: %d\n", windowID)
+    | WindowTakeFocus({windowID}) =>
+      Printf.sprintf("WindowTakeFocus: %d\n", windowID)
+    | WindowHitTest({windowID}) =>
+      Printf.sprintf("WindowHitTest: %d\n", windowID)
     | Unknown => "Unknown"
     };
   };
 
   external poll: unit => option(t) = "resdl_SDL_PollEvent";
   external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
-  external waitTimeout: int => (option(t), string) = "resdl_SDL_WaitTimeoutEvent";
+  external waitTimeout: int => (option(t), string) =
+    "resdl_SDL_WaitTimeoutEvent";
 };
 
 module Cursor = {
@@ -386,20 +400,21 @@ module Cursor = {
 };
 
 type renderFunction = unit => bool;
-external _javaScriptRenderLoop: renderFunction => unit = "resdl__javascript__renderloop";
+external _javaScriptRenderLoop: renderFunction => unit =
+  "resdl__javascript__renderloop";
 
 let _nativeLoop = renderFn => {
   while (!renderFn()) {
-    /*Thread.yield();*/
     ();
+      /*Thread.yield();*/
   };
   ();
 };
 
 let renderLoop = (renderFunction: renderFunction) => {
-  switch (Sys.backend_type){
+  switch (Sys.backend_type) {
   | Native => _nativeLoop(renderFunction)
   | Bytecode => _nativeLoop(renderFunction)
-  | _ => _javaScriptRenderLoop(renderFunction);
+  | _ => _javaScriptRenderLoop(renderFunction)
   };
 };

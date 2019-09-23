@@ -139,9 +139,7 @@ CAMLprim value resdl_SDL_GetWin32ScaleFactor(value vWin) {
   if (GetScaleFactorForMonitor) {
     int pScale;
     GetScaleFactorForMonitor(hmon, &pScale);
-    printf("\n ** SCALE FACTOR: %d ** \n ", pScale);
-    
-    CAMLreturn(caml_copy_double(1.0));
+    CAMLreturn(caml_copy_double(pScale / 100.0));
   };
 
 #else

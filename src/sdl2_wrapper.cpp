@@ -17,6 +17,7 @@
 #include "stb_image.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 
 #define Val_none Val_int(0)
 static value Val_some(value v) {
@@ -63,7 +64,63 @@ CAMLprim value resdl_SDL_Delay(value delay) {
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value resdl_SDL_GetWindowScaleFactor(value vWin) {
+#ifdef WIN32
+
+typedef enum PROCESS_DPI_AWARENESS {
+  PROCESS_DPI_UNAWARE = 0,
+  PROCESS_SYSTEM_DPI_AWARE = 1,
+  PROCESS_PER_MONITOR_DPI_AWARE = 2
+} PROCESS_DPI_AWARENESS;
+
+HWND getHWNDFromSDLWindow(SDL_Window *win) {
+  SDL_SysWMinfo wmInfo;
+  SDL_VERSION(&wmInfo.version);
+  SDL_GetWindowWMInfo(win, &wmInfo);
+  return wmInfo.info.win.window;
+};
+
+#endif
+
+CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
+  CAMLparam1(vWin);
+
+#ifdef WIN32
+  SDL_Window *win = (SDL_Window *)vWin;
+  HWND hwnd = getHWNDFromSDLWindow(win);
+  void* userDLL;
+  BOOL(WINAPI *SetProcessDPIAware)(void); // Vista and later
+  void* shcoreDLL;
+  HRESULT(WINAPI *SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS dpiAwareness);
+  // Windows 8.1 and later INT(WINAPI *GetScaleFactorForDevice)(int deviceType);
+
+  userDLL = SDL_LoadObject("USER32.DLL");
+  if (userDLL) {
+      SetProcessDPIAware = (BOOL(WINAPI *)(void)) SDL_LoadFunction(userDLL,
+  "SetProcessDPIAware");
+  }
+
+  shcoreDLL = SDL_LoadObject("SHCORE.DLL");
+  if (shcoreDLL) {
+      SetProcessDpiAwareness = (HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS))
+  SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
+  }
+
+  if (SetProcessDpiAwareness) {
+      // Try Windows 8.1+ version
+      HRESULT result = SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+  }
+  else if (SetProcessDPIAware) {
+      // Try Vista - Windows 8 version.
+      // This has a constant scale factor for all monitors.
+      BOOL success = SetProcessDPIAware();
+      SDL_Log("called SetProcessDPIAware: %d", (int)success);
+  }
+#endif
+  
+  CAMLreturn(Val_unit);
+};
+
+CAMLprim value resdl_SDL_GetWin32ScaleFactor(value vWin) {
   CAMLparam1(vWin);
 
   CAMLreturn(caml_copy_double(1.0));
@@ -686,12 +743,6 @@ CAMLprim value resdl_SDL_GetWindowId(value vWindow) {
   int id = SDL_GetWindowID(win);
   CAMLreturn(Val_int(id));
 }
-
-typedef enum PROCESS_DPI_AWARENESS {
-  PROCESS_DPI_UNAWARE = 0,
-  PROCESS_SYSTEM_DPI_AWARE = 1,
-  PROCESS_PER_MONITOR_DPI_AWARE = 2
-} PROCESS_DPI_AWARENESS;
 
 CAMLprim value resdl_SDL_Init() {
   CAMLparam0();

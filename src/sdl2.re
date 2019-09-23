@@ -33,7 +33,9 @@ module Window = {
   external setSize: (t, int, int) => unit = "resdl_SDL_SetWindowSize";
   external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";
 
-  external getScaleFactor: (t) => float = "resdl_SDL_GetWindowScaleFactor";
+  // WINDOWS-ONLY: Set the ProcessDPIAware flag
+  external setWin32ProcessDPIAware: (t) => unit = "resdl_SDL_SetWin32ProcessDPIAware";
+  external getWin32ScaleFactor: (t) => float = "resdl_SDL_GetWin32ScaleFactor";
 
   external hide: t => unit = "resdl_SDL_HideWindow";
   external raise: t => unit = "resdl_SDL_RaiseWindow";
@@ -379,7 +381,7 @@ module Event = {
 
   external poll: unit => option(t) = "resdl_SDL_PollEvent";
   external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
-  external waitTimeout: int => (option(t), string) =
+  external waitTimeout: int => option(t)  =
     "resdl_SDL_WaitTimeoutEvent";
 };
 

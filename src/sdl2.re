@@ -33,6 +33,8 @@ module Window = {
   external setSize: (t, int, int) => unit = "resdl_SDL_SetWindowSize";
   external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";
 
+  external getScaleFactor: (t) => float = "resdl_SDL_GetWindowScaleFactor";
+
   external hide: t => unit = "resdl_SDL_HideWindow";
   external raise: t => unit = "resdl_SDL_RaiseWindow";
   external show: t => unit = "resdl_SDL_ShowWindow";
@@ -44,7 +46,10 @@ module Window = {
 
 module OldGl = Gl;
 module Gl = {
-  external setup: Window.t => unit = "resdl_SDL_GL_Setup";
+  type context;
+
+  external setup: Window.t => context = "resdl_SDL_GL_Setup";
+  external makeCurrent: (Window.t, context) => unit = "resdl_SDL_GL_MakeCurrent";
   external swapWindow: Window.t => unit = "resdl_SDL_GL_SwapWindow";
   external getDrawableSize: Window.t => Size.t =
     "resdl_SDL_GL_GetDrawableSize";

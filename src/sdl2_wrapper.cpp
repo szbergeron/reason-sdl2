@@ -63,9 +63,15 @@ CAMLprim value resdl_SDL_Delay(value delay) {
   CAMLreturn(Val_unit);
 }
 
+CAMLprim value resdl_SDL_GetWindowScaleFactor(value vWin) {
+  CAMLparam1(vWin);
+
+  CAMLreturn(caml_copy_double(1.0));
+};
+
 CAMLprim value resdl_SDL_GL_Setup(value w) {
   SDL_Window *win = (SDL_Window *)w;
-  SDL_GL_CreateContext(win);
+  SDL_GLContext ctx= SDL_GL_CreateContext(win);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
@@ -80,8 +86,17 @@ CAMLprim value resdl_SDL_GL_Setup(value w) {
                      SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 
   gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress);
-  return Val_unit;
+  return (value)ctx;
 }
+
+CAMLprim value resdl_SDL_GL_MakeCurrent(value vWindow, value vContext) {
+  CAMLparam2(vWindow, vContext);
+  SDL_Window *win = (SDL_Window *)vWindow;
+  SDL_GLContext ctx = (SDL_GLContext)vContext;
+
+  SDL_GL_MakeCurrent(win, ctx);
+  CAMLreturn(Val_unit);
+};
 
 CAMLprim value resdl_SDL_GetClipboardText(value vUnit) {
   CAMLparam0();

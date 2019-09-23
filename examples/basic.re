@@ -40,7 +40,7 @@ let initShaderProgram = (vsSource, fsSource) => {
 let run = () => {
   let _ = Sdl2.init();
   let primaryWindow = Sdl2.Window.create(100, 50, "test");
-  Sdl2.Gl.setup(primaryWindow);
+  let context = Sdl2.Gl.setup(primaryWindow);
   //glfwMakeContextCurrent(primaryWindow);
 
   /*let monitor = glfwGetPrimaryMonitor();
@@ -209,6 +209,7 @@ let run = () => {
   let delta = ref(0.);
   let render = window => {
     //  glfwMakeContextCurrent(window);
+    Sdl2.Gl.makeCurrent(window, context);
     let time = Unix.gettimeofday();
     delta := delta^ +. time -. prevTime^;
     prevTime := time;

@@ -269,7 +269,9 @@ module Event = {
     | WindowFocusLost(windowEvent)
     | WindowClosed(windowEvent)
     | WindowTakeFocus(windowEvent)
-    | WindowHitTest(windowEvent);
+    | WindowHitTest(windowEvent)
+    // An event that hasn't been implemented yet
+    | Unknown;
 
   let show = (v: t) => {
     switch (v) {
@@ -353,12 +355,13 @@ module Event = {
       Printf.sprintf("WindowTakeFocus: %d\n", windowID);
     | WindowHitTest({ windowID }) =>
       Printf.sprintf("WindowHitTest: %d\n", windowID);
+    | Unknown => "Unknown"
     };
   };
 
   external poll: unit => option(t) = "resdl_SDL_PollEvent";
-  external wait: unit => result(option(t), string) = "resdl_SDL_WaitEvent";
-  external waitTimeout: int => result(option(t), string) = "resdl_SDL_WaitTimeoutEvent";
+  external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
+  external waitTimeout: int => (option(t), string) = "resdl_SDL_WaitTimeoutEvent";
 };
 
 module Cursor = {

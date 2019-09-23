@@ -139,22 +139,15 @@ CAMLprim value Val_SDL_WindowEventWithData(int type, int windowID, int data1, in
 
 CAMLprim value Val_SDL_Event(SDL_Event *event) {
   CAMLparam0();
-  CAMLlocal3(ret, v, vInner);
+  CAMLlocal2(v, vInner);
 
   int tag, mouseButton;
 
-  if (event == NULL) {
-    v = Val_none;
-    ret = Val_none;
-  } else {
     switch (event->type) {
     case SDL_QUIT:
       v = Val_int(0);
-      ret = Val_some(v);
       break;
     case SDL_MOUSEMOTION:
-      // SDL_MouseMotionEvent *ev = (SDL_MouseMotionEvent *)event;
-
       vInner = caml_alloc(3, 0);
       Store_field(vInner, 0, Val_int(event->motion.windowID));
       Store_field(vInner, 1, Val_int(event->motion.x));
@@ -162,7 +155,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
 
       v = caml_alloc(1, 0);
       Store_field(v, 0, vInner);
-      ret = Val_some(v);
       break;
     case SDL_MOUSEWHEEL:
       v = caml_alloc(1, 1);
@@ -175,7 +167,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
                   Val_bool(event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED));
 
       Store_field(v, 0, vInner);
-      ret = Val_some(v);
       break;
     case SDL_MOUSEBUTTONUP:
     case SDL_MOUSEBUTTONDOWN:
@@ -214,7 +205,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       Store_field(vInner, 4, Val_int(event->button.y));
 
       Store_field(v, 0, vInner);
-      ret = Val_some(v);
       break;
     case SDL_KEYDOWN:
     case SDL_KEYUP:
@@ -228,7 +218,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       Store_field(vInner, 4, Val_int(event->key.keysym.sym));
 
       Store_field(v, 0, vInner);
-      ret = Val_some(v);
       break;
     case SDL_TEXTINPUT:
       v = caml_alloc(1, 6);
@@ -238,7 +227,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       Store_field(vInner, 1, caml_copy_string(event->text.text));
       
       Store_field(v, 0, vInner);
-      ret = Val_some(v);
       break;
     case SDL_TEXTEDITING:
       v = caml_alloc(1, 7);
@@ -250,97 +238,85 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       Store_field(vInner, 3, Val_int(event->edit.length));
       
       Store_field(v, 0, vInner);
-      ret = Val_some(v);
     break;
     case SDL_WINDOWEVENT:
       switch (event->window.event) {
       case SDL_WINDOWEVENT_SHOWN:
         v = Val_SDL_WindowEvent(8, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_HIDDEN:
         v = Val_SDL_WindowEvent(9, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_EXPOSED:
         v = Val_SDL_WindowEvent(10, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_MOVED:
         v = Val_SDL_WindowEventWithData(11, event->window.windowID, event->window.data1, event->window.data2);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_RESIZED:
         v = Val_SDL_WindowEventWithData(12, event->window.windowID, event->window.data1, event->window.data2);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_SIZE_CHANGED:
         v = Val_SDL_WindowEventWithData(13, event->window.windowID, event->window.data1, event->window.data2);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_MINIMIZED:
         v = Val_SDL_WindowEvent(14, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_MAXIMIZED:
         v = Val_SDL_WindowEvent(15, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_RESTORED:
         v = Val_SDL_WindowEvent(16, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_ENTER:
         v = Val_SDL_WindowEvent(17, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_LEAVE:
         v = Val_SDL_WindowEvent(18, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_FOCUS_GAINED:
         v = Val_SDL_WindowEvent(19, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_FOCUS_LOST:
         v = Val_SDL_WindowEvent(20, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_CLOSE:
         v = Val_SDL_WindowEvent(21, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_TAKE_FOCUS:
         v = Val_SDL_WindowEvent(22, event->window.windowID);
-        ret = Val_some(v);
         break;
       case SDL_WINDOWEVENT_HIT_TEST:
         v = Val_SDL_WindowEvent(23, event->window.windowID);
-        ret = Val_some(v);
         break;
       default:
-        ret = Val_none;
+        v = Val_int(1);
       };
     
     break;
     default:
-      ret = Val_none;
+      v = Val_int(1);
     }
-  }
 
-  CAMLreturn(ret);
+  CAMLreturn(v);
 };
 
 CAMLprim value resdl_SDL_PollEvent() {
   CAMLparam0();
-  CAMLlocal1(ret);
+  CAMLlocal2(ret, evt);
   SDL_Event e;
 
   caml_release_runtime_system();
-  SDL_PollEvent(&e);
+  int result = SDL_PollEvent(&e);
   caml_acquire_runtime_system();
+
+  if (result == 0) {
+    ret = Val_none;
+  } else {
+    evt = Val_SDL_Event(&e);
+    ret = Val_some(evt);
+  }
   
-  ret = Val_SDL_Event(&e);
   CAMLreturn(ret);
 }
 
@@ -375,12 +351,11 @@ CAMLprim value resdl_SDL_WaitTimeoutEvent(value vTimeout) {
   
   if (result == 1) {
     evt = Val_SDL_Event(&e);
-    ret = Val_ok(evt);
+    ret = Val_some(evt);
   } else {
-    ret = Val_error(caml_copy_string(SDL_GetError()));
+    ret = Val_none;
   }
   
-  ret = Val_SDL_Event(&e);
   CAMLreturn(ret);
 }
 

@@ -56,6 +56,7 @@ let flags =
 
 let cxx_flags =
     match get_os with
+    | Linux -> c_flags @ ["-std=c++11"]
     | Windows -> c_flags @ ["-fno-exceptions"; "-fno-rtti"; "-lstdc++"]
     | _ -> c_flags
 ;;

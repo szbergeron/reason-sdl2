@@ -1,8 +1,11 @@
 {
-  "name": "reason-glfw",
-  "version": "3.2.1027",
-  "description": "GLFW bindings for OCaml",
+  "name": "reason-sdl2",
+  "version": "1.0.0",
+  "description": "SDL2 bindings for OCaml",
   "license": "MIT",
+  "scripts": {
+    "format": "esy dune build @fmt --auto-promote"
+  },
   "esy": {
     "build": [
       [
@@ -16,7 +19,7 @@
         "build",
         "--root",
         ".",
-        "./bin_js/test_glfw.bc.js"
+        "./bin_js/test_sdl2.bc.js"
       ]
     ],
     "install": [
@@ -36,7 +39,7 @@
     "@opam/lwt": "^4.0.0",
     "@opam/lwt_ppx": "^1.1.0",
     "esy-glfw": "^3.2.1008",
-    "esy-sdl2": "^2.0.10001",
+    "esy-sdl2": "^2.0.10002",
     "esy-cmake": "^0.3.4",
     "reason-gl-matrix": "^0.9.9304"
   },

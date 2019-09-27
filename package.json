@@ -1,6 +1,6 @@
 {
   "name": "reason-sdl2",
-  "version": "1.0.0",
+  "version": "2.10.2001",
   "description": "SDL2 bindings for OCaml",
   "license": "MIT",
   "scripts": {

@@ -68,6 +68,8 @@ let run = () => {
   Sdl2.Window.setSize(primaryWindow, 800, 600);
   Sdl2.Window.center(primaryWindow);
 
+  Sdl2.Window.show(primaryWindow);
+
   // Start text input, to experiment with IME + events
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);
   Sdl2.TextInput.start();
@@ -80,17 +82,16 @@ let run = () => {
   /*   glfwSetWindowSize(secondaryWindow, 800, 600); */
   /*   glfwSetWindowTitle(secondaryWindow, "second window"); */
 
-  /*let cursors = [|
-      glfwCreateStandardCursor(GLFW_ARROW_CURSOR),
-      glfwCreateStandardCursor(GLFW_IBEAM_CURSOR),
-      glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR),
-      glfwCreateStandardCursor(GLFW_HAND_CURSOR),
-      glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR),
-      glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR),
-    |];
-    Random.self_init();
-    let cursor = Random.int(Array.length(cursors));
-    glfwSetCursor(primaryWindow, cursors[cursor]);*/
+  let cursors = [|
+    Sdl2.Cursor.createSystem(Arrow),
+    Sdl2.Cursor.createSystem(IBeam),
+    Sdl2.Cursor.createSystem(Wait),
+    Sdl2.Cursor.createSystem(No),
+    Sdl2.Cursor.createSystem(Hand),
+  |];
+  Random.self_init();
+  let cursor = Random.int(Array.length(cursors));
+  Sdl2.Cursor.set(cursors[cursor]);
 
   let iconSurface =
     Sdl2.Surface.createFromImagePath(

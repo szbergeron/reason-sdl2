@@ -82,6 +82,34 @@ let run = () => {
 
   Sdl2.Window.show(primaryWindow);
 
+  Sdl2.Window.setHitTest(
+    primaryWindow,
+    Some(
+      (w, x, y) => {
+        let size = Sdl2.Window.getSize(w);
+        let id = Sdl2.Window.getId(w);
+        Printf.printf(
+          "hit test - window id: %d width: %d height: %d areaX: %d areaY: %d\n",
+          id,
+          size.width,
+          size.height,
+          x,
+          y,
+        );
+        if (x < 10) {
+          ResizeLeft;
+        } else if (y < 40) {
+          Draggable;
+        } else {
+          Normal;
+        };
+      },
+    ),
+  );
+  Sdl2.Window.setBordered(primaryWindow, false);
+  // Sdl2.Window.setSize(primaryWindow, 800, 600);
+  Sdl2.Window.setResizable(primaryWindow, true);
+
   // Start text input, to experiment with IME + events
   Sdl2.TextInput.setInputRect(25, 50, 100, 25);
   Sdl2.TextInput.start();
@@ -310,7 +338,7 @@ let run = () => {
 
   //let frame = ref(0);
   Sdl2.renderLoop(() => {
-    switch (Sdl2.Event.waitTimeout(1000)) {
+    switch (Sdl2.Event.poll()) {
     | None => ()
     | Some(evt) =>
       print_endline(Sdl2.Event.show(evt));
@@ -345,7 +373,7 @@ let run = () => {
     //print_endline ("Clipboard string after: " ++ v);
 
     /* Run the GC so we can catch any GC-related crashes early! */
-    // Gc.full_major();
+    Gc.full_major();
     //glfwPollEvents();
     //glfwWindowShouldClose(primaryWindow);
     false;

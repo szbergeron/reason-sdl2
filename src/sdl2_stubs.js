@@ -1,8 +1,21 @@
-//Provides: caml_glfwInit
-function caml_glfwInit() {
+//Provides: resdl_SDL_Init
+function resdl_SDL_Init() {
     joo_global_object._time = {
         start: Date.now(),
         offset: 0,
+    };
+
+    joo_global_object._events = [];
+    joo_global_object._popEvent = function () {
+        if (joo_global_object._events.length > 0) {
+            return joo_global_object._events.shift();
+        } else {
+            return null;
+        }
+    };
+
+    joo_global_object._pushEvent = function (evt) {
+        joo_global_object._events.push(evt);
     };
 
     joo_global_object.window.addEventListener("resize", function () {
@@ -21,9 +34,7 @@ function caml_glfwInit() {
         var wins = joo_global_object._activeWindows;
         for (var i = 0; i < wins.length; i++) {
             var win = wins[i];
-            if (win.onCursorPos) {
-                win.onCursorPos(win, e.pageX - win.x, e.pageY - win.y);
-            }
+            win._notifyMouseMove(e.pageX - win.x, e.pageY - win.y);
         }
     });
 
@@ -51,14 +62,14 @@ function caml_glfwInit() {
     joo_global_object.window.addEventListener("mousedown", function (mouseEvent) {
         var wins = joo_global_object._activeWindows;
         for (var i = 0; i < wins.length; i++) {
-            wins[i]._notifyMouseButton(mouseEvent, 0);
+            wins[i]._notifyMouseButton(mouseEvent, 2);
         }
     });
 
     joo_global_object.window.addEventListener("mouseup", function (mouseEvent) {
         var wins = joo_global_object._activeWindows;
         for (var i = 0; i < wins.length; i++) {
-            wins[i]._notifyMouseButton(mouseEvent, 1);
+            wins[i]._notifyMouseButton(mouseEvent, 3);
         }
     });
 
@@ -91,19 +102,64 @@ function caml_glfwGetCursorPos(w) {
     return caml_js_to_array([joo_global_object._mouseState.x, joo_global_object._mouseState.y]);
 }
 
-// Provides: caml_glfwCreateStandardCursor
-function caml_glfwCreateStandardCursor(shape) {
+// Provides: resdl_SDL_CreateSystemCursor
+function resdl_SDL_CreateSystemCursor(shape) {
   switch (shape) {
   case 0: return "default";
   case 1: return "text";
-  case 2: return "crosshair";
-  case 3: return "pointer";
-  case 4: return "ew-resize";
-  case 5: return "ns-resize";
+  case 3: return "crosshair";
+  case 4: return "wait";
+  case 5: return "nwse-resize";
+  case 6: return "nesw-resize";
+  case 7: return "we-resize";
+  case 8: return "ns-resize";
+  case 9: return "resize";
+  case 10: return "not-allowed";
+  case 11: return "pointer";
   default:
     joo_global_object.console.warn("Unsupported cursor shape.");
     return "default";
   }
+}
+
+// Provides: resdl_SDL_GL_SetSwapInterval
+function resdl_SDL_GL_SetSwapInterval() {
+  // no op
+}
+
+// Provides: resdl_SDL_GL_MakeCurrent
+function resdl_SDL_GL_MakeCurrent() {
+  // no op
+}
+
+// Provides: resdl_SDL_SetWin32ProcessDPIAware
+function resdl_SDL_SetWin32ProcessDPIAware() {
+  // no op
+}
+
+// Provides: resdl_SDL_GetWin32ScaleFactor
+function resdl_SDL_GetWin32ScaleFactor() {
+  return 1;
+}
+
+// Provides: resdl_SDL_GetWindowDisplayIndex
+function resdl_SDL_GetWindowDisplayIndex() {
+  return 0;
+}
+
+// Provides: resdl_SDL_GetDisplayDPI
+function resdl_SDL_GetDisplayDPI() {
+  return 96;
+}
+
+// Provides: resdl_SDL_GetDesktopDisplayMode
+function resdl_SDL_GetDesktopDisplayMode() {
+  return [0, 100, 200, 0];
+}
+
+// Provides: resdl_SDL_WindowCenter
+function resdl_SDL_WindowCenter() {
+  //no-op
 }
 
 // Provides: caml_glfwDestroyCursor
@@ -111,9 +167,9 @@ function caml_glfwDestroyCursor(cursor) {
   // no op
 }
 
-// Provides: caml_glfwSetCursor
-function caml_glfwSetCursor(window, cursor) {
-  window.canvas.style.cursor = cursor;
+// Provides: resdl_SDL_SetCursor
+function resdl_SDL_SetCursor(cursor) {
+  joo_global_object._activeWindow.canvas.style.cursor = cursor;
 }
 
 // Provides: caml_glfwGetTime_byte
@@ -152,16 +208,21 @@ function caml_glfwGetMonitorPhysicalSize() {
   return [0, widthMM, heightMM];
 };
 
-// Provides: caml_glfwGetWindowSize
-function caml_glfwGetWindowSize(w) {
+// Provides: resdl_SDL_GetWindowSize
+function resdl_SDL_GetWindowSize(w) {
     var pixelRatio = joo_global_object.window.devicePixelRatio;
     var width = w.canvas.width / pixelRatio;
     var height = w.canvas.height / pixelRatio;
     return [0, width, height];
 }
 
-// Provides: caml_glfwGetFramebufferSize
-function caml_glfwGetFramebufferSize(w) {
+// Provides: resdl_SDL_GetWindowId
+function resdl_SDL_GetWindowId(w) {
+    return 0;
+}
+
+// Provides: resdl_SDL_GL_GetDrawableSize
+function resdl_SDL_GL_GetDrawableSize(w) {
     var pixelRatio = joo_global_object.window.devicePixelRatio;
     var width = w.canvas.width;
     var height = w.canvas.height;
@@ -188,8 +249,8 @@ function caml_test_callback_success(s, f) {
     s(999);
 }
 
-// Provides: caml_glfwJavascriptRenderLoop
-function caml_glfwJavascriptRenderLoop(loopFunc) {
+// Provides: resdl__javascript__renderloop
+function resdl__javascript__renderloop(loopFunc) {
     function renderLoop(t) {
         var ret = loopFunc(t);
 
@@ -201,19 +262,13 @@ function caml_glfwJavascriptRenderLoop(loopFunc) {
     joo_global_object.window.requestAnimationFrame(renderLoop);
 }
 
-// Provides: caml_test_callback_failure
-// Requires: caml_js_to_string
-function caml_test_callback_failure(s, f) {
-    f(caml_js_to_string("failed"));
+//Provides: resdl_SDL_ShowWindow
+function resdl_SDL_ShowWindow(w) {
+    // no-op
 }
 
-// Provides: caml_glfwGetNativeWindow
-function caml_glfwGetNativeWindow(w) {
-    return w.canvas;
-}
-
-//Provides: caml_glfwCreateWindow
-function caml_glfwCreateWindow(width, height, title) {
+//Provides: resdl_SDL_CreateWindow
+function resdl_SDL_CreateWindow(width, height, title) {
     var canvas = document.createElement("canvas");
     canvas.style.position = "absolute";
     canvas.style.top = "0px";
@@ -228,6 +283,7 @@ function caml_glfwCreateWindow(width, height, title) {
 
     document.body.appendChild(canvas);
     var w = {
+        id: 0,
         canvas: canvas,
         title: title,
         isMaximized: false,
@@ -235,9 +291,6 @@ function caml_glfwCreateWindow(width, height, title) {
         onSetWindowSize: null,
         onKey: null,
         onChar: null,
-        onCursorPos: null,
-        onMouseButton: null,
-        onScroll: null,
         x: 0,
         y: 0,
     };
@@ -265,27 +318,20 @@ function caml_glfwCreateWindow(width, height, title) {
     };
 
     var notifyMouseButton = function(mouseEvent, pressMode) {
-        if (w.onMouseButton) {
-            var modifier = 0;
-            modifier = mouseEvent.shiftKey ? modifier + 1 : modifier;
-            modifier = mouseEvent.ctrlKey ? modifier + 2 : modifier;
-            modifier = mouseEvent.altKey ? modifier + 4 : modifier;
-            modifier = mouseEvent.metaKey ? modifier + 8 : modifier
+        joo_global_object._pushEvent(
+        [pressMode, 
+            [0, 
+                w.id, 
+                0, 
+                0, 
+                joo_global_object._mouseState.x, 
+                joo_global_object._mouseState.y]]);
+    };
 
-            var b = 0;
-            switch(mouseEvent.button) {
-                case 1:
-                    b = 2;
-                    break;
-                case 2:
-                    b = 1;
-                    break;
-                default:
-                    b = mouseEvent.button;
-            };
-
-            w.onMouseButton(w, b, pressMode, modifier);
-        }
+    var notifyMouseMove = function(x, y) {
+        joo_global_object._pushEvent(
+        [0, [0, w.id, x, y]]
+        );
     };
 
     var notifyResize = function () {
@@ -295,20 +341,12 @@ function caml_glfwCreateWindow(width, height, title) {
             canvas.width = canvas.offsetWidth * pixelRatio;
             canvas.height = canvas.offsetHeight * pixelRatio;
 
-            if (w.onSetFramebufferSize) {
-                w.onSetFramebufferSize(w, canvas.width, canvas.height);
-            }
-
-            if (w.onSetWindowSize) {
-                w.onSetWindowSize(w, canvas.offsetWidth, canvas.offsetHeight);
-            }
+            joo_global_object._pushEvent([12, [0, w.id, canvas.offsetWidth, canvas.offsetHeight]]);
         }
     };
 
     var notifyScroll = function (x, y) {
-        if (w.onScroll) {
-            w.onScroll(w, x, y);
-        }
+        joo_global_object._pushEvent([1, [0, w.id, x, y, false]]);
     };
 
     w._notifyResize = notifyResize;
@@ -316,21 +354,22 @@ function caml_glfwCreateWindow(width, height, title) {
     w._notifyScroll = notifyScroll;
     w._notifyKey = notifyKey;
     w._notifyMouseButton = notifyMouseButton;
+    w._notifyMouseMove = notifyMouseMove;
 
     joo_global_object._activeWindows.push(w);
     return w;
 };
 
-// Provides: caml_glfwSetWindowPos
-function caml_glfwSetWindowPos(w, x, y) {
+// Provides: resdl_SDL_SetWindowPosition
+function resdl_SDL_SetWindowPosition(w, x, y) {
     var canvas = w.canvas;
     canvas.style.transform = "translate(" + x.toString() + "px, " + y.toString() + "px)";
     w.x = x;
     w.y = y;
 }
 
-// Provides: caml_glfwSetWindowSize
-function caml_glfwSetWindowSize(w, width, height) {
+// Provides: resdl_SDL_SetWindowSize
+function resdl_SDL_SetWindowSize(w, width, height) {
     var canvas = w.canvas;
     canvas.style.width = width.toString() + "px";
     canvas.style.height = height.toString() + "px";
@@ -339,16 +378,21 @@ function caml_glfwSetWindowSize(w, width, height) {
     canvas.height = height * pixelRatio;
 }
 
-// Provides: caml_glfwSetWindowTitle
-function caml_glfwSetWindowTitle(w, title) {
+// Provides: resdl_SDL_SetWindowTitle
+function resdl_SDL_SetWindowTitle(w, title) {
     var t = title.toString();
     w.title = t;
     document.title = t;
 }
 
-// Provides: caml_glfwSetWindowIcon
-function caml_glfwSetWindowIcon(w, path) {
-    var p = path.toString();
+// Provides: resdl_SDL_CreateRGBSurfaceFromImage
+function resdl_SDL_CreateRGBSurfaceFromImage(path) {
+    return [0, path];
+};
+
+// Provides: resdl_SDL_SetWindowIcon
+function resdl_SDL_SetWindowIcon(w, surface) {
+    var p = surface.toString();
     var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';
@@ -356,58 +400,18 @@ function caml_glfwSetWindowIcon(w, path) {
     document.getElementsByTagName('head')[0].appendChild(link);
 }
 
-// Provides: caml_glfwWindowHint
-function caml_glfwWindowHint(hint, val) {
-    joo_global_object.console.warn("Unsupported API: glfwWindowHint");
+// Provides: resdl_SDL_SetTextInputRect
+function resdl_SDL_SetTextInputRect(x, y, w, h) {
+    // TODDO: No-op
 }
 
-// Provides: caml_glfwSetWindowSizeCallback
-function caml_glfwSetWindowSizeCallback(w, callback) {
-    w.onSetWindowSize = callback;
-}
-//
-// Provides: caml_glfwSetWindowPosCallback
-function caml_glfwSetWindowPosCallback(w, callback) {
-    // no-op
+// Provides: resdl_SDL_StartTextInput
+function resdl_SDL_StartTextInput() {
+    // TODDO: No-op
 }
 
-// Provides: caml_glfwSetFramebufferSizeCallback
-function caml_glfwSetFramebufferSizeCallback(w, callback) {
-    w.onSetFramebufferSize = callback;
-}
-
-// Provides: caml_glfwSetScrollCallback
-function caml_glfwSetScrollCallback(w, callback) {
-    w.onScroll = callback;
-}
-
-// Provides: caml_glfwSetCursorPosCallback
-function caml_glfwSetCursorPosCallback(w, callback) {
-    w.onCursorPos = callback;
-}
-
-// Provides: caml_glfwSetCharCallback
-function caml_glfwSetCharCallback(w, callback) {
-    w.onChar = callback;
-}
-
-// Provides: caml_glfwSetCharModsCallback
-function caml_glfwSetCharModsCallback(w, callback) {
-    joo_global_object.console.warn("Unsupported API: caml_glfwSetCharModsCallback");
-}
-
-// Provides: caml_glfwSetKeyCallback
-function caml_glfwSetKeyCallback(w, callback) {
-    w.onKey = callback;
-}
-
-// Provides: caml_glfwSetMouseButtonCallback
-function caml_glfwSetMouseButtonCallback(w, callback) {
-    w.onMouseButton = callback;
-}
-
-// Provides: caml_glfwMaximizeWindow
-function caml_glfwMaximizeWindow(w) {
+// Provides: resdl_SDL_MaximizeWindow
+function resdl_SDL_MaximizeWindow(w) {
     if (w && !w.isMaximized) {
         var pixelRatio = joo_global_object.window.devicePixelRatio;
         var canvas = w.canvas;
@@ -420,8 +424,8 @@ function caml_glfwMaximizeWindow(w) {
     }
 }
 
-// Provides: caml_glfwMakeContextCurrent
-function caml_glfwMakeContextCurrent(win) {
+// Provides: resdl_SDL_GL_Setup
+function resdl_SDL_GL_Setup(win) {
     var gl = win.canvas.getContext('webgl');
     joo_global_object.window.__glfw__gl__ = gl;
     joo_global_object.window._activeWindow = win;
@@ -492,33 +496,54 @@ function caml_glfwMakeContextCurrent(win) {
     joo_global_object.gl = gl;
 }
 
-// Provides: caml_glfwDestroyWindow
-function caml_glfwDestroyWindow() {
-    // no op
-    // should we destroy the canvas window here?
+// Provides: resdl_SDL_PollEvent
+function resdl_SDL_PollEvent() {
+    var evt = joo_global_object._popEvent();
+    if (evt != null) {
+        return [0, evt];
+    } else {
+        return 0;
+    }
+    return 0;
+}
+// Provides: resdl_SDL_ShowSimpleMessageBox
+function resdl_SDL_ShowSimpleMessageBox(flags, title, msg, win) {
+    joo_global_object.alert(msg);
 }
 
-// Provides: caml_glfwWindowShouldClose
-function caml_glfwWindowShouldClose() {
-    return false
+// Provides: resdl_SDL_EnableHitTest
+function resdl_SDL_EnableHitTest() {
+    // No-op
 }
 
-// Provides: caml_glfwPollEvents
-function caml_glfwPollEvents() {
-    // no op
+// Provides: resdl_SDL_DisableHitTest
+function resdl_SDL_DisableHitTest() {
+    // No-op
 }
 
-// Provides: caml_glfwSwapBuffers
-function caml_glfwSwapBuffers() {
-    // no op
+// Provides: resdl_SDL_SetWindowBordered
+function resdl_SDL_SetWindowBordered() {
+    // No-op
 }
 
-// Provides: caml_glfwSwapInterval
-function caml_glfwSwapInterval(swapInterval) {
-    joo_global_object.console.warn("glfwSwapInterval not supported in WebGL");
+// Provides: resdl_SDL_SetWindowResizable
+function resdl_SDL_SetWindowResizable() {
+    // No-op
 }
 
-// Provides: caml_glfwTerminate
-function caml_glfwTerminate() {
+// Provides: resdl_SDL_GetModState
+function resdl_SDL_GetModState() {
+    return 0;
+}
+
+// Provides: resdl_SDL_WaitTimeoutEvent
+// Requires: resdl_SDL_PollEvent
+function resdl_SDL_WaitTimeoutEvent() {
+    joo_global_object.console.warn("waitTimeout not supported in JSOO");
+    return resdl_SDL_PollEvent();
+}
+
+// Provides: resdl_SDL_GL_SwapWindow
+function resdl_SDL_GL_SwapWindow() {
     // no op
 }

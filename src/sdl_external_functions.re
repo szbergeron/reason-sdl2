@@ -29,6 +29,10 @@ module Setup = {
   external resdl_setMainReady: unit => unit = "resdl_SDL_SetMainReady";
 }
 
+module Demo = {
+  external resdl_hello: unit => unit = "resdl_hello";
+}
+
 module Teardown = {
   external resdl_quit: unit => unit = "resdl_quit";
 }

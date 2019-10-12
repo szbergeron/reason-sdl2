@@ -8,5 +8,7 @@ let run = () => {
 
   let _ = Status.resdl_wasinit(0);
 
+  let _ = Demo.resdl_hello();
+
   let _ = Teardown.resdl_quit(());
 };

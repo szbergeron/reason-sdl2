@@ -806,6 +806,30 @@ extern "C" {
         return Val_unit;
     }
 
+    extern "C" CAMLprim value resdl_hello() {
+        SDL_Init(SDL_INIT_VIDEO);
+        SDL_Window* w = SDL_CreateWindow("demo", 0, 0, 500, 500, SDL_WINDOW_OPENGL);
+        while(true)
+        {
+            SDL_Event event;
+            printf("waiting on sdl event...\n");
+            SDL_WaitEvent(&event);
+            printf("got an event:\n");
+            if( event.type == SDL_MOUSEWHEEL ) {
+                printf("\tit was a mousewheel event\n");
+            } else if ( event.type == SDL_FINGERMOTION ) {
+                printf("\tit was a fingermotion event\n");
+            } else if ( event.type == SDL_FINGERDOWN ) {
+                printf("\tit was a fingerdown event\n");
+            } else if ( event.type == SDL_QUIT ) {
+                printf("\tquitting...\n");
+                break;
+            }
+        }
+        SDL_DestroyWindow(w);
+        return Val_unit;
+    }
+
     extern "C" CAMLprim value resdl_wasinit(value v_flags)
     {
         int i_flags = Int_val(v_flags);

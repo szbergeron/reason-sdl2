@@ -56,57 +56,55 @@ CAMLprim value resdl_SDL_DestroyWindow(value vWin) {
   return Val_unit;
 }
 
-SDL_HitTestResult resdl_hit_test(
-  SDL_Window *win,
-  const SDL_Point *area,
-  void *data) {
+SDL_HitTestResult resdl_hit_test(SDL_Window *win, const SDL_Point *area,
+                                 void *data) {
 
-    static value *hitTestCallback = NULL;
-    if (hitTestCallback == NULL) {
-      hitTestCallback = caml_named_value("__sdl2_caml_hittest__");
-    }
-    value vWin = (value)win;
-    value vRet = caml_callback3(*hitTestCallback, vWin, Val_int(area->x), Val_int(area->y));
-    SDL_HitTestResult result;
-    switch (Int_val(vRet)) {
-      case 0:
-        result = SDL_HITTEST_NORMAL;
-        break;
-      case 1:
-        result = SDL_HITTEST_DRAGGABLE;
-        break;
-      case 2:
-        result = SDL_HITTEST_RESIZE_TOPLEFT;
-        break;
-      case 3:
-        result = SDL_HITTEST_RESIZE_TOP;
-        break;
-      case 4:
-        result = SDL_HITTEST_RESIZE_TOPRIGHT;
-        break;
-      case 5:
-        result = SDL_HITTEST_RESIZE_RIGHT;
-        break;
-      case 6:
-        result = SDL_HITTEST_RESIZE_BOTTOMRIGHT;
-        break;
-      case 7:
-        result = SDL_HITTEST_RESIZE_BOTTOM;
-        break;
-      case 8:
-        result = SDL_HITTEST_RESIZE_BOTTOMLEFT;
-        break;
-      case 9:
-        result = SDL_HITTEST_RESIZE_LEFT;
-        break;
-       default:
-        result = SDL_HITTEST_NORMAL;
-        break;
+  static value *hitTestCallback = NULL;
+  if (hitTestCallback == NULL) {
+    hitTestCallback = caml_named_value("__sdl2_caml_hittest__");
+  }
+  value vWin = (value)win;
+  value vRet = caml_callback3(*hitTestCallback, vWin, Val_int(area->x),
+                              Val_int(area->y));
+  SDL_HitTestResult result;
+  switch (Int_val(vRet)) {
+  case 0:
+    result = SDL_HITTEST_NORMAL;
+    break;
+  case 1:
+    result = SDL_HITTEST_DRAGGABLE;
+    break;
+  case 2:
+    result = SDL_HITTEST_RESIZE_TOPLEFT;
+    break;
+  case 3:
+    result = SDL_HITTEST_RESIZE_TOP;
+    break;
+  case 4:
+    result = SDL_HITTEST_RESIZE_TOPRIGHT;
+    break;
+  case 5:
+    result = SDL_HITTEST_RESIZE_RIGHT;
+    break;
+  case 6:
+    result = SDL_HITTEST_RESIZE_BOTTOMRIGHT;
+    break;
+  case 7:
+    result = SDL_HITTEST_RESIZE_BOTTOM;
+    break;
+  case 8:
+    result = SDL_HITTEST_RESIZE_BOTTOMLEFT;
+    break;
+  case 9:
+    result = SDL_HITTEST_RESIZE_LEFT;
+    break;
+  default:
+    result = SDL_HITTEST_NORMAL;
+    break;
+  }
 
-    }
-
-    return result;
-  };
+  return result;
+};
 
 CAMLprim value resdl_SDL_EnableHitTest(value vWin) {
   SDL_Window *win = (SDL_Window *)vWin;
@@ -149,13 +147,10 @@ CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
   CAMLparam1(vWin);
 
 #ifdef WIN32
-  SDL_Window *win = (SDL_Window *)vWin;
-  HWND hwnd = getHWNDFromSDLWindow(win);
   void *userDLL;
   BOOL(WINAPI * SetProcessDPIAware)(void); // Vista and later
   void *shcoreDLL;
   HRESULT(WINAPI * SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS dpiAwareness);
-  // Windows 8.1 and later INT(WINAPI *GetScaleFactorForDevice)(int deviceType);
 
   userDLL = SDL_LoadObject("USER32.DLL");
   if (userDLL) {
@@ -177,7 +172,6 @@ CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
     // Try Vista - Windows 8 version.
     // This has a constant scale factor for all monitors.
     BOOL success = SetProcessDPIAware();
-    SDL_Log("called SetProcessDPIAware: %d", (int)success);
   }
 #endif
 
@@ -206,7 +200,9 @@ CAMLprim value resdl_SDL_GetWin32ScaleFactor(value vWin) {
     int pScale;
     GetScaleFactorForMonitor(hmon, &pScale);
     CAMLreturn(caml_copy_double(pScale / 100.0));
-  };
+  } else {
+    CAMLreturn(caml_copy_double(1.0));
+  }
 
 #else
   CAMLreturn(caml_copy_double(1.0));

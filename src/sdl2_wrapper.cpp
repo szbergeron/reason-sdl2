@@ -742,7 +742,9 @@ CAMLprim value resdl_SDL_CreateRGBSurfaceFromImage(value vPath) {
 
 CAMLprim value resdl_SDL_GL_SwapWindow(value w) {
   SDL_Window *win = (SDL_Window *)w;
+  caml_release_runtime_system();
   SDL_GL_SwapWindow(win);
+  caml_acquire_runtime_system();
   return Val_unit;
 }
 

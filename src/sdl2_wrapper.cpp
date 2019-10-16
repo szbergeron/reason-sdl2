@@ -149,13 +149,10 @@ CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
   CAMLparam1(vWin);
 
 #ifdef WIN32
-  SDL_Window *win = (SDL_Window *)vWin;
-  HWND hwnd = getHWNDFromSDLWindow(win);
   void *userDLL;
   BOOL(WINAPI * SetProcessDPIAware)(void); // Vista and later
   void *shcoreDLL;
   HRESULT(WINAPI * SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS dpiAwareness);
-  // Windows 8.1 and later INT(WINAPI *GetScaleFactorForDevice)(int deviceType);
 
   userDLL = SDL_LoadObject("USER32.DLL");
   if (userDLL) {
@@ -177,7 +174,6 @@ CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
     // Try Vista - Windows 8 version.
     // This has a constant scale factor for all monitors.
     BOOL success = SetProcessDPIAware();
-    SDL_Log("called SetProcessDPIAware: %d", (int)success);
   }
 #endif
 
@@ -206,7 +202,9 @@ CAMLprim value resdl_SDL_GetWin32ScaleFactor(value vWin) {
     int pScale;
     GetScaleFactorForMonitor(hmon, &pScale);
     CAMLreturn(caml_copy_double(pScale / 100.0));
-  };
+  } else {
+    CAMLreturn(caml_copy_double(1.0));
+  }
 
 #else
   CAMLreturn(caml_copy_double(1.0));

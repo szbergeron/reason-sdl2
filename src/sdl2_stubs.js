@@ -142,6 +142,11 @@ function resdl_SDL_GL_SetSwapInterval() {
   // no op
 }
 
+// Provides: resdl_SDL_PushEvent
+function resdl_SDL_PushEvent() {
+  // no op
+}
+
 // Provides: resdl_SDL_GL_MakeCurrent
 function resdl_SDL_GL_MakeCurrent() {
   // no op

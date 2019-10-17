@@ -476,6 +476,7 @@ module Event = {
   };
 
   external poll: unit => option(t) = "resdl_SDL_PollEvent";
+  external push: unit => unit = "resdl_SDL_PushEvent";
   external wait: unit => result(t, string) = "resdl_SDL_WaitEvent";
   external waitTimeout: int => option(t) = "resdl_SDL_WaitTimeoutEvent";
 };

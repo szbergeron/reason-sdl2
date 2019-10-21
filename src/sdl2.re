@@ -93,6 +93,8 @@ module Window = {
   external setResizable: (t, bool) => unit = "resdl_SDL_SetWindowResizable";
   external setSize: (t, int, int) => unit = "resdl_SDL_SetWindowSize";
   external setTitle: (t, string) => unit = "resdl_SDL_SetWindowTitle";
+  external setMinimumSize: (t, int, int) => unit =
+    "resdl_SDL_SetWindowMinimumSize";
 
   external _enableHitTest: t => unit = "resdl_SDL_EnableHitTest";
   external _disableHitTest: t => unit = "resdl_SDL_EnableHitTest";

@@ -791,6 +791,17 @@ CAMLprim value resdl_SDL_SetWindowSize(value vWin, value vW, value vH) {
   CAMLreturn(Val_unit);
 }
 
+CAMLprim value resdl_SDL_SetWindowMinimumSize(value vWin, value vW, value vH) {
+  CAMLparam3(vWin, vW, vH);
+
+  SDL_Window *win = (SDL_Window *)vWin;
+  int w = Int_val(vW);
+  int h = Int_val(vH);
+  SDL_SetWindowMinimumSize(win, w, h);
+
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value resdl_SDL_SetWindowTitle(value vWin, value vTitle) {
   CAMLparam2(vWin, vTitle);
 

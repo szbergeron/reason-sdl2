@@ -192,6 +192,11 @@ function resdl_SDL_SetCursor(cursor) {
   joo_global_object._activeWindow.canvas.style.cursor = cursor;
 }
 
+// Provides: resdl_SDL_SetWindowMinimumSize
+function resdl_SDL_SetWindowMinimumSize(win, minWidth, minHeight) {
+    // no-op
+}
+
 // Provides: caml_glfwGetTime_byte
 function caml_glfwGetTime_byte() {
     return (joo_global_object._time.offset + (Date.now() - joo_global_object._time.start)) / 1000;

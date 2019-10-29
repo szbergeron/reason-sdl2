@@ -411,8 +411,15 @@ module Event = {
         deltaY,
         isFlipped ? 1 : 0,
       )
-    | Pan =>
-        Printf.sprintf("Pan event")
+    | MousePan({windowID, deltaX, deltaY, containsX, containsY, isFling, isInterrupt, _}) =>
+      Printf.sprintf("Pan event: %d %d %d %d %d %d %d",
+                     windowID,
+                     deltaX,
+                     deltaY,
+                     if(containsX) 1 else 0,
+                     if(containsY) 1 else 0,
+                     if(isFling) 1 else 0,
+                     if(isInterrupt) 1 else 0)
     | MouseButtonUp({windowID, button, _}) =>
       Printf.sprintf(
         "MouseButtonUp windowId: %d button: %s",

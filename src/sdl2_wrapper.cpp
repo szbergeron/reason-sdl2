@@ -401,6 +401,8 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
 
   int tag, mouseButton;
 
+  printf("event type is %d while pan event type is %d and mousewheel is %d\n", event->type, SDL_PANEVENT, SDL_MOUSEWHEEL);
+
   switch (event->type) {
   case SDL_QUIT:
     v = Val_int(0);
@@ -497,6 +499,24 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
 
     Store_field(v, 0, vInner);
     break;
+  case SDL_PANEVENT:
+    printf("dispatches pan event from wrapper\n");
+    v = caml_alloc(1, 24);
+
+    vInner = caml_alloc(8, 0);
+    Store_field(vInner, 0, Val_int(event->window.windowID));
+    Store_field(vInner, 1, Val_int(event->pan.x));
+    Store_field(vInner, 2, Val_int(event->pan.y));
+    Store_field(vInner, 3, Val_bool(event->pan.contains_x));
+    Store_field(vInner, 4, Val_bool(event->pan.contains_y));
+    Store_field(vInner, 5, Val_bool(event->pan.fling));
+    Store_field(vInner, 6, Val_bool(event->pan.interrupt));
+    // verify this is the correct way of representing a ref to some WheelType.t
+    Store_field(vInner, 7, Val_int(event->pan.source_type));
+
+    Store_field(v, 0, vInner);
+    printf("stored fields\n");
+    break;
   case SDL_WINDOWEVENT:
     switch (event->window.event) {
     case SDL_WINDOWEVENT_SHOWN:
@@ -550,21 +570,8 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     case SDL_WINDOWEVENT_HIT_TEST:
       v = Val_SDL_WindowEvent(23, event->window.windowID);
       break;
-    case SDL_PANEVENT:
-      v = caml_alloc(1, 24);
-
-      vInner = caml_alloc(8, 0);
-      Store_field(vInner, 0, Val_int(event->window.windowID));
-      Store_field(vInner, 1, Val_int(event->pan.x));
-      Store_field(vInner, 2, Val_int(event->pan.y));
-      Store_field(vInner, 3, Val_bool(event->pan.contains_x));
-      Store_field(vInner, 4, Val_bool(event->pan.contains_y));
-      Store_field(vInner, 5, Val_bool(event->pan.fling));
-      Store_field(vInner, 6, Val_bool(event->pan.interrupt));
-      // verify this is the correct way of representing a ref to some WheelType.t
-      Store_field(vInner, 7, Val_int(event->pan.source_type));
-      break;
     default:
+      printf("Unknown event in sdl2_wrapper, event enum code was %d\n", event->type);
       v = Val_int(1);
     };
 

@@ -45,6 +45,24 @@ static value Val_error(value v) {
 }
 
 extern "C" {
+CAMLprim value resdl_SDL_EnableScreenSaver() {
+  CAMLparam0();
+  SDL_EnableScreenSaver();
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_DisableScreenSaver() {
+  CAMLparam0();
+  SDL_DisableScreenSaver();
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_IsScreenSaverEnabled() {
+  CAMLparam0();
+  int result = SDL_IsScreenSaverEnabled() == SDL_TRUE;
+  CAMLreturn(Val_int(result));
+}
+
 CAMLprim value resdl_SDL_SetMainReady() {
   SDL_SetMainReady();
 
@@ -56,57 +74,55 @@ CAMLprim value resdl_SDL_DestroyWindow(value vWin) {
   return Val_unit;
 }
 
-SDL_HitTestResult resdl_hit_test(
-  SDL_Window *win,
-  const SDL_Point *area,
-  void *data) {
+SDL_HitTestResult resdl_hit_test(SDL_Window *win, const SDL_Point *area,
+                                 void *data) {
 
-    static value *hitTestCallback = NULL;
-    if (hitTestCallback == NULL) {
-      hitTestCallback = caml_named_value("__sdl2_caml_hittest__");
-    }
-    value vWin = (value)win;
-    value vRet = caml_callback3(*hitTestCallback, vWin, Val_int(area->x), Val_int(area->y));
-    SDL_HitTestResult result;
-    switch (Int_val(vRet)) {
-      case 0:
-        result = SDL_HITTEST_NORMAL;
-        break;
-      case 1:
-        result = SDL_HITTEST_DRAGGABLE;
-        break;
-      case 2:
-        result = SDL_HITTEST_RESIZE_TOPLEFT;
-        break;
-      case 3:
-        result = SDL_HITTEST_RESIZE_TOP;
-        break;
-      case 4:
-        result = SDL_HITTEST_RESIZE_TOPRIGHT;
-        break;
-      case 5:
-        result = SDL_HITTEST_RESIZE_RIGHT;
-        break;
-      case 6:
-        result = SDL_HITTEST_RESIZE_BOTTOMRIGHT;
-        break;
-      case 7:
-        result = SDL_HITTEST_RESIZE_BOTTOM;
-        break;
-      case 8:
-        result = SDL_HITTEST_RESIZE_BOTTOMLEFT;
-        break;
-      case 9:
-        result = SDL_HITTEST_RESIZE_LEFT;
-        break;
-       default:
-        result = SDL_HITTEST_NORMAL;
-        break;
+  static value *hitTestCallback = NULL;
+  if (hitTestCallback == NULL) {
+    hitTestCallback = caml_named_value("__sdl2_caml_hittest__");
+  }
+  value vWin = (value)win;
+  value vRet = caml_callback3(*hitTestCallback, vWin, Val_int(area->x),
+                              Val_int(area->y));
+  SDL_HitTestResult result;
+  switch (Int_val(vRet)) {
+  case 0:
+    result = SDL_HITTEST_NORMAL;
+    break;
+  case 1:
+    result = SDL_HITTEST_DRAGGABLE;
+    break;
+  case 2:
+    result = SDL_HITTEST_RESIZE_TOPLEFT;
+    break;
+  case 3:
+    result = SDL_HITTEST_RESIZE_TOP;
+    break;
+  case 4:
+    result = SDL_HITTEST_RESIZE_TOPRIGHT;
+    break;
+  case 5:
+    result = SDL_HITTEST_RESIZE_RIGHT;
+    break;
+  case 6:
+    result = SDL_HITTEST_RESIZE_BOTTOMRIGHT;
+    break;
+  case 7:
+    result = SDL_HITTEST_RESIZE_BOTTOM;
+    break;
+  case 8:
+    result = SDL_HITTEST_RESIZE_BOTTOMLEFT;
+    break;
+  case 9:
+    result = SDL_HITTEST_RESIZE_LEFT;
+    break;
+  default:
+    result = SDL_HITTEST_NORMAL;
+    break;
+  }
 
-    }
-
-    return result;
-  };
+  return result;
+};
 
 CAMLprim value resdl_SDL_EnableHitTest(value vWin) {
   SDL_Window *win = (SDL_Window *)vWin;
@@ -149,13 +165,10 @@ CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
   CAMLparam1(vWin);
 
 #ifdef WIN32
-  SDL_Window *win = (SDL_Window *)vWin;
-  HWND hwnd = getHWNDFromSDLWindow(win);
   void *userDLL;
   BOOL(WINAPI * SetProcessDPIAware)(void); // Vista and later
   void *shcoreDLL;
   HRESULT(WINAPI * SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS dpiAwareness);
-  // Windows 8.1 and later INT(WINAPI *GetScaleFactorForDevice)(int deviceType);
 
   userDLL = SDL_LoadObject("USER32.DLL");
   if (userDLL) {
@@ -177,7 +190,6 @@ CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
     // Try Vista - Windows 8 version.
     // This has a constant scale factor for all monitors.
     BOOL success = SetProcessDPIAware();
-    SDL_Log("called SetProcessDPIAware: %d", (int)success);
   }
 #endif
 
@@ -206,7 +218,9 @@ CAMLprim value resdl_SDL_GetWin32ScaleFactor(value vWin) {
     int pScale;
     GetScaleFactorForMonitor(hmon, &pScale);
     CAMLreturn(caml_copy_double(pScale / 100.0));
-  };
+  } else {
+    CAMLreturn(caml_copy_double(1.0));
+  }
 
 #else
   CAMLreturn(caml_copy_double(1.0));
@@ -351,6 +365,8 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
 
   int tag, mouseButton;
 
+  printf("event type is %d while pan event type is %d and mousewheel is %d\n", event->type, SDL_PANEVENT, SDL_MOUSEWHEEL);
+
   switch (event->type) {
   case SDL_QUIT:
     v = Val_int(0);
@@ -447,6 +463,24 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
 
     Store_field(v, 0, vInner);
     break;
+  case SDL_PANEVENT:
+    printf("dispatches pan event from wrapper\n");
+    v = caml_alloc(1, 24);
+
+    vInner = caml_alloc(8, 0);
+    Store_field(vInner, 0, Val_int(event->window.windowID));
+    Store_field(vInner, 1, Val_int(event->pan.x));
+    Store_field(vInner, 2, Val_int(event->pan.y));
+    Store_field(vInner, 3, Val_bool(event->pan.contains_x));
+    Store_field(vInner, 4, Val_bool(event->pan.contains_y));
+    Store_field(vInner, 5, Val_bool(event->pan.fling));
+    Store_field(vInner, 6, Val_bool(event->pan.interrupt));
+    // verify this is the correct way of representing a ref to some WheelType.t
+    Store_field(vInner, 7, Val_int(event->pan.source_type));
+
+    Store_field(v, 0, vInner);
+    printf("stored fields\n");
+    break;
   case SDL_WINDOWEVENT:
     switch (event->window.event) {
     case SDL_WINDOWEVENT_SHOWN:
@@ -501,6 +535,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       v = Val_SDL_WindowEvent(23, event->window.windowID);
       break;
     default:
+      printf("Unknown event in sdl2_wrapper, event enum code was %d\n", event->type);
       v = Val_int(1);
     };
 
@@ -549,6 +584,16 @@ CAMLprim value resdl_SDL_WaitEvent() {
 
   CAMLreturn(ret);
 }
+
+CAMLprim value resdl_SDL_PushEvent() {
+  CAMLparam0();
+
+  SDL_Event user_event;
+  user_event.type = SDL_USEREVENT;
+  SDL_PushEvent(&user_event);
+
+  CAMLreturn(Val_unit);
+};
 
 CAMLprim value resdl_SDL_WaitTimeoutEvent(value vTimeout) {
   CAMLparam1(vTimeout);
@@ -746,7 +791,9 @@ CAMLprim value resdl_SDL_CreateRGBSurfaceFromImage(value vPath) {
 
 CAMLprim value resdl_SDL_GL_SwapWindow(value w) {
   SDL_Window *win = (SDL_Window *)w;
+  caml_release_runtime_system();
   SDL_GL_SwapWindow(win);
+  caml_acquire_runtime_system();
   return Val_unit;
 }
 

@@ -122,8 +122,28 @@ function resdl_SDL_CreateSystemCursor(shape) {
   }
 }
 
+// Provides: resdl_SDL_EnableScreenSaver
+function resdl_SDL_EnableScreenSaver() {
+  // no op
+}
+
+// Provides: resdl_SDL_DisableScreenSaver
+function resdl_SDL_DisableScreenSaver() {
+  // no op
+}
+
+// Provides: resdl_SDL_IsScreenSaverEnabled
+function resdl_SDL_IsScreenSaverEnabled() {
+  return false;
+}
+
 // Provides: resdl_SDL_GL_SetSwapInterval
 function resdl_SDL_GL_SetSwapInterval() {
+  // no op
+}
+
+// Provides: resdl_SDL_PushEvent
+function resdl_SDL_PushEvent() {
   // no op
 }
 

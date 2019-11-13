@@ -80,6 +80,9 @@ let run = () => {
   Sdl2.Window.setSize(primaryWindow, 800, 600);
   Sdl2.Window.center(primaryWindow);
 
+  Sdl2.Window.setMacBackgroundColor(primaryWindow, 0.0, 0.0, 0.0, 1.);
+  Sdl2.Window.setMacTitlebarTransparent(primaryWindow);
+
   Sdl2.Window.show(primaryWindow);
 
   /*Sdl2.Window.setHitTest(

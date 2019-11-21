@@ -401,8 +401,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
 
   int tag, mouseButton;
 
-  printf("event type is %d while pan event type is %d and mousewheel is %d\n", event->type, SDL_PANEVENT, SDL_MOUSEWHEEL);
-
   switch (event->type) {
   case SDL_QUIT:
     v = Val_int(0);
@@ -500,7 +498,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     Store_field(v, 0, vInner);
     break;
   case SDL_PANEVENT:
-    printf("dispatches pan event from wrapper\n");
     v = caml_alloc(1, 24);
 
     vInner = caml_alloc(8, 0);
@@ -515,7 +512,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     Store_field(vInner, 7, Val_int(event->pan.source_type));
 
     Store_field(v, 0, vInner);
-    printf("stored fields\n");
     break;
   case SDL_WINDOWEVENT:
     switch (event->window.event) {

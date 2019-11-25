@@ -251,8 +251,8 @@ function caml_glTexImage2D_bytecode(vTextureType, vLevel, vInternalFormat, vForm
     var format = joo_global_object.variantToFormat[vFormat];
     var type = joo_global_object.variantToType[vType];
     var numChannels = joo_global_object.formatToNumChannels[format];
-    var width = vPixels.nth_dim(1) / numChannels;
-    var height = vPixels.nth_dim(0);
+    var width = vPixels.dims[1] / numChannels;
+    var height = vPixels.dims[0];
     var pixels = vPixels.data;
 
     joo_global_object.gl.texImage2D(textureType, vLevel, internalFormat, width, height, 0, format, type, pixels);

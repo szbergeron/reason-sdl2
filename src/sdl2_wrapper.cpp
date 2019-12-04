@@ -19,6 +19,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 
+#ifdef __APPLE__
+#import <Cocoa/Cocoa.h>
+#endif
+
+
 #define Val_none Val_int(0)
 static value Val_some(value v) {
   CAMLparam1(v);
@@ -196,6 +201,42 @@ CAMLprim value resdl_SDL_GetNativeWindow(value vWin) {
 
   CAMLreturn((value)pNativeWindow);
 };
+
+CAMLprim value resdl_SDL_SetMacTitlebarTransparent(value vWin) {
+  CAMLparam1(vWin);
+
+  #ifdef __APPLE__
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_SysWMinfo wmInfo;
+  SDL_VERSION(&wmInfo.version);
+  SDL_GetWindowWMInfo(win, &wmInfo);
+  NSWindow *nWindow = wmInfo.info.cocoa.window;
+  [nWindow setStyleMask: [nWindow styleMask] | NSWindowStyleMaskFullSizeContentView];
+  [nWindow setTitlebarAppearsTransparent:YES];
+  #endif
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value resdl_SDL_SetMacBackgroundColor(value vWin, value r, value g, value b, value a) {
+  CAMLparam5(vWin, r, g, b, a);
+
+  #ifdef __APPLE__
+  SDL_Window *win = (SDL_Window *)vWin;
+  SDL_SysWMinfo wmInfo;
+  SDL_VERSION(&wmInfo.version);
+  SDL_GetWindowWMInfo(win, &wmInfo);
+  double red = Double_val(r);
+  double green = Double_val(g);
+  double blue = Double_val(b);
+  double alpha = Double_val(a);
+  NSWindow *nWindow = wmInfo.info.cocoa.window;
+  NSColor *rgb = [NSColor colorWithDeviceRed:red green:green blue:blue alpha:alpha];
+  [nWindow setBackgroundColor:rgb];
+  #endif
+
+  CAMLreturn(Val_unit);
+}
 
 CAMLprim value resdl_SDL_SetWin32ProcessDPIAware(value vWin) {
   CAMLparam1(vWin);
@@ -680,6 +721,22 @@ CAMLprim value resdl_SDL_SetWindowIcon(value vWindow, value vIcon) {
 
   CAMLreturn(Val_unit);
 };
+
+CAMLprim value resdl_SDL_SetWindowTransparency(value vWindow, value vTransparency) {
+  CAMLparam2(vWindow, vTransparency);
+
+  SDL_Window *win = (SDL_Window *)vWindow;
+  double transparency = Double_val(vTransparency);
+
+  int result;
+  result = SDL_SetWindowOpacity(win, transparency);
+
+  if (result == -1) {
+    printf("WARNING: Setting transparency not supported!");
+  }
+
+  CAMLreturn(Val_unit);
+}
 
 CAMLprim value resdl_SDL_CreateSystemCursor(value vCursor) {
   CAMLparam1(vCursor);

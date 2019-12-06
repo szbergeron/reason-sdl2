@@ -250,6 +250,18 @@ module Keycode = {
   let left = 1073741904;
 };
 
+module WheelType = {
+    type t =
+      | Last
+      | Undefined
+      | Touchscreen
+      | Touchpad
+      | Wheel
+      | WheelPrecise
+      | OtherNonKinetic
+      | OtherKinetic;
+}
+
 module Keymod = {
   type t = int;
 
@@ -315,6 +327,17 @@ module Event = {
     deltaY: int,
     isFlipped: bool,
   };
+
+  type mousePan = {
+    windowID: int,
+    deltaX: int,
+    deltaY: int,
+    containsX: bool,
+    containsY: bool,
+    isFling: bool,
+    isInterrupt: bool,
+    source: WheelType.t,
+  }
 
   type mouseButtonEvent = {
     windowID: int,
@@ -384,6 +407,7 @@ module Event = {
     | WindowClosed(windowEvent)
     | WindowTakeFocus(windowEvent)
     | WindowHitTest(windowEvent)
+    | MousePan(mousePan)
     // An event that hasn't been implemented yet
     | Unknown;
 
@@ -400,6 +424,15 @@ module Event = {
         deltaY,
         isFlipped ? 1 : 0,
       )
+    | MousePan({windowID, deltaX, deltaY, containsX, containsY, isFling, isInterrupt, _}) =>
+      Printf.sprintf("Pan event: %d %d %d %d %d %d %d",
+                     windowID,
+                     deltaX,
+                     deltaY,
+                     if(containsX) 1 else 0,
+                     if(containsY) 1 else 0,
+                     if(isFling) 1 else 0,
+                     if(isInterrupt) 1 else 0)
     | MouseButtonUp({windowID, button, _}) =>
       Printf.sprintf(
         "MouseButtonUp windowId: %d button: %s",

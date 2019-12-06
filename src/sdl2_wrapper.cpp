@@ -608,7 +608,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
       v = Val_SDL_WindowEvent(23, event->window.windowID);
       break;
     default:
-      printf("Unknown event in sdl2_wrapper, event enum code was %d\n", event->type);
+      fprintf(stderr, "Unknown event in sdl2_wrapper, event enum code was %d\n", event->type);
       v = Val_int(1);
     };
 

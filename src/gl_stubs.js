@@ -22,6 +22,7 @@ function caml_glClearDepth(d) {
 }
 
 // Provides: caml_glGetString
+// Requires: caml_js_to_string
 function caml_glGetString() {
     return caml_js_to_string("Not implemented");
 }

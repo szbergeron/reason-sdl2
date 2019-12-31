@@ -82,7 +82,7 @@ CAMLprim value resdl_SDL_DestroyWindow(value vWin) {
 SDL_HitTestResult resdl_hit_test(SDL_Window *win, const SDL_Point *area,
                                  void *data) {
 
-  static value *hitTestCallback = NULL;
+  static const value *hitTestCallback = NULL;
   if (hitTestCallback == NULL) {
     hitTestCallback = caml_named_value("__sdl2_caml_hittest__");
   }

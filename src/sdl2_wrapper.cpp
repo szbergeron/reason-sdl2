@@ -235,6 +235,7 @@ CAMLprim value resdl_SDL_GetNativeWindow(value vWin) {
 };
 
 #ifdef WIN32
+
 // This method is calling after attach / alloc console
 // to wire up the new stdin/stdout/stderr.
 // See further details (thanks @dra27 for the help!)
@@ -264,7 +265,6 @@ void resdl_Win32AttachStdIO() {
     close(fd_err);
     SetStdHandle(STD_ERROR_HANDLE, (HANDLE)_get_osfhandle(2));
   }
-
   *stdin = *(fdopen(0, "rb"));
   *stdout = *(fdopen(1, "wb"));
   *stderr = *(fdopen(2, "wb"));
@@ -279,9 +279,16 @@ CAMLprim value resdl_SDL_WinAttachConsole() {
   CAMLparam0();
   int ret = 0;
 #ifdef WIN32
-  ret = AttachConsole(ATTACH_PARENT_PROCESS);
-  if (ret == 1) {
-    resdl_Win32AttachStdIO();
+  // Only attach if we don't already have a stdout handle
+  if (GetStdHandle(STD_OUTPUT_HANDLE) == NULL) {
+    ret = AttachConsole(ATTACH_PARENT_PROCESS);
+    if (ret) {
+      resdl_Win32AttachStdIO();
+    }
+  } else {
+    // There's already a stdout handle available,
+    // so return success
+    ret = 1;
   }
 #endif
   CAMLreturn(Val_int(ret));
@@ -292,7 +299,7 @@ CAMLprim value resdl_SDL_WinAllocConsole() {
   int ret = 0;
 #ifdef WIN32
   ret = AllocConsole();
-  if (ret == 1) {
+  if (ret) {
     resdl_Win32AttachStdIO();
   }
 #endif

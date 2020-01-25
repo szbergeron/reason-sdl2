@@ -318,6 +318,7 @@ CAMLprim value resdl_SDL_SetMacTitlebarTransparent(value vWin) {
   [nWindow
       setStyleMask:[nWindow styleMask] | NSWindowStyleMaskFullSizeContentView];
   [nWindow setTitlebarAppearsTransparent:YES];
+  nWindow.titleVisibility = NSWindowTitleHidden;
 #endif
 
   CAMLreturn(Val_unit);

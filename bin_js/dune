@@ -1,6 +1,6 @@
 (executable
     (name test_sdl2)
-    (package sdl2)
+    (package sdl2-js)
     (preprocess (pps lwt_ppx))
     (public_name test_sdl2_js)
     (js_of_ocaml)
@@ -14,6 +14,6 @@
             ))
 
 (install
-    (package sdl2)
+    (package sdl2-js)
     (section bin)
     (files gl-matrix-min.js index.html test_sdl2.bc.js))

@@ -55,11 +55,21 @@ let flags =
     | _ -> []
         @ ccopt(libPath)
         @ cclib("-lSDL2")
+        @ ccopt("-framework AppKit")
+        @ ccopt("-framework Foundation")
         @ ccopt("-framework OpenGL")
         @ ccopt("-framework Cocoa")
         @ ccopt("-framework IOKit")
         @ ccopt("-framework CoreVideo")
 ;;
+
+let c_library_flags =
+    match get_os with
+    | Mac -> [
+        libPath;
+        "-lSDL2";
+    ]
+    | _ -> []
 
 let cxx_flags =
     match get_os with
@@ -69,6 +79,7 @@ let cxx_flags =
     | _ -> c_flags
 ;;
 
+Configurator.V1.Flags.write_sexp "c_library_flags.sexp" c_library_flags;
 Configurator.V1.Flags.write_sexp "c_flags.sexp" c_flags;
 Configurator.V1.Flags.write_sexp "cxx_flags.sexp" cxx_flags;
 Configurator.V1.Flags.write_sexp "flags.sexp" flags;

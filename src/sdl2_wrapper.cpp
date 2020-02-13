@@ -796,6 +796,8 @@ CAMLprim value resdl_SDL_WaitTimeoutEvent(value vTimeout) {
 }
 
 CAMLprim value resdl_SDL_GetTicks() {
+    CAMLparam0();
+
     int result = SDL_GetTicks();
 
     CAMLreturn(Val_int(result));

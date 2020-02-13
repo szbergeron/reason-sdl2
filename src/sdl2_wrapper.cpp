@@ -615,7 +615,6 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     break;
   case SDL_KEYDOWN:
   case SDL_KEYUP:
-    fprintf(stderr, "Got keyup event\n");
     v = caml_alloc(1, event->type == SDL_KEYDOWN ? 4 : 5);
 
     vInner = caml_alloc(5, 0);

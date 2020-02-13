@@ -615,6 +615,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     break;
   case SDL_KEYDOWN:
   case SDL_KEYUP:
+    fprintf(stderr, "Got keyup event\n");
     v = caml_alloc(1, event->type == SDL_KEYDOWN ? 4 : 5);
 
     vInner = caml_alloc(5, 0);
@@ -659,6 +660,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     Store_field(vInner, 6, Val_bool(event->pan.interrupt));
     // verify this is the correct way of representing a ref to some WheelType.t
     Store_field(vInner, 7, Val_int(event->pan.source_type));
+    Store_field(vInner, 8, Val_int(event->pan.timestamp));
 
     Store_field(v, 0, vInner);
     break;

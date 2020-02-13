@@ -347,6 +347,7 @@ module Event = {
     isFling: bool,
     isInterrupt: bool,
     source: WheelType.t,
+    timestamp: int,
   };
 
   type mouseButtonEvent = {

@@ -796,14 +796,6 @@ CAMLprim value resdl_SDL_WaitTimeoutEvent(value vTimeout) {
   CAMLreturn(ret);
 }
 
-CAMLprim value resdl_SDL_GetTicks() {
-    CAMLparam0();
-
-    int result = SDL_GetTicks();
-
-    CAMLreturn(Val_int(result));
-}
-
 CAMLprim value resdl_SDL_GetWindowSize(value vWindow) {
   CAMLparam1(vWindow);
   CAMLlocal1(ret);

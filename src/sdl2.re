@@ -580,10 +580,6 @@ module MessageBox = {
     "resdl_SDL_ShowSimpleMessageBox";
 };
 
-module Timekeeping = {
-    external getTicks: unit => int = "resdl_SDL_GetTicks";
-}
-
 type renderFunction = unit => bool;
 external _javaScriptRenderLoop: renderFunction => unit =
   "resdl__javascript__renderloop";

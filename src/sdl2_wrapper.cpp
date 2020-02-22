@@ -649,7 +649,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
   case SDL_PANEVENT:
     v = caml_alloc(1, 24);
 
-    vInner = caml_alloc(8, 0);
+    vInner = caml_alloc(9, 0);
     Store_field(vInner, 0, Val_int(event->window.windowID));
     Store_field(vInner, 1, Val_int(event->pan.x));
     Store_field(vInner, 2, Val_int(event->pan.y));
@@ -659,6 +659,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     Store_field(vInner, 6, Val_bool(event->pan.interrupt));
     // verify this is the correct way of representing a ref to some WheelType.t
     Store_field(vInner, 7, Val_int(event->pan.source_type));
+    Store_field(vInner, 8, Val_int(event->pan.timestamp));
 
     Store_field(v, 0, vInner);
     break;

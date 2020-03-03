@@ -1,4 +1,3 @@
-module Image = Image;
 module Float32Array = Float32Array;
 module Uint16Array = Uint16Array;
 
@@ -64,6 +63,42 @@ module Display = {
   external getCurrentMode: t => Mode.t = "resdl_SDL_GetCurrentDisplayMode";
 
   external getDesktopMode: t => Mode.t = "resdl_SDL_GetDesktopDisplayMode";
+};
+
+module Log = {
+  type category =
+    | Application
+    | Error
+    | Assert
+    | System
+    | Audio
+    | Video
+    | Render
+    | Input
+    | Test
+    | Custom
+    | Unknown;
+
+  type priority =
+    | Verbose
+    | Debug
+    | Info
+    | Warn
+    | Error
+    | Critical;
+
+  type logOutputFunction = (category, priority, string) => unit;
+
+  let _outputFunction: ref(logOutputFunction) = ref((_, _, _) => ());
+  let setOutputFunction = outputFunction => {
+    _outputFunction := outputFunction;
+  };
+
+  let _onLog = (category, priority, str) => {
+    _outputFunction^(category, priority, str);
+  };
+
+  Callback.register("reason_sdl2_onLog", _onLog);
 };
 
 module Platform = {
@@ -161,9 +196,14 @@ module Window = {
     "resdl_SDL_SetMacBackgroundColor";
 };
 
-module OldGl = Gl;
 module Gl = {
   type context;
+
+  type glString =
+    | Vendor
+    | Renderer
+    | Version
+    | ShadingLanguageVersion;
 
   external setup: Window.t => context = "resdl_SDL_GL_Setup";
   external makeCurrent: (Window.t, context) => unit =
@@ -172,7 +212,8 @@ module Gl = {
   external getDrawableSize: Window.t => Size.t =
     "resdl_SDL_GL_GetDrawableSize";
   external setSwapInterval: int => unit = "resdl_SDL_GL_SetSwapInterval";
-  include OldGl;
+
+  external getString: glString => string = "resdl_SDL_GL_GetString";
 };
 
 external delay: int => unit = "resdl_SDL_Delay";

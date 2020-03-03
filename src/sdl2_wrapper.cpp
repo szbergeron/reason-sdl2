@@ -12,8 +12,6 @@
 #include <caml/mlvalues.h>
 #include <caml/threads.h>
 
-#include <glad/glad.h>
-
 #include "stb_image.h"
 
 #include <SDL2/SDL.h>
@@ -28,6 +26,8 @@
 #include <fcntl.h>
 #include <io.h>
 #endif
+
+#include <glad/glad.h>
 
 #define Val_none Val_int(0)
 static value Val_some(value v) {
@@ -476,8 +476,49 @@ CAMLprim value resdl_SDL_GL_Setup(value w) {
   SDL_Window *win = (SDL_Window *)w;
   SDL_GLContext ctx = SDL_GL_CreateContext(win);
 
-  gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress);
+  if (!ctx) {
+    SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "SDL_GL_Setup failed: %s\n",
+                    SDL_GetError());
+  }
+
   return (value)ctx;
+}
+
+typedef const GLubyte *(*glGetStringFunc)(GLenum);
+
+CAMLprim value resdl_SDL_GL_GetString(value vStr) {
+  CAMLparam1(vStr);
+  CAMLlocal1(ret);
+
+  GLenum name = GL_VENDOR;
+  switch (Int_val(vStr)) {
+  case 0:
+    name = GL_VENDOR;
+    break;
+  case 1:
+    name = GL_RENDERER;
+    break;
+  case 2:
+    name = GL_VERSION;
+    break;
+  case 3:
+    name = GL_SHADING_LANGUAGE_VERSION;
+    break;
+  default:
+    break;
+  }
+
+  glGetStringFunc glGetString =
+      (glGetStringFunc)(SDL_GL_GetProcAddress("glGetString"));
+
+  if (!glGetString) {
+    ret = caml_copy_string("Unable to get OpenGL proc address for glGetString");
+  } else {
+    const char *sz = (const char *)((void *)glGetString(name));
+    ret = caml_copy_string(sz);
+  }
+
+  CAMLreturn(ret);
 }
 
 CAMLprim value resdl_SDL_GL_MakeCurrent(value vWindow, value vContext) {
@@ -1069,17 +1110,40 @@ CAMLprim value resdl_SDL_CreateWindow(value vWidth, value vHeight,
   // According to the docs - `SDL_GL_SetAttribute` needs
   // to be called prior to creating the window.
 
-  /* Turn on double buffering with a 24bit Z buffer.
-   * You may need to change this to 16 or 32 for your system */
+  // Attributes pulled from:
+  // https://github.com/google/skia/blob/master/example/SkiaSDLExample.cpp
+  static const int kStencilBits = 8; // Skia needs 8 stencil bits
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#ifdef WIN32
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif __APPLE__
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#else
+  // There's no guarantee that Linux 3.0 is available on Linux.
+  // ie, on my CentOS 6 box, with latest Intel drivers - only 2.1 is supported.
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  // SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+  SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, kStencilBits);
+
+  // SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
   SDL_Window *win = (SDL_CreateWindow(
       String_val(vName), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width,
       height,
       SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE));
+
+  if (!win) {
+    SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "SDL_CreateWindow failed: %s\n",
+                    SDL_GetError());
+  }
 
   value vWindow = (value)win;
   CAMLreturn(vWindow);
@@ -1166,9 +1230,96 @@ CAMLprim value resdl_SDL_GetWindowId(value vWindow) {
   CAMLreturn(Val_int(id));
 }
 
+void resdl_onLog(void *unused, int category, SDL_LogPriority priority,
+                 const char *message) {
+  CAMLparam0();
+  CAMLlocal1(messageString);
+
+  static value *reason_sdl_onLog = NULL;
+
+  if (reason_sdl_onLog == NULL) {
+    reason_sdl_onLog = caml_named_value("reason_sdl2_onLog");
+  }
+
+  int iCategory, iPriority;
+
+  switch (category) {
+  case SDL_LOG_CATEGORY_APPLICATION:
+    iCategory = 0;
+    break;
+  case SDL_LOG_CATEGORY_ERROR:
+    iCategory = 1;
+    break;
+  case SDL_LOG_CATEGORY_ASSERT:
+    iCategory = 2;
+    break;
+  case SDL_LOG_CATEGORY_SYSTEM:
+    iCategory = 3;
+    break;
+  case SDL_LOG_CATEGORY_AUDIO:
+    iCategory = 4;
+    break;
+  case SDL_LOG_CATEGORY_VIDEO:
+    iCategory = 5;
+    break;
+  case SDL_LOG_CATEGORY_RENDER:
+    iCategory = 6;
+    break;
+  case SDL_LOG_CATEGORY_INPUT:
+    iCategory = 7;
+    break;
+  case SDL_LOG_CATEGORY_TEST:
+    iCategory = 8;
+  case SDL_LOG_CATEGORY_CUSTOM:
+    iCategory = 9;
+    break;
+  default:
+    iCategory = 10;
+    break;
+  }
+
+  switch (priority) {
+  case SDL_LOG_PRIORITY_VERBOSE:
+    iPriority = 0;
+    break;
+  case SDL_LOG_PRIORITY_DEBUG:
+    iPriority = 1;
+    break;
+  case SDL_LOG_PRIORITY_INFO:
+    iPriority = 2;
+    break;
+  case SDL_LOG_PRIORITY_WARN:
+    iPriority = 3;
+    break;
+  case SDL_LOG_PRIORITY_ERROR:
+    iPriority = 4;
+    break;
+  case SDL_LOG_PRIORITY_CRITICAL:
+    iPriority = 5;
+    break;
+  default:
+    iPriority = 0;
+    break;
+  }
+
+  messageString = caml_copy_string(message);
+  caml_callback3(*reason_sdl_onLog, Val_int(iCategory), Val_int(iPriority),
+                 messageString);
+
+  CAMLreturn0;
+}
+
 CAMLprim value resdl_SDL_Init() {
   CAMLparam0();
+
+  SDL_LogSetOutputFunction(&resdl_onLog, NULL);
+
   int ret = SDL_Init(SDL_INIT_VIDEO);
+
+  if (ret < 0) {
+    SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "SDL_Init failed: %s\n",
+                    SDL_GetError());
+  }
 
   CAMLreturn(Val_int(ret));
 }

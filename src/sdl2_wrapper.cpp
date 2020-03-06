@@ -838,11 +838,11 @@ CAMLprim value resdl_SDL_WaitTimeoutEvent(value vTimeout) {
 }
 
 CAMLprim value resdl_SDL_GetTicks() {
-    CAMLparam0();
+  CAMLparam0();
 
-    int result = SDL_GetTicks();
+  int result = SDL_GetTicks();
 
-    CAMLreturn(Val_int(result));
+  CAMLreturn(Val_int(result));
 }
 
 CAMLprim value resdl_SDL_GetWindowSize(value vWindow) {
@@ -1399,6 +1399,36 @@ CAMLprim value resdl_SDL_ModAltGrDown(value vMod) {
 CAMLprim value resdl_SDL_GetModState(value vUnit) {
   return Val_int(SDL_GetModState());
 };
+
+CAMLprim value resdl_SDL_GetCompiledVersion(value vUnit) {
+  CAMLparam0();
+  CAMLlocal1(ret);
+
+  SDL_version compiled;
+  SDL_VERSION(&compiled);
+
+  ret = caml_alloc(3, 0);
+  Store_field(ret, 0, Val_int(compiled.major));
+  Store_field(ret, 1, Val_int(compiled.minor));
+  Store_field(ret, 2, Val_int(compiled.patch));
+
+  CAMLreturn(ret);
+}
+
+CAMLprim value resdl_SDL_GetLinkedVersion(value vUnit) {
+  CAMLparam0();
+  CAMLlocal1(ret);
+
+  SDL_version linked;
+  SDL_GetVersion(&linked);
+
+  ret = caml_alloc(3, 0);
+  Store_field(ret, 0, Val_int(linked.major));
+  Store_field(ret, 1, Val_int(linked.minor));
+  Store_field(ret, 2, Val_int(linked.patch));
+
+  CAMLreturn(ret);
+}
 
 CAMLprim value resdl_SDL_ShowSimpleMessageBox(value vFlags, value vTitle,
                                               value vMessage, value vWindow) {

@@ -61,6 +61,12 @@ let flags =
         @ ccopt("-framework Cocoa")
         @ ccopt("-framework IOKit")
         @ ccopt("-framework CoreVideo")
+        @ ccopt("-framework CoreAudio")
+        @ ccopt("-framework AudioToolbox")
+        @ ccopt("-framework ForceFeedback")
+        @ ccopt("-framework Metal")
+        @ ccopt("-framework Carbon")
+        @ ccopt("-liconv")
 ;;
 
 let c_library_flags =

@@ -1,6 +1,6 @@
 {
   "name": "reason-sdl2",
-  "version": "2.10.3018",
+  "version": "2.10.3019",
   "description": "SDL2 bindings for OCaml",
   "license": "MIT",
   "scripts": {
@@ -26,7 +26,7 @@
     "@opam/dune-configurator": "*",
     "@esy-ocaml/reason": "^3.3.7",
     "refmterr": "^3.1.0",
-    "esy-sdl2": "^2.0.10005",
+    "esy-sdl2": "^2.0.10006",
     "esy-cmake": "^0.3.4"
   },
   "devDependencies": {

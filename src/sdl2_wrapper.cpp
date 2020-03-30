@@ -515,7 +515,11 @@ CAMLprim value resdl_SDL_GL_GetString(value vStr) {
     ret = caml_copy_string("Unable to get OpenGL proc address for glGetString");
   } else {
     const char *sz = (const char *)((void *)glGetString(name));
-    ret = caml_copy_string(sz);
+    if (!sz) {
+      ret = caml_copy_string("(null)");
+    } else {
+      ret = caml_copy_string(sz);
+    }
   }
 
   CAMLreturn(ret);

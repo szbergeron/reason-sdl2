@@ -65,6 +65,12 @@ module Display = {
   external getDesktopMode: t => Mode.t = "resdl_SDL_GetDesktopDisplayMode";
 };
 
+module PixelFormat = {
+  type t;
+
+  external toString: t => string = "resdl_SDL_GetPixelFormatName";
+};
+
 module Log = {
   type category =
     | Application
@@ -132,6 +138,8 @@ module Window = {
   external getId: t => int = "resdl_SDL_GetWindowId";
   external getSize: t => Size.t = "resdl_SDL_GetWindowSize";
   external setBordered: (t, bool) => unit = "resdl_SDL_SetWindowBordered";
+  external getPixelFormat: t => PixelFormat.t =
+    "resdl_SDL_GetWindowPixelFormat";
   external setIcon: (t, Surface.t) => unit = "resdl_SDL_SetWindowIcon";
   external setTransparency: (t, float) => unit =
     "resdl_SDL_SetWindowTransparency";

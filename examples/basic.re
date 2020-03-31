@@ -35,10 +35,18 @@ let run = () => {
 
   Console.log(
     Printf.sprintf(
-      "OpenGL Info - version: %s vendor: %s shading language version: %s\n",
+      "OpenGL Info - version: %s vendor: %s shading language version: %s",
       version,
       vendor,
       shadingLanguageVersion,
+    ),
+  );
+
+  let pixelFormat = Sdl2.Window.getPixelFormat(primaryWindow);
+  Console.log(
+    Printf.sprintf(
+      "Pixel format: %s",
+      pixelFormat |> Sdl2.PixelFormat.toString,
     ),
   );
 

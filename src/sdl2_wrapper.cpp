@@ -459,11 +459,34 @@ CAMLprim value resdl_SDL_GetDesktopDisplayMode(value vDisplay) {
   CAMLreturn(ret);
 };
 
+CAMLprim value resdl_SDL_GetPixelFormatName(value vPixelFormat) {
+  CAMLparam1(vPixelFormat);
+  CAMLlocal1(ret);
+
+  Uint32 format = Int_val(vPixelFormat);
+  const char *szPixelFormatName = SDL_GetPixelFormatName(format);
+
+  if (!szPixelFormatName) {
+    ret = caml_copy_string("(null)");
+  } else {
+    ret = caml_copy_string(szPixelFormatName);
+  }
+
+  CAMLreturn(ret);
+}
+
 CAMLprim value resdl_SDL_GetWindowDisplayIndex(value w) {
   CAMLparam1(w);
   SDL_Window *win = (SDL_Window *)w;
   int idx = SDL_GetWindowDisplayIndex(win);
   CAMLreturn(Val_int(idx));
+};
+
+CAMLprim value resdl_SDL_GetWindowPixelFormat(value vWin) {
+  CAMLparam1(vWin);
+  SDL_Window *pWin = (SDL_Window *)vWin;
+  Uint32 format = SDL_GetWindowPixelFormat(pWin);
+  CAMLreturn(Val_int(format));
 };
 
 CAMLprim value resdl_SDL_GL_SetSwapInterval(value vInterval) {

@@ -313,6 +313,12 @@ module Keycode = {
   let left = 1073741904;
 };
 
+module Axis = {
+  type t =
+    | Horizontal
+    | Vertical;
+};
+
 module WheelType = {
   type t =
     | Last
@@ -390,6 +396,21 @@ module Event = {
     deltaY: int,
     isFlipped: bool,
   };
+
+  module PanElements = {
+    type t =
+      | Interrupt
+      | Fling
+      | Pan(float);
+  }
+
+  type panEvent = {
+    windowID: int,
+    timestamp: int,
+    source: WheelType.t,
+    axis: Axis.t,
+    action: PanElements.t,
+  }
 
   type mousePan = {
     windowID: int,
@@ -471,7 +492,7 @@ module Event = {
     | WindowClosed(windowEvent)
     | WindowTakeFocus(windowEvent)
     | WindowHitTest(windowEvent)
-    | MousePan(mousePan)
+    | Pan(panEvent)
     // An event that hasn't been implemented yet
     | Unknown;
 
@@ -488,26 +509,16 @@ module Event = {
         deltaY,
         isFlipped ? 1 : 0,
       )
-    | MousePan({
+    | Pan({
         windowID,
-        deltaX,
-        deltaY,
-        containsX,
-        containsY,
-        isFling,
-        isInterrupt,
+        timestamp,
+        action,
         _,
-      }) =>
-      Printf.sprintf(
-        "Pan event: %d %d %d %d %d %d %d",
-        windowID,
-        deltaX,
-        deltaY,
-        if (containsX) {1} else {0},
-        if (containsY) {1} else {0},
-        if (isFling) {1} else {0},
-        if (isInterrupt) {1} else {0},
-      )
+      }) => switch (action) {
+        | Interrupt => Printf.sprintf("Interrupt event at timestamp %d", timestamp)
+        | Fling => Printf.sprintf("Fling event at timestamp %d", timestamp)
+        | Pan(delta) => Printf.sprintf("Pan event at timestamp %d with delta %f", timestamp, delta);
+      }
     | MouseButtonUp({windowID, button, _}) =>
       Printf.sprintf(
         "MouseButtonUp windowId: %d button: %s",

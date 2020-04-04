@@ -732,12 +732,14 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
     Store_field(vInner, 3, Val_int(axis));
 
     if( event->pan.pantype == SDL_PANEVENTTYPE_PAN ) {
-        CAMLlocal1(panElement);
-
         // tagged 0 for only non-constant constructor Pan(float)
+        CAMLlocal2(panElement, floatElement);
         panElement = caml_alloc(1, 0);
 
-        Store_double_field(panElement, 0, event->pan.contents.pan.delta);
+        floatElement = caml_copy_double(event->pan.contents.pan.delta);
+
+        Store_field(panElement, 0, floatElement);
+
         Store_field(vInner, 4, panElement);
     } else {
         if( event->pan.pantype == SDL_PANEVENTTYPE_INTERRUPT ) {

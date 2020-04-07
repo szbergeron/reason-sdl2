@@ -717,7 +717,7 @@ CAMLprim value Val_SDL_Event(SDL_Event *event) {
   case SDL_PANEVENT:
     v = caml_alloc(1, 24);
 
-    vInner = caml_alloc(40, 0);
+    vInner = caml_alloc(5, 0);
     Store_field(vInner, 0, Val_int(event->window.windowID));
     Store_field(vInner, 1, Val_int(event->pan.timestamp));
     

@@ -315,8 +315,8 @@ module Keycode = {
 
 module Axis = {
   type t =
-    | Horizontal
-    | Vertical;
+    | Vertical
+    | Horizontal;
 };
 
 module WheelType = {
@@ -411,18 +411,6 @@ module Event = {
     axis: Axis.t,
     action: PanElements.t,
   }
-
-  type mousePan = {
-    windowID: int,
-    deltaX: int,
-    deltaY: int,
-    containsX: bool,
-    containsY: bool,
-    isFling: bool,
-    isInterrupt: bool,
-    source: WheelType.t,
-    timestamp: int,
-  };
 
   type mouseButtonEvent = {
     windowID: int,
